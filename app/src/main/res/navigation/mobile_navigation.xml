@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_dashboard">
+
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.example.pmis.DashboardFragment"
+        android:label="@string/menu_dashboard"
+        tools:layout="@layout/fragment_dashboard2" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.pmis.ProfileFragment"
+        android:label="@string/my_profile"
+        tools:layout="@layout/profile_fragment" />
+
+
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.example.pmis.ReportFragment"
+        android:label="Reports"
+        tools:layout="@layout/fragment_report" />
+    <fragment
+        android:id="@+id/clinicFragment"
+        android:name="com.example.pmis.ClinicFragment"
+        android:label="Clinic"
+        tools:layout="@layout/fragment_clinic" />
+
+
+</navigation>

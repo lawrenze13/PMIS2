@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="10dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvPresUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Last Updated: "
+            android:textColor="#494747"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvPPresUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="text"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPresUpdate"
+            app:layout_constraintStart_toEndOf="@+id/tvPresUpdate"
+            app:layout_constraintTop_toTopOf="@+id/tvPresUpdate" />
+
+        <TextView
+            android:id="@+id/tvPresUpdate2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Dentist:"
+            android:textColor="#494747"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPresUpdate" />
+
+        <TextView
+            android:id="@+id/tvPPresDentist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="text"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPresUpdate2"
+            app:layout_constraintStart_toEndOf="@+id/tvPresUpdate2"
+            app:layout_constraintTop_toTopOf="@+id/tvPresUpdate2" />
+
+        <TextView
+            android:id="@+id/tvPresUpdate3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Date Added"
+            android:textColor="#494747"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPresUpdate2" />
+
+        <TextView
+            android:id="@+id/tvPPresAdded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="text"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPresUpdate3"
+            app:layout_constraintStart_toEndOf="@+id/tvPresUpdate3"
+            app:layout_constraintTop_toTopOf="@+id/tvPresUpdate3" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/tvPresUpdate3"
+            tools:layout_editor_absoluteX="20dp">
+
+            <ImageButton
+                android:id="@+id/ibPPresPDF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_baseline_picture_as_pdf_24" />
+
+            <ImageButton
+                android:id="@+id/ibPPresEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_baseline_edit_24" />
+
+            <ImageButton
+                android:id="@+id/ibPPresDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_baseline_delete_outline_24" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
