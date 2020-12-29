@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PMIS">
-        <activity android:name=".PatientAddPaymentActivity"></activity>
+        <activity android:name=".ScheduleActivity"></activity>
+        <activity android:name=".AddPatientPaymentActivity" />
         <activity android:name=".AddPatientProcedure" />
         <activity android:name=".PatientProceduresActivity" />
         <activity android:name=".AddMedicalHistoryActivity" />

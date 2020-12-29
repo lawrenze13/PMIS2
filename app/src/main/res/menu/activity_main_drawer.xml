@@ -16,6 +16,10 @@
             android:id="@+id/clinicFragment"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/menu_clinic" />
+        <item
+            android:id="@+id/appointmentFragment"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/appointments" />
 
         <item
             android:id="@+id/reportFragment"

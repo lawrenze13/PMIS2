@@ -9,12 +9,13 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="#FFFFFF">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/bodyPrimary"
             android:elevation="0dp">
 
             <include
@@ -29,10 +30,10 @@
                 android:layout_height="wrap_content"
                 android:background="#00FFFFFF"
                 android:elevation="0dp"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:popupTheme="@style/Theme.PMIS.PopupOverlay" />
+                app:popupTheme="@style/Theme.PMIS.PopupOverlay"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

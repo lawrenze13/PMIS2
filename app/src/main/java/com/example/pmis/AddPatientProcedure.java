@@ -101,7 +101,6 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
             }
         });
 
-
     }
     private final View.OnClickListener saveProcedure = new View.OnClickListener() {
         @Override

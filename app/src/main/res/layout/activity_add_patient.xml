@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/bodyPrimary"
     android:orientation="vertical"
     tools:context=".AddPatientActivity">
 
@@ -18,11 +18,11 @@
             android:layout_width="0dp"
             android:layout_height="204dp"
             android:layout_marginTop="160dp"
+            android:contentDescription="@string/todo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_wave"
-            android:contentDescription="@string/todo" />
+            app:srcCompat="@drawable/ic_wave" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout5"
@@ -38,13 +38,13 @@
                 android:id="@+id/imageView11"
                 android:layout_width="87dp"
                 android:layout_height="146dp"
+                android:contentDescription="@string/patient_photo"
                 android:src="@drawable/userimg_default"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                android:contentDescription="@string/patient_photo" />
+                app:layout_constraintVertical_bias="0.0" />
 
             <Button
                 android:id="@+id/button2"
@@ -112,19 +112,18 @@
 
                     <TextView
                         android:id="@+id/textView8"
-                        android:textSize="12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="20dp"
                         android:fontFamily="@font/montserrat"
                         android:text="@string/middle_name"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/etPFirstName" />
 
                     <EditText
                         android:id="@+id/etPMiddleName"
-                        android:textSize="14sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_baseline_person_24"
@@ -132,25 +131,25 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="textPersonName"
                         android:padding="10dp"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
                     <TextView
                         android:id="@+id/textView9"
-                        android:textSize="12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="20dp"
                         android:fontFamily="@font/montserrat"
                         android:text="@string/last_name"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/etPMiddleName" />
 
                     <EditText
                         android:id="@+id/etPLastName"
-                        android:textSize="14sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_baseline_person_24"
@@ -158,6 +157,7 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="textPersonName"
                         android:padding="10dp"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -165,47 +165,46 @@
 
                     <TextView
                         android:id="@+id/textView22"
-                        android:textSize="12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="20dp"
                         android:fontFamily="@font/montserrat"
                         android:text="@string/sex"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/etPLastName" />
 
                     <RadioGroup
                         android:id="@+id/rgPSex"
-                        android:textSize="12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:orientation="horizontal"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView22">
 
                         <RadioButton
                             android:id="@+id/rPMale"
-                            android:textSize="14sp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat"
-                            android:text="@string/male" />
+                            android:text="@string/male"
+                            android:textSize="14sp" />
 
                         <RadioButton
                             android:id="@+id/rPFemale"
-                            android:textSize="14sp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="30dp"
                             android:fontFamily="@font/montserrat"
-                            android:text="@string/female" />
+                            android:text="@string/female"
+                            android:textSize="14sp" />
                     </RadioGroup>
 
                     <EditText
                         android:id="@+id/etPEmail"
-                        android:textSize="12sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -214,6 +213,7 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="textEmailAddress"
                         android:padding="10dp"
+                        android:textSize="12sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -221,7 +221,6 @@
 
                     <TextView
                         android:id="@+id/textView35"
-                        android:textSize="12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -229,12 +228,12 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat"
                         android:text="@string/email"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/rgPSex" />
 
                     <EditText
                         android:id="@+id/etPContactNo"
-                        android:textSize="14sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -243,6 +242,7 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="phone"
                         android:padding="10dp"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -250,7 +250,6 @@
 
                     <TextView
                         android:id="@+id/textView36"
-                        android:textSize="12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -258,12 +257,12 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat"
                         android:text="@string/contact_no"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/etPEmail" />
 
                     <EditText
                         android:id="@+id/etPAddress"
-                        android:textSize="14sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -272,6 +271,7 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="text"
                         android:padding="10dp"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -279,7 +279,6 @@
 
                     <TextView
                         android:id="@+id/textView37"
-                        android:textSize="12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -287,12 +286,12 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat"
                         android:text="@string/address"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/etPContactNo" />
 
                     <TextView
                         android:id="@+id/textView38"
-                        android:textSize="12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -300,21 +299,22 @@
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat"
                         android:text="@string/birthdate"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/etPAddress" />
 
                     <EditText
                         android:id="@+id/etPBirthDate"
-                        android:textSize="14sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:drawableStart="@drawable/ic_baseline_person_24"
                         android:drawablePadding="16dp"
-
                         android:fontFamily="@font/montserrat"
+
                         android:inputType="none"
                         android:padding="10dp"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -323,7 +323,6 @@
 
                     <EditText
                         android:id="@+id/etPNotes"
-                        android:textSize="14sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -332,6 +331,7 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="text"
                         android:padding="10dp"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -339,13 +339,13 @@
 
                     <TextView
                         android:id="@+id/textView39"
-                        android:textSize="12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat"
                         android:text="@string/notes"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/etPBirthDate" />
 

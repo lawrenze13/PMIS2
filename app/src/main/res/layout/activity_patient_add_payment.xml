@@ -6,7 +6,7 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/bodyPrimary"
 android:orientation="vertical"
-tools:context=".PatientAddPaymentActivity">
+tools:context=".AddPatientPaymentActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/clParent"
@@ -56,32 +56,6 @@ tools:context=".PatientAddPaymentActivity">
                 android:layout_marginEnd="25dp"
                 android:paddingTop="20dp">
 
-                <TextView
-                    android:id="@+id/tvPatientName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="Patient Name"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/etPayPatientName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_baseline_person_24"
-                    android:drawablePadding="16dp"
-                    android:enabled="false"
-                    android:fontFamily="@font/montserrat"
-                    android:inputType="date"
-                    android:padding="10dp"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvPatientName" />
-
                 <EditText
                     android:id="@+id/etPayDentist"
                     android:layout_width="match_parent"
@@ -104,7 +78,7 @@ tools:context=".PatientAddPaymentActivity">
                     android:drawableStart="@drawable/ic_baseline_calendar_today_24"
                     android:drawablePadding="16dp"
                     android:fontFamily="@font/montserrat"
-                    android:inputType="text"
+                    android:inputType="date"
                     android:padding="10dp"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -144,12 +118,11 @@ tools:context=".PatientAddPaymentActivity">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
                     android:fontFamily="@font/montserrat"
                     android:text="Dentist"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etPayPatientName" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvPaymentType"
@@ -231,7 +204,7 @@ tools:context=".PatientAddPaymentActivity">
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/contraintInstallment"
+                android:id="@+id/constraintInstallment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
@@ -310,7 +283,7 @@ tools:context=".PatientAddPaymentActivity">
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/btnSave"
+            android:id="@+id/btnPaySave"
             style="@android:style/Widget.Holo.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -353,7 +326,7 @@ tools:context=".PatientAddPaymentActivity">
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
             android:fontFamily="@font/montserrat"
-            android:text="Add Procedure"
+            android:text="Add Payment"
             android:textColor="@color/white"
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="@+id/btnCancel2"

@@ -152,6 +152,7 @@
     <string name="upload_photo">Upload Photo</string>
     <string name="patient_photo">patient photo</string>
     <string name="save">Save</string>
+    <string name="appointments">Appointments</string>
     <!--    <string name="todo">TODO</string>-->
 
 </resources>

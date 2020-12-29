@@ -699,7 +699,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_baseline_medical_services_24" />
+                            app:srcCompat="@drawable/ic_baseline_monetization_on_24" />
 
                         <TextView
                             android:id="@+id/tvPayments"
@@ -707,7 +707,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="20dp"
                             android:fontFamily="@font/montserrat"
-                            android:text="Medical History"
+                            android:text="Payments"
                             android:textColor="@color/black"
                             app:layout_constraintStart_toEndOf="@+id/ivPayments"
                             app:layout_constraintTop_toTopOf="@+id/ivPayments" />
@@ -717,7 +717,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat"
-                            android:text="Add Patient Medical History"
+                            android:text="Add Payments"
                             android:textSize="12sp"
                             app:layout_constraintStart_toStartOf="@+id/tvPayments"
                             app:layout_constraintTop_toBottomOf="@+id/tvPayments" />

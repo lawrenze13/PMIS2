@@ -28,6 +28,11 @@
         android:name="com.example.pmis.ClinicFragment"
         android:label="Clinic"
         tools:layout="@layout/fragment_clinic" />
+    <fragment
+        android:id="@+id/appointmentFragment"
+        android:name="com.example.pmis.AppointmentFragment"
+        android:label="fragment_appointment"
+        tools:layout="@layout/fragment_appointment" />
 
 
 </navigation>

@@ -1,6 +1,8 @@
 package com.example.pmis.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +13,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pmis.AddPatientPaymentActivity;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.PatientProcedures;
+import com.example.pmis.Model.Procedures;
 import com.example.pmis.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,9 +32,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 public class PatientProceduresAdapter extends RecyclerView.Adapter {
+    private static final String TAG = "PROD_ADAPTER";
     public Context context;
     public List<PatientProcedures> fetchPatientProceduresList;
-    public String patientKey;
+    private String patientKey, userID;
+    public String procedureDate, dateUpdated, procedure, procedureKey, mainKey;
+    private FirebaseAuth mAuth;
+    private DatabaseReference myRef;
+    private FirebaseDatabase mFirebaseDatabase;
     public PatientProceduresAdapter(Context context, List<PatientProcedures> fetchPatientProceduresList, String patientKey){
         this.context = context;
         this.fetchPatientProceduresList = fetchPatientProceduresList;
@@ -49,6 +60,10 @@ public class PatientProceduresAdapter extends RecyclerView.Adapter {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ViewHolderClass viewHolderClass = (ViewHolderClass) holder;
         PatientProcedures patientProcedures = fetchPatientProceduresList.get(position);
+        mainKey = patientProcedures.getKey();
+        procedureKey = patientProcedures.getProcedureKey();
+        Log.d(TAG,procedureKey);
+        Log.d(TAG,mainKey);
         viewHolderClass.tvPProcDateUpdated.setText(patientProcedures.getDateUpdated());
         viewHolderClass.tvPProcDate.setText(patientProcedures.getDate());
         viewHolderClass.tvPProcProcedure.setText(patientProcedures.getProcedure());
@@ -80,6 +95,38 @@ public class PatientProceduresAdapter extends RecyclerView.Adapter {
 
                     }
                 });
+            }
+        });
+        viewHolderClass.ibPProcPayment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth = FirebaseAuth.getInstance();
+                FirebaseUser user = mAuth.getCurrentUser();
+                userID = user.getUid();
+                mFirebaseDatabase = FirebaseDatabase.getInstance();
+                myRef = mFirebaseDatabase.getReference("Procedures").child(userID).child(procedureKey);
+                myRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Procedures procedures = new Procedures();
+                                String name = snapshot.getValue(Procedures.class).getName();
+                                String description = snapshot.getValue(Procedures.class).getDescription();
+                                int price = snapshot.getValue(Procedures.class).getPrice();
+                                Intent intent = new Intent(context, AddPatientPaymentActivity.class);
+                                intent.putExtra("procedureName", name);
+                                intent.putExtra("procedureDesc",description);
+                                intent.putExtra("procedurePrice",price);
+                                intent.putExtra("patientKey",patientKey);
+                                intent.putExtra("procedureKey",procedureKey);
+                                intent.putExtra("patientProcedureKey",mainKey);
+                                context.startActivity(intent);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
             }
         });
     }
