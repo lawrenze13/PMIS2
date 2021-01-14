@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import com.example.pmis.Adapter.PatientListAdapter;
 import com.example.pmis.Model.Patient;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class PatientFragment extends Fragment {
     private List<Patient> patientList;
     private PatientViewModel mViewModel;
     private FloatingActionButton fabAddPatient;
+    private SearchView searchPatient;
     private View view;
     public static PatientFragment newInstance() {
         return new PatientFragment();
@@ -56,6 +59,23 @@ public class PatientFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        searchPatient = view.findViewById(R.id.searchPatient);
+        searchPatient.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText == null || newText.length() == 0){
+                    loadData("");
+                }else{
+                    loadData(newText);
+                }
+                return false;
+            }
+        });
         fabAddDrug2 = (FloatingActionButton)view.findViewById(R.id.fabAddDrug2);
         fabAddDrug2.setOnClickListener(addPatient);
         rvPatient = (RecyclerView)view.findViewById(R.id.rvPatient);
@@ -67,7 +87,14 @@ public class PatientFragment extends Fragment {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference("Patient").child(userID);
         myRef.keepSynced(true);
-        myRef.addValueEventListener(new ValueEventListener() {
+        loadData("");
+
+    }
+
+    private void loadData(String search) {
+        String searchLower = search.toLowerCase();
+        Query query = myRef.orderByChild("sorter").startAt(searchLower).endAt(searchLower + "\uf8ff");
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 patientList.clear();
@@ -86,8 +113,8 @@ public class PatientFragment extends Fragment {
 
             }
         });
-
     }
+
     public final View.OnClickListener addPatient = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

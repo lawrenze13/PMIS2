@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
@@ -117,37 +118,70 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
         @Override
         public void onClick(View v) {
             if(validate()){
-                String date = etSchedDate.getText().toString().trim();
+                DatabaseReference checkHourRef = mFirebaseDatabase.getReference("Schedules").child(patientKey);
                 String startTime = etSchedStart.getText().toString().trim();
                 String endTime = etSchedEnd.getText().toString().trim();
-                String remarks = etSchedRemarks.getText().toString().trim();
-                Schedule schedule = new Schedule();
-                schedule.setDocName(docName);
-                schedule.setPatientKey(patientKey);
-                schedule.setStartTime(startTime);
-                schedule.setDate(date);
-                String dateTime = date + " " + startTime;
+                String date = etSchedDate.getText().toString().trim();
+                String dateTimeStart = date + " " + startTime;
+                String dateTimeEnd = date + " " + endTime;
                 SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy hh:mm");
+                long timeStampStart = 0;
+                long timeStampEnd = 0;
                 try {
-                    Date currentDate = format.parse(dateTime);
-                    long timeStamp = currentDate.getTime();
-                    schedule.setTimeStamp(timeStamp);
+                    Date currentDateStart = format.parse(dateTimeStart);
+                    Date currentDateEnd= format.parse(dateTimeEnd);
+                     timeStampStart = currentDateStart.getTime();
+                     timeStampEnd = currentDateEnd.getTime();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                schedule.setEndTime(endTime);
-                schedule.setRemarks(remarks);
-                mFirebaseDatabase = FirebaseDatabase.getInstance();
-                saveRef = mFirebaseDatabase.getReference("Schedules").child(patientKey);
-                String scheduleKey = saveRef.push().getKey();
-                schedule.setKey(scheduleKey);
-                saveRef.child(scheduleKey).setValue(schedule).addOnSuccessListener(new OnSuccessListener<Void>() {
+                Query query = checkHourRef.orderByChild("timeStamp").startAt(timeStampStart).endAt(timeStampEnd + "\uf8ff");
+                Log.d(TAG, "sTARTTIME ENDTIME " + timeStampStart + " " + timeStampEnd);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                       Toast.makeText(AddScheduleActivity.this, "Schedule added succesfully", Toast.LENGTH_LONG).show();
-                       finish();
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.hasChildren()){
+                            for(DataSnapshot ds: snapshot.getChildren()){
+                                Toast.makeText(AddScheduleActivity.this, ds.getValue(Schedule.class).getStartTime() + " to " + ds.getValue(Schedule.class).getEndTime() + " is unavailable. Please Change the start time and end time.", Toast.LENGTH_LONG).show();
+                            }
+                        }else{
+                            String remarks = etSchedRemarks.getText().toString().trim();
+                            Schedule schedule = new Schedule();
+                            schedule.setDocName(docName);
+                            schedule.setPatientKey(patientKey);
+                            schedule.setStartTime(startTime);
+                            schedule.setDate(date);
+                            String dateTime = date + " " + startTime;
+                            SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy hh:mm");
+                            try {
+                                Date currentDate = format.parse(dateTime);
+                                long timeStamp = currentDate.getTime();
+                                schedule.setTimeStamp(timeStamp);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            schedule.setEndTime(endTime);
+                            schedule.setRemarks(remarks);
+                            mFirebaseDatabase = FirebaseDatabase.getInstance();
+                            saveRef = mFirebaseDatabase.getReference("Schedules").child(patientKey);
+                            String scheduleKey = saveRef.push().getKey();
+                            schedule.setKey(scheduleKey);
+                            saveRef.child(scheduleKey).setValue(schedule).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(AddScheduleActivity.this, "Schedule added succesfully", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
                     }
                 });
+
             }
         }
     };
@@ -157,6 +191,16 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
         String startTime = etSchedStart.getText().toString().trim();
         String endTime = etSchedEnd.getText().toString().trim();
         String remarks = etSchedRemarks.getText().toString().trim();
+        String hourStart[] = startTime.split(":");
+        String hourEnd[] = endTime.split(":");
+        if(Integer.parseInt(hourStart[0]) > Integer.parseInt(hourEnd[0])){
+            Toast.makeText(AddScheduleActivity.this,"Start Time cannot be Higher than End Time.", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(startTime == endTime ){
+            Toast.makeText(AddScheduleActivity.this,"Start Time and End time cannot be equal", Toast.LENGTH_LONG).show();
+            return false;
+        }
         if(date.isEmpty()){
             etSchedDate.setError("Date is required");
             etSchedDate.requestFocus();

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.pmis.Adapter.DrugListAdapter;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -39,12 +41,14 @@ public class DrugListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private DrugListAdapter drugListAdapter;
     private List<Drugs> drugsList;
+    private SearchView searchDrugs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drug_list);
 
+        searchDrugs = (SearchView) findViewById(R.id.searchDrugs);
         fabAddDrug = (FloatingActionButton)findViewById(R.id.fabAddDrug);
         fabAddDrug.setOnClickListener(addDrug);
         recyclerView = (RecyclerView)findViewById(R.id.recycleView);
@@ -55,8 +59,33 @@ public class DrugListActivity extends AppCompatActivity {
         userID = user.getUid();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         drugRef = mFirebaseDatabase.getReference("Drugs").child(userID);
+        searchDrugs.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText == null || newText.length() == 0){
+                    loadData("");
+                }else{
+                    loadData(newText);
+                }
+                return false;
+
+            }
+        });
         drugRef.keepSynced(true);
-        drugRef.addValueEventListener(new ValueEventListener() {
+       loadData("");
+
+
+    }
+
+    private void loadData(String search) {
+        String searchLower = search.toLowerCase();
+        Query query = drugRef.orderByChild("sorter").startAt(searchLower).endAt(searchLower + "\uf8ff");
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 drugsList.clear();
@@ -76,9 +105,8 @@ public class DrugListActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
+
     public void cancel(View v){
         finish();
     }
@@ -118,6 +146,7 @@ public class DrugListActivity extends AppCompatActivity {
                         drugs.setDrugName(etDrugName.getText().toString().trim());
                         drugs.setDrugBrand(etDrugBrand.getText().toString().trim());
                         drugs.setDrugDosage(etDrugDosage.getText().toString().trim());
+                        drugs.setSorter(etDrugName.getText().toString().trim().toLowerCase());
                         drugs.setKey(key);
                         myRef.child(key).setValue(drugs).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override

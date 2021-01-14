@@ -137,6 +137,7 @@ public class ProcedureListAdapter extends RecyclerView.Adapter {
                             int fprice = Integer.parseInt(price);
                             Procedures procedures = new Procedures();
                             procedures.setName(etPName.getText().toString().trim());
+                            procedures.setSorter(etPName.getText().toString().trim().toLowerCase());
                             procedures.setDescription(etPDescription.getText().toString().trim());
                             procedures.setPrice(fprice);
                             procedures.setKey(fetchProcedureList.get(position).getKey());

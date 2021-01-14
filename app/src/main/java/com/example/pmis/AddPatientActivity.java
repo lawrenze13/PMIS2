@@ -146,6 +146,7 @@ public class AddPatientActivity extends AppCompatActivity {
                                     patient.setLastName(etPLastName.getText().toString().trim());
                                     patient.setEmail(etPEmail.getText().toString().trim());
                                     patient.setContactNo(etPContactNo.getText().toString().trim());
+                                    patient.setSorter(etPFirstName.getText().toString().toLowerCase().trim() + ' ' + etPLastName.getText().toString().toLowerCase().trim());
                                     patient.setAddress(etPAddress.getText().toString().trim());
                                     patient.setNotes(etPNotes.getText().toString().trim());
                                     patient.setBirthDate(etPatientBirthdate.getText().toString().trim());

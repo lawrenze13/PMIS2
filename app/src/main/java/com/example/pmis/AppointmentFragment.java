@@ -64,6 +64,7 @@ public class AppointmentFragment extends Fragment {
     private ArrayList<PatientScheduleFacade> patientScheduleFacadeArrayList;
     private ScheduleListAdapter scheduleListAdapter;
     private View view;
+    private Event  ev1;
     public AppointmentFragment() {
     }
 
@@ -226,6 +227,7 @@ public class AppointmentFragment extends Fragment {
                     patientRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            compactCalendarView.removeAllEvents();
                             for(DataSnapshot ds: snapshot.getChildren()) {
 
                                 Schedule schedule = ds.getValue(Schedule.class);
@@ -244,12 +246,14 @@ public class AppointmentFragment extends Fragment {
 //                                    ArrayList<String> arrayList  = new ArrayList<>();
 //                                    arrayList.add(schedule.getKey());
 //                                    arrayList.add(schedule.getPatientKey());
-                                    Event ev1 = new Event(Color.BLUE, timeStamp,schedule.getPatientKey() );
+                                    ev1 = new Event(Color.BLUE, timeStamp,schedule.getPatientKey() );
                                     compactCalendarView.addEvent(ev1);
+
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
                             }
+
                         }
 
                         @Override

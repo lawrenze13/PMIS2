@@ -1,7 +1,19 @@
 package com.example.pmis.Model;
 
 public class Procedures {
-    String name, description, key;
+    String name;
+    String description;
+    String key;
+
+    public String getSorter() {
+        return sorter;
+    }
+
+    public void setSorter(String sorter) {
+        this.sorter = sorter;
+    }
+
+    String sorter;
     int price;
 
     public Procedures(String name, String description, String key, int price) {

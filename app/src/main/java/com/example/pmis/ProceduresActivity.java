@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class ProceduresActivity extends AppCompatActivity {
     private RecyclerView rvProcedures;
     private ProcedureListAdapter procedureListAdapter;
     private List<Procedures> proceduresList;
+    private SearchView searchProcedure;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +53,26 @@ public class ProceduresActivity extends AppCompatActivity {
                 finish();
             }
         });
+        searchProcedure = findViewById(R.id.searchProcedure);
+        searchProcedure.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText == null || newText.length() == 0){
+                    loadData("");
+                }else{
+                    loadData(newText);
+                }
+                return false;
+            }
+        });
         fabAddProcedures = findViewById(R.id.fabAddProcedures);
         fabAddProcedures.setOnClickListener(addProcedures);
-        RecyclerView rvProcedures = (RecyclerView)findViewById(R.id.rvProcedures);
+        rvProcedures = (RecyclerView)findViewById(R.id.rvProcedures);
         rvProcedures.setLayoutManager(new LinearLayoutManager(this));
         proceduresList = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
@@ -61,7 +81,13 @@ public class ProceduresActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference("Procedures").child(userID);
         myRef.keepSynced(true);
-        myRef.addValueEventListener(new ValueEventListener() {
+       loadData("");
+    }
+
+    private void loadData(String search) {
+        String searchLower = search.toLowerCase();
+        Query query = myRef.orderByChild("sorter").startAt(searchLower).endAt(searchLower + "\uf8ff");
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 proceduresList.clear();
@@ -116,6 +142,7 @@ public class ProceduresActivity extends AppCompatActivity {
                         Procedures procedures = new Procedures();
                         procedures.setName(etPName.getText().toString().trim());
                         procedures.setDescription(etPDescription.getText().toString().trim());
+                        procedures.setSorter(etPName.getText().toString().trim().toLowerCase());
                         procedures.setPrice(fprice);
                         procedures.setKey(key);
                         myRef.child(key).setValue(procedures).addOnSuccessListener(new OnSuccessListener<Void>() {

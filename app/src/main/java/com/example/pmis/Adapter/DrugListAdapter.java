@@ -137,12 +137,16 @@ public class DrugListAdapter extends RecyclerView.Adapter {
                             drugs.setDrugName(etDrugName.getText().toString().trim());
                             drugs.setDrugBrand(etDrugBrand.getText().toString().trim());
                             drugs.setDrugDosage(etDrugDosage.getText().toString().trim());
+                            drugs.setSorter(etDrugName.getText().toString().trim().toLowerCase());
                             drugs.setKey(key);
-                            myRef.child("drugName").setValue(drugs.drugName);
-                            myRef.child("drugBrand").setValue(drugs.drugBrand);
-                            myRef.child("drugDosage").setValue(drugs.drugDosage);
-                            alertDialog.dismiss();
-                            Toast.makeText(context,"Update successful", Toast.LENGTH_LONG).show();
+                            myRef.setValue(drugs).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    alertDialog.dismiss();
+                                    Toast.makeText(context,"Update successful", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
                         }
 
                     }

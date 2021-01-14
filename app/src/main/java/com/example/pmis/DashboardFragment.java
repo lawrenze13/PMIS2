@@ -167,18 +167,14 @@ public class DashboardFragment extends Fragment {
                                     Date date2 = df.parse(currentDate);
                                     if(date1.compareTo(date2) > 0){
                                         upcomingCounter = upcomingCounter +1;
-
                                     }
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
-
                                 if(dbDate.equals(currentDate)) {
                                     Log.d(TAG, "FIREBASE: " + ds.getValue(Schedule.class).getDate());
                                     counter = counter +1;
-
                                 }
-
                             }
                             Log.d(TAG, "Upcoming : " + upcomingCounter);
                             tvAppointmentUpcoming.setText(String.valueOf(upcomingCounter));

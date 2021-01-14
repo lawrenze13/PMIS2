@@ -3,7 +3,6 @@ package com.example.pmis.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +23,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class PatientListAdapter extends RecyclerView.Adapter implements Filterable {
-    private static final String TAG = "PATIENT_ADAPTER: " ;
     List<Patient> fetchPatientList;
-    List<Patient> fetchAllPatientList;
     String name;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -40,7 +36,6 @@ public class PatientListAdapter extends RecyclerView.Adapter implements Filterab
     public PatientListAdapter(Context context,List<Patient> fetchPatientList){
         this.fetchPatientList = fetchPatientList;
         this.context = context;
-        this.fetchAllPatientList = fetchPatientList;
     }
 
     @NonNull
@@ -92,20 +87,7 @@ public class PatientListAdapter extends RecyclerView.Adapter implements Filterab
             }
         });
     }
-//    public void filter(String queryText){
-//        fetchPatientList.clear();
-//        if(queryText.isEmpty()){
-//            fetchPatientList.addAll(fetchAllPatientList);
-//        }
-//        else{
-//            for(Patient patient: fetchAllPatientList){
-//                if(patient.getFirstName().toLowerCase().contains(queryText.toLowerCase())){
-//                    fetchPatientList.add(patient);
-//                }
-//            }
-//        }
-//        notifyDataSetChanged();
-//    }
+
     @Override
     public int getItemCount() {
         return fetchPatientList.size();
@@ -117,20 +99,16 @@ public class PatientListAdapter extends RecyclerView.Adapter implements Filterab
     }
     private Filter exampleFilter = new Filter() {
         @Override
-        protected FilterResults performFiltering(CharSequence constraint ) {
+        protected FilterResults performFiltering(CharSequence constraint) {
            List<Patient> filteredList = new ArrayList<>();
-           filteredList.clear();
            if(constraint == null || constraint.length() == 0){
-               filteredList.addAll(fetchAllPatientList);
-               for(int i = 0; i < fetchAllPatientList.size(); i++) {
-                   Log.d(TAG, "fetchAllPatientList: " + fetchAllPatientList.get(i).getFirstName());
-               }
+               filteredList.addAll(fetchPatientList);
+
            }else{
                String filterPattern = constraint.toString().toLowerCase().trim();
-               for(Patient patient: fetchAllPatientList){
+               for(Patient patient: fetchPatientList){
                    if(patient.getFirstName().toLowerCase().contains(filterPattern) || patient.getLastName().toLowerCase().contains(filterPattern)){
                        filteredList.add(patient);
-                       Log.d(TAG, "patient: " + patient.getFirstName());
                    }
                }
            }
@@ -142,7 +120,7 @@ public class PatientListAdapter extends RecyclerView.Adapter implements Filterab
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
                 fetchPatientList.clear();
-                fetchPatientList.addAll((Collection<? extends Patient>) results.values);
+                fetchPatientList.addAll((List) results.values);
                 notifyDataSetChanged();
         }
     };

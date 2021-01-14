@@ -3,6 +3,15 @@ package com.example.pmis.Model;
 public class Patient {
     public String firstName;
     public String dateAdded;
+    public String sorter;
+
+    public String getSorter() {
+        return sorter;
+    }
+
+    public void setSorter(String sorter) {
+        this.sorter = sorter;
+    }
 
     public String getDateAdded() {
         return dateAdded;

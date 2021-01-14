@@ -1,7 +1,20 @@
 package com.example.pmis.Model;
 
 public class Drugs {
-    public String drugName , drugBrand, drugDosage, key;
+    public String drugName;
+    public String drugBrand;
+    public String drugDosage;
+    public String key;
+
+    public String getSorter() {
+        return sorter;
+    }
+
+    public void setSorter(String sorter) {
+        this.sorter = sorter;
+    }
+
+    public String sorter;
     public int position;
 
     public String getKey() {
