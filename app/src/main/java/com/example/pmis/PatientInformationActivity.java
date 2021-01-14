@@ -24,6 +24,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.pmis.Model.Clinic;
+import com.example.pmis.Model.DrugPrescription;
+import com.example.pmis.Model.MedicalHistory;
 import com.example.pmis.Model.Patient;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,6 +67,7 @@ public class PatientInformationActivity extends AppCompatActivity {
     private Patient patientInfo;
     private String  clinicName, clinicAddress, docName, clinicContactNo;
     private TextView tvDateAdded, tvPatientFullName, tvPatientEmail, tvPatientAddress, tvPatientContactNo, tvPatientBirthDate, tvPatientNotes, tvPatientGender, tvPatientAge;
+    private List<MedicalHistory> medicalHistoryList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,6 +214,41 @@ public class PatientInformationActivity extends AppCompatActivity {
                 startActivity(schedIntent);
             }
         });
+        DatabaseReference patientRef = mFirebaseDatabase.getReference("Patient").child(userID);
+        patientRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot patientSnapshot: snapshot.getChildren()){
+                    String patientKey = patientSnapshot.getValue(MedicalHistory.class).getKey();
+                    DatabaseReference medicalHistoryRef = mFirebaseDatabase.getReference("MedicalHistory").child(patientKey);
+                    medicalHistoryRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            medicalHistoryList.clear();
+                             if(snapshot.exists()){
+                                 for(DataSnapshot medicalHistorySnapshot: snapshot.getChildren()){
+                                     MedicalHistory medicalHistory = new MedicalHistory();
+                                     medicalHistory.setCaption(medicalHistorySnapshot.getValue(MedicalHistory.class).getCaption());
+                                     medicalHistory.setImageUrl(medicalHistorySnapshot.getValue(MedicalHistory.class).getImageUrl());
+                                     medicalHistory.setDate(medicalHistorySnapshot.getValue(MedicalHistory.class).getDate());
+                                     medicalHistoryList.add(medicalHistory);
+                                 }
+                             }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void generatePDF() {
@@ -221,7 +259,7 @@ public class PatientInformationActivity extends AppCompatActivity {
         Paint paint = new Paint();
         Paint forLinePaint = new Paint();
         Paint solidLinePaint = new Paint();
-        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(300, 600, 1).create();
+        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(300, 500, 1).create();
         PdfDocument.Page myPage = myPdfDocument.startPage(myPageInfo);
         Canvas canvas = myPage.getCanvas();
         Typeface typeface = ResourcesCompat.getFont(PatientInformationActivity.this, R.font.montserrat);
@@ -258,47 +296,102 @@ public class PatientInformationActivity extends AppCompatActivity {
 
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(8f);
-        canvas.drawText("Birthdate: ", 40, 120, paint);
+        canvas.drawText("Birthdate: ", 40, 130, paint);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(9f);
-        canvas.drawText( patientInfo.getBirthDate(), 100, 120, paint);
+        canvas.drawText( patientInfo.getBirthDate(), 100, 130, paint);
 
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(8f);
-        canvas.drawText("Gender: ", 40, 140, paint);
+        canvas.drawText("Gender: ", 40, 150, paint);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(9f);
-        canvas.drawText( patientInfo.getSex(), 100, 140, paint);
+        canvas.drawText( patientInfo.getSex(), 100, 150, paint);
 
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(8f);
-        canvas.drawText("Address: ", 40, 160, paint);
+        canvas.drawText("Address: ", 40, 170, paint);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(9f);
-        canvas.drawText( patientInfo.getAddress(), 100, 160, paint);
+        canvas.drawText( patientInfo.getAddress(), 100, 170, paint);
 
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(8f);
-        canvas.drawText("Contact No: ", 40, 180, paint);
+        canvas.drawText("Contact No: ", 40, 190, paint);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(9f);
-        canvas.drawText( patientInfo.getContactNo(), 100, 180, paint);
+        canvas.drawText( patientInfo.getContactNo(), 100, 190, paint);
 
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(8f);
-        canvas.drawText("Email: ", 40, 200, paint);
+        canvas.drawText("Email: ", 40, 210, paint);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(9f);
-        canvas.drawText( patientInfo.getEmail(), 100, 200, paint);
+        canvas.drawText( patientInfo.getEmail(), 100, 210, paint);
 
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(8f);
-        canvas.drawText("Notes: ", 40, 220, paint);
+        canvas.drawText("Notes: ", 40, 230, paint);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(9f);
-        canvas.drawText( patientInfo.getNotes(), 100, 220, paint);
-        String fileName = "test.pdf";
+        canvas.drawText( patientInfo.getNotes(), 100, 230, paint);
         myPdfDocument.finishPage(myPage);
+
+//        PdfDocument.PageInfo myPageInfo2 = new PdfDocument.PageInfo.Builder(300, 500, 2).create();
+//        PdfDocument.Page myPage2 = myPdfDocument.startPage(myPageInfo2);
+//        Canvas canvas2 = myPage2.getCanvas();
+//
+//        paint.setTypeface(typeface);
+//        paint.setTextSize(12f);
+//        paint.setColor(Color.BLACK);
+//        paint.setTextAlign(Paint.Align.CENTER);
+//        canvas2.drawText(clinicName, canvas2.getWidth() / 2, 20, paint);
+//        paint.setTextSize(8f);
+//        canvas2.drawText(clinicAddress, canvas2.getWidth() / 2, 35, paint);
+//        canvas2.drawText(clinicContactNo, canvas2.getWidth() / 2, 44, paint);
+//
+//        paint.setTextAlign(Paint.Align.LEFT);
+//        paint.setTextSize(8.5f);
+//        canvas2.drawText(docName, 20, 60, paint);
+//        paint.setTextSize(7f);
+//        canvas2.drawText("General Dentist", 20, 68, paint);
+//        paint.setTextSize(7f);
+//        canvas2.drawText("License No. 563242612", 20, 75, paint);
+//
+//        paint.setTextSize(7f);
+//        paint.setTextAlign(Paint.Align.RIGHT);
+//        canvas2.drawText(currentDate, 575, 75, paint);
+//        solidLinePaint.setStyle(Paint.Style.STROKE);
+//        solidLinePaint.setStrokeWidth(1);
+//        canvas2.drawLine(20, 80, 280, 80, solidLinePaint);
+//
+//        paint.setTextAlign(Paint.Align.LEFT);
+//        paint.setTextSize(8f);
+//        canvas2.drawText("Full Name: ", 40, 110, paint);
+//        paint.setTextAlign(Paint.Align.LEFT);
+//        paint.setTextSize(9f);
+//        canvas2.drawText(patientInfo.getFirstName() + " " + patientInfo.getMiddleName() + " " + patientInfo.getLastName(), 100, 110, paint);
+//
+//        paint.setTextAlign(Paint.Align.LEFT);
+//        paint.setTextSize(8f);
+//        canvas2.drawText("Birthdate: ", 40, 130, paint);
+//        paint.setTextAlign(Paint.Align.LEFT);
+//        paint.setTextSize(9f);
+//        canvas2.drawText( patientInfo.getBirthDate(), 100, 130, paint);
+//
+//        paint.setTextAlign(Paint.Align.LEFT);
+//        paint.setTextSize(8f);
+//        canvas2.drawText("Gender: ", 40, 150, paint);
+//        paint.setTextAlign(Paint.Align.LEFT);
+//        paint.setTextSize(9f);
+//        canvas2.drawText( patientInfo.getSex(), 100, 150, paint);
+//
+//
+//        myPdfDocument.finishPage(myPage2);
+
+
+        String fileName = "test.pdf";
+
         File file = new File(getExternalFilesDir("/"),fileName);
 
         try{
