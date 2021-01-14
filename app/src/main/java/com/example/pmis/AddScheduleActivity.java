@@ -146,6 +146,7 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
                             saveRef.child(scheduleKey).setValue(schedule).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+
                                     Toast.makeText(AddScheduleActivity.this, "Schedule added succesfully", Toast.LENGTH_LONG).show();
                                     finish();
                                 }

@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputFilter;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -28,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
+import com.example.pmis.Helpers.InputFilterMax;
 import com.example.pmis.Model.UserInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -81,6 +83,7 @@ public class EditProfileActivity extends AppCompatActivity {
         etFirstName = (EditText)findViewById(R.id.etFirstName);
         etLastName = (EditText)findViewById(R.id.etLastName);
         etAge = (EditText)findViewById(R.id.etAge);
+        etAge.setFilters(new InputFilter[]{ new InputFilterMax(1,150)});
         etEmail = (EditText)findViewById(R.id.etEmail);
         rgSex = (RadioGroup)findViewById(R.id.rgSex);
         int selectedID = rgSex.getCheckedRadioButtonId();
@@ -153,6 +156,11 @@ public class EditProfileActivity extends AppCompatActivity {
         String age = etAge.getText().toString().trim();
         if(email.isEmpty()){
             etEmail.setError("Email is required");
+            etEmail.requestFocus();
+            return false;
+        }
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            etEmail.setError("Please Provide a valid Email");
             etEmail.requestFocus();
             return false;
         }

@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -235,6 +236,11 @@ public class AddPatientActivity extends AppCompatActivity {
         String address = etPAddress.getText().toString().trim();
         String notes = etPNotes.getText().toString().trim();
         String birthDate = etPatientBirthdate.getText().toString().trim();
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            etPEmail.setError("Please Provide a valid Email");
+            etPEmail.requestFocus();
+            return false;
+        }
         if(firstName.equals("")){
             etPFirstName.setError("First Name is required.");
             etPFirstName.requestFocus();

@@ -281,7 +281,7 @@ public class AddPatientPaymentActivity extends AppCompatActivity implements Date
             return  false;
         }
         if(remarks.isEmpty()){
-            etPayRemarks.setError("Total Amount is required.");
+            etPayRemarks.setError("Remarks is required.");
             etPayRemarks.requestFocus();
             return false;
         }
@@ -297,7 +297,7 @@ public class AddPatientPaymentActivity extends AppCompatActivity implements Date
                 return false;
             }
             if (initialRemarks.isEmpty()) {
-                etPayInitialRemarks.setError("Total Amount is required.");
+                etPayInitialRemarks.setError("Remarks is required.");
                 etPayInitialRemarks.requestFocus();
                 return false;
             }
