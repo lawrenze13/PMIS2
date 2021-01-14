@@ -115,9 +115,7 @@ public class DashboardFragment extends Fragment {
                     paymentRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            counter = 0;
-                            upcomingCounter = 0;
-                            patientCounter = 0;
+
                             balanceTotal = 0;
                             revenueTotal = 0;
                             fullPaymentTotal = 0;
@@ -156,10 +154,7 @@ public class DashboardFragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             counter = 0;
                             upcomingCounter = 0;
-                            patientCounter = 0;
-                            balanceTotal = 0;
-                            revenueTotal = 0;
-                            fullPaymentTotal = 0;
+
 
                             Date c = Calendar.getInstance().getTime();
                             SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
