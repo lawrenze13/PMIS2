@@ -107,6 +107,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                List<String> patientKeyList = new ArrayList<>();
+                patientCounter = 0;
                 for(DataSnapshot ds: snapshot.getChildren()) {
                     String patientKey = ds.getValue(Patient.class).getKey();
                     patientCounter = patientCounter + 1;
@@ -114,6 +115,12 @@ public class DashboardFragment extends Fragment {
                     paymentRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            counter = 0;
+                            upcomingCounter = 0;
+                            patientCounter = 0;
+                            balanceTotal = 0;
+                            revenueTotal = 0;
+                            fullPaymentTotal = 0;
                             double dbAmount = 0;
                             for(DataSnapshot installment: snapshot.child("INSTALLMENT").getChildren()){
                                 for(DataSnapshot payment: installment.child("payment").getChildren()){
@@ -144,8 +151,15 @@ public class DashboardFragment extends Fragment {
 
                     keyRef = mFirebaseDatabase.getReference("Schedules").child(ds.getValue(Patient.class).getKey());
                     keyRef.addValueEventListener(new ValueEventListener() {
+
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            counter = 0;
+                            upcomingCounter = 0;
+                            patientCounter = 0;
+                            balanceTotal = 0;
+                            revenueTotal = 0;
+                            fullPaymentTotal = 0;
 
                             Date c = Calendar.getInstance().getTime();
                             SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
