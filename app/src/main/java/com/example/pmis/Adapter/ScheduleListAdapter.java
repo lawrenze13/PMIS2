@@ -19,6 +19,7 @@ import com.example.pmis.AppointmentFragment;
 import com.example.pmis.EditScheduleActivity;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.PatientScheduleFacade;
+import com.example.pmis.PatientInformationActivity;
 import com.example.pmis.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -60,6 +61,14 @@ public class ScheduleListAdapter extends RecyclerView.Adapter {
         String patientKey = patientScheduleFacade.getPatientKey();
         String scheduleKey = patientScheduleFacade.getScheduleKey();
         viewHolderClass.tvSCPatientName.setText(fullName);
+        viewHolderClass.tvSCPatientName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PatientInformationActivity.class);
+                intent.putExtra("key", fetchPatientScheduleFacadeList.get(position).getPatientKey());
+                context.startActivity(intent);
+            }
+        });
         viewHolderClass.tvSCDate.setText(date);
         viewHolderClass.tvSCStart.setText(startTime);
         viewHolderClass.tvSCEnd.setText(endTime);

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pmis.EditPaymentInstallmentActivity;
 import com.example.pmis.InstallmentBreakdownActivity;
 import com.example.pmis.Model.Installment;
 import com.example.pmis.Model.PatientPayment;
@@ -95,6 +96,16 @@ public class PatientInstallmentAdapter extends  RecyclerView.Adapter{
                 context.startActivity(intent);
             }
         });
+        viewHolderClass.ibPayEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, EditPaymentInstallmentActivity.class);
+                intent.putExtra("patientKey", patientKey);
+                intent.putExtra("paymentKey", fetchPatientPayment.get(position).getKey());
+                context.startActivity(intent);
+            }
+        });
+
 
     }
 
@@ -104,7 +115,7 @@ public class PatientInstallmentAdapter extends  RecyclerView.Adapter{
     }
     public class ViewHolderClass extends RecyclerView.ViewHolder {
         TextView tvFPLastUpdate, tvFPDentist, tvFPDate, tvFPAmount, tvFPTotalPaid,tvFPBalance, tvFPNoPayments,tvPlanName;
-        ImageButton ibPayView, ibMedDelete;
+        ImageButton ibPayView, ibMedDelete, ibPayEdit;
         public ViewHolderClass(@NonNull View itemView) {
             super(itemView);
             tvFPLastUpdate = itemView.findViewById(R.id.tvFPLastUpdate);
@@ -113,6 +124,7 @@ public class PatientInstallmentAdapter extends  RecyclerView.Adapter{
             tvFPAmount = itemView.findViewById(R.id.tvFPAmount);
             ibMedDelete = itemView.findViewById(R.id.ibMedDelete);
             ibPayView = itemView.findViewById(R.id.ibPayView);
+            ibPayEdit = itemView.findViewById(R.id.ibPayEdit);
             tvFPTotalPaid = itemView.findViewById(R.id.tvFPTotalPaid);
             tvFPBalance = itemView.findViewById(R.id.tvFPBalance);
             tvFPNoPayments = itemView.findViewById(R.id.tvFPNoPayments);

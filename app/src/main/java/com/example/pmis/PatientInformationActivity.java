@@ -91,6 +91,7 @@ public class PatientInformationActivity extends AppCompatActivity {
         cvPayments.setOnClickListener(viewPayments);
         Intent intent = getIntent();
         patientKey = intent.getStringExtra("key");
+        Log.d(TAG, "patientKey: " + patientKey);
         mAuth = FirebaseAuth.getInstance();
         ViewFinder();
         FirebaseUser user = mAuth.getCurrentUser();

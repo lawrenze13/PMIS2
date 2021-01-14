@@ -87,7 +87,7 @@ public class PatientInstallmentBreakdownAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                Query deleteQuery = ref.child("Payments").child(patientKey).child("FULL PAYMENT").child(paymentKey).child("payment").orderByChild("key").equalTo(installmentKey);;
+                Query deleteQuery = ref.child("Payments").child(patientKey).child("FULL PAYMENT").child(paymentKey).child("payment").orderByChild("key").equalTo(fetchInstallment.get(position).getKey());;
                 deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

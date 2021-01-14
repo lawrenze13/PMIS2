@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/bodyPrimary"
     tools:context=".AppointmentFragment">
 
@@ -22,105 +22,91 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+
+        <ScrollView
+            android:id="@+id/scrollView3"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/bodyPrimary"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:isScrollContainer="false"
+            android:paddingTop="10dp"
+            android:paddingBottom="200dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/bodyPrimary">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ScrollView
-                    android:id="@+id/scrollView3"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout9"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:isScrollContainer="false"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="200dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:background="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvCalHeader"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="TextView"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/constraintLayout9"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="30dp"
-                            android:background="@color/white"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
-
-                            <TextView
-                                android:id="@+id/tvCalHeader"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:fontFamily="@font/montserrat_bold"
-                                android:text="TextView"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <com.github.sundeepk.compactcalendarview.CompactCalendarView
-                            android:id="@+id/compactcalendar_view"
-                            android:layout_width="fill_parent"
-                            android:layout_height="250dp"
-                            android:paddingLeft="10dp"
-                            android:paddingTop="10dp"
-                            android:paddingRight="10dp"
-                            app:compactCalendarBackgroundColor="#FFFFFF"
-                            app:compactCalendarCurrentDayBackgroundColor="#B2BFE8"
-                            app:compactCalendarCurrentSelectedDayBackgroundColor="#B2BFE8"
-                            app:compactCalendarMultiEventIndicatorColor="#fff"
-                            app:compactCalendarTargetHeight="250dp"
-                            app:compactCalendarTextColor="@color/black"
-                            app:compactCalendarTextSize="12sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/constraintLayout9" />
+                <com.github.sundeepk.compactcalendarview.CompactCalendarView
+                    android:id="@+id/compactcalendar_view"
+                    android:layout_width="fill_parent"
+                    android:layout_height="250dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    app:compactCalendarBackgroundColor="#FFFFFF"
+                    app:compactCalendarCurrentDayBackgroundColor="#B2BFE8"
+                    app:compactCalendarCurrentSelectedDayBackgroundColor="#B2BFE8"
+                    app:compactCalendarMultiEventIndicatorColor="#fff"
+                    app:compactCalendarTargetHeight="250dp"
+                    app:compactCalendarTextColor="@color/black"
+                    app:compactCalendarTextSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout9" />
 
 
-                        <TextView
-                            android:id="@+id/tvCounter"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:fontFamily="@font/montserrat"
-                            android:gravity="center_horizontal"
-                            android:text="0 appointment record(s)"
-                            android:textColor="@color/bgPrimary"
-                            android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/tvCounter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/montserrat"
+                    android:gravity="center_horizontal"
+                    android:text="0 appointment record(s)"
+                    android:textColor="@color/bgPrimary"
+                    android:textSize="12sp" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvSchedule"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:scrollbars="vertical" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvSchedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical" />
 
-                    </LinearLayout>
-                </ScrollView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout4"

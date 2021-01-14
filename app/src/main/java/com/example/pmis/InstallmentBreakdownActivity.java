@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,12 +18,15 @@ import com.example.pmis.Adapter.PatientPrescriptionAdapter;
 import com.example.pmis.Model.DrugPrescriptionMain;
 import com.example.pmis.Model.Installment;
 import com.example.pmis.Model.PatientPayment;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -38,6 +42,7 @@ public class InstallmentBreakdownActivity extends AppCompatActivity {
     private DatabaseReference paymentRef, presRef, docRef;
     private TextView tvPlanName, tvInsGrandTotal, tvInsBalance, tvInsAmount;
     private FloatingActionButton fabAddInstallment;
+    private ImageButton ibPayDelete, ibPayEdit;
     private List<Installment> installmentList;
     private    double totalPaid = 0;
     private    double grandTotal = 0;
@@ -47,6 +52,10 @@ public class InstallmentBreakdownActivity extends AppCompatActivity {
         setContentView(R.layout.activity_installment_breakdown);
         fabAddInstallment = findViewById(R.id.fabAddInstallment);
         tvPlanName = findViewById(R.id.tvPlanName);
+        ibPayDelete = findViewById(R.id.ibPayDelete);
+        ibPayDelete.setOnClickListener(deleteInstallment);
+        ibPayEdit = findViewById(R.id.ibPayEdit);
+        ibPayEdit.setOnClickListener(editInstallment);
         tvInsGrandTotal = findViewById(R.id.tvInsGrandTotal);
         tvInsAmount = findViewById(R.id.tvInsAmount);
         tvInsBalance = findViewById(R.id.tvInsBalance);
@@ -109,4 +118,43 @@ public class InstallmentBreakdownActivity extends AppCompatActivity {
             }
         });
     }
+    private final View.OnClickListener deleteInstallment = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Query query = mFirebaseDatabase.getReference("Payments").child(patientKey).child("INSTALLMENT").orderByChild("key").equalTo(paymentKey);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot ds: snapshot.getChildren()){
+                        ds.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(v.getContext(),"Item Deleted Successfully", Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(v.getContext(),"Item not deleted! please try again.", Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    };
+    private final View.OnClickListener editInstallment = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(InstallmentBreakdownActivity.this, EditPaymentInstallmentActivity.class);
+            intent.putExtra("patientKey", patientKey);
+            intent.putExtra("paymentKey", paymentKey);
+            startActivity(intent);
+        }
+    };
 }

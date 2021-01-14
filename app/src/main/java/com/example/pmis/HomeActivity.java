@@ -39,6 +39,10 @@ import androidx.appcompat.widget.Toolbar;
 
 public class HomeActivity extends AppCompatActivity {
 
+    @Override
+    public void onBackPressed() {
+
+    }
 
     private static final String TAG = "HOME_ACTIVITY";
     private AppBarConfiguration mAppBarConfiguration;
