@@ -136,7 +136,6 @@ public class ProfileFragment extends Fragment {
                         editContactNumber.setText(clinic.contactNo);
                         editAddress.setText(clinic.address);
                         tvDegree.setText(clinic.getDegree());
-                        tvLicense.setText(clinic.getLicense());
                         clinic.setPhotoUrl(datasnapshot.getValue(Clinic.class).getPhotoUrl());
                     }
             }
