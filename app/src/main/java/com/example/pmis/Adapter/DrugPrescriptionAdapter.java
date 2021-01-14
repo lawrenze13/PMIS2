@@ -205,6 +205,7 @@ public class DrugPrescriptionAdapter extends RecyclerView.Adapter {
             tvDDescDuration = itemView.findViewById(R.id.tvDDescDuration);
             btnDDescEdit = itemView.findViewById( R.id.btnDDescEdit);
             btnDDescDelete = itemView.findViewById( R.id.btnDDescDelete);
+
         }
     }
 }

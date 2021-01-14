@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -83,6 +84,9 @@ public class SignUpActivity extends AppCompatActivity {
                        @Override
                        public void onComplete(@NonNull Task<Void> task) {
                            if(task.isSuccessful()){
+                               FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                               currentUser.sendEmailVerification();
+
                                Toast.makeText(SignUpActivity.this,"User has been registered successfully. Check your email for verification", Toast.LENGTH_LONG).show();
                                startActivity(new Intent(SignUpActivity.this,MainActivity.class));
                            }else{

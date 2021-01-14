@@ -44,9 +44,9 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:id="@+id/imageView15"
-                        android:layout_width="104dp"
-                        android:layout_height="73dp"
+                        android:id="@+id/ivPatientPic"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginStart="30dp"
                         android:layout_marginTop="70dp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -57,26 +57,28 @@
                         android:id="@+id/tvPatientFullName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
                         android:fontFamily="@font/montserrat"
                         android:text="Patient Name"
                         android:textColor="@color/white"
                         android:textSize="18sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView15"
-                        app:layout_constraintStart_toEndOf="@+id/imageView15"
-                        app:layout_constraintTop_toTopOf="@+id/imageView15"
+                        app:layout_constraintBottom_toBottomOf="@+id/ivPatientPic"
+                        app:layout_constraintStart_toEndOf="@+id/ivPatientPic"
+                        app:layout_constraintTop_toTopOf="@+id/ivPatientPic"
                         app:layout_constraintVertical_bias="0.13999999" />
 
                     <Button
-                        android:id="@+id/button3"
+                        android:id="@+id/editInfo"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="121dp"
                         android:layout_height="41dp"
+                        android:layout_marginStart="20dp"
                         android:text="Edit"
                         android:textColor="@color/white"
                         app:cornerRadius="20dp"
                         app:icon="@drawable/ic_baseline_edit_24"
                         app:iconTint="@color/white"
-                        app:layout_constraintStart_toEndOf="@+id/imageView15"
+                        app:layout_constraintStart_toEndOf="@+id/ivPatientPic"
                         app:layout_constraintTop_toBottomOf="@+id/tvPatientFullName"
                         app:strokeColor="@color/white" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -100,9 +102,10 @@
                         android:padding="5dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/clSched"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp">
+                            android:padding="10dp">
 
                             <ImageButton
                                 android:id="@+id/ibSchedule"
@@ -129,9 +132,11 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/clCall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp">
+                            android:background="?android:attr/selectableItemBackground"
+                            android:padding="10dp">
 
                             <ImageButton
                                 android:id="@+id/ibCall"
@@ -159,9 +164,10 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/clMessage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp">
+                            android:padding="10dp">
 
                             <ImageButton
                                 android:id="@+id/ibMessage"
@@ -189,9 +195,10 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/clDownload"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp">
+                            android:padding="10dp">
 
                             <ImageButton
                                 android:id="@+id/ibDownload"
@@ -434,32 +441,6 @@
                             android:textSize="12sp" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/containerAge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="vertical"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/containerGender">
-
-                        <TextView
-                            android:id="@+id/labelPatientAge"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat"
-                            android:text="@string/address"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tvPatientAge"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/montserrat"
-                            android:text="TextView"
-                            android:textSize="12sp" />
-                    </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
@@ -630,6 +611,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cvPPhotos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
@@ -682,6 +664,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cvPayments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
@@ -767,7 +750,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
             android:fontFamily="@font/montserrat"
-            android:text="@string/patient_list"
+            android:text="Patient Information"
             android:textColor="@color/white"
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="@+id/btnCancel2"

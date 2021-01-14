@@ -125,23 +125,41 @@ tools:context=".AddPatientPaymentActivity">
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/tvDentist3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/montserrat"
+                    android:text="Dentist"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etPayDentist" />
+
+                <Spinner
+                    android:id="@+id/spinnerProcedure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDentist3" />
+
+                <TextView
                     android:id="@+id/tvPaymentType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/montserrat"
                     android:text="Payment Type"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etPayDentist" />
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerProcedure" />
 
                 <TextView
                     android:id="@+id/tvPaymentMethod"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/montserrat"
                     android:text="Payment Method"
                     android:textSize="12sp"
@@ -165,7 +183,7 @@ tools:context=".AddPatientPaymentActivity">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/montserrat"
                     android:text="Total Amount"
                     android:textSize="12sp"
@@ -177,7 +195,7 @@ tools:context=".AddPatientPaymentActivity">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/montserrat"
                     android:text="Remarks"
                     android:textSize="12sp"
@@ -212,16 +230,44 @@ tools:context=".AddPatientPaymentActivity">
                 android:paddingBottom="100dp">
 
                 <TextView
+                    android:id="@+id/tvPayPlan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/montserrat"
+                    android:text="Installment Plan Name"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <EditText
+                    android:id="@+id/etPayPlan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_baseline_monetization_on_24"
+                    android:drawablePadding="16dp"
+                    android:enabled="true"
+                    android:fontFamily="@font/montserrat"
+                    android:inputType="text"
+                    android:padding="10dp"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPayPlan" />
+
+                <TextView
                     android:id="@+id/tvPayInitial"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/montserrat"
                     android:text="Initial Payment"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/etPayPlan" />
 
 
                 <EditText
@@ -232,7 +278,7 @@ tools:context=".AddPatientPaymentActivity">
                     android:drawablePadding="16dp"
                     android:enabled="true"
                     android:fontFamily="@font/montserrat"
-                    android:inputType="date"
+                    android:inputType="number"
                     android:padding="10dp"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -244,7 +290,7 @@ tools:context=".AddPatientPaymentActivity">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/montserrat"
                     android:text="Initial Payment Remarks"
                     android:textSize="12sp"
@@ -259,7 +305,7 @@ tools:context=".AddPatientPaymentActivity">
                     android:drawablePadding="16dp"
                     android:enabled="true"
                     android:fontFamily="@font/montserrat"
-                    android:inputType="date"
+                    android:inputType="text"
                     android:padding="10dp"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"

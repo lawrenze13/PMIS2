@@ -9,11 +9,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pmis.Adapter.PatientPrescriptionAdapter;
 import com.example.pmis.Adapter.PatientProceduresAdapter;
 import com.example.pmis.Model.DrugPrescriptionMain;
+import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.PatientProcedures;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,23 +37,36 @@ public class PatientProceduresActivity extends AppCompatActivity {
     private RecyclerView rvPatientProcedure;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
-    String userID, docName;
+    String userID, docName, procedureKey;
     private DatabaseReference procedureRef, presRef, docRef;
     private List<PatientProcedures> patientProceduresList;
+    private TextView tvPatientFullName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_procedures);
+        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
+        btnCancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         patientProceduresList = new ArrayList<>();
         Intent intent = getIntent();
         patientKey = intent.getStringExtra("patientKey");
-        fabAddPatientProcedure = findViewById(R.id.fabAddPatientProcedure);
-        fabAddPatientProcedure.setOnClickListener(addPatientProcedure);
-        rvPatientProcedure = findViewById(R.id.rvPatientProcedure);
-        rvPatientProcedure.setLayoutManager(new LinearLayoutManager(this));
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference userRef = mFirebaseDatabase.getReference("Patient").child(userID).child(patientKey);
+        userRef.addValueEventListener(setPatientInfo);
+        fabAddPatientProcedure = findViewById(R.id.fabAddPatientProcedure);
+        TextView tvNoInfo = findViewById(R.id.tvNoInfo);
+        fabAddPatientProcedure.setOnClickListener(addPatientProcedure);
+        rvPatientProcedure = findViewById(R.id.rvPatientProcedure);
+        rvPatientProcedure.setLayoutManager(new LinearLayoutManager(this));
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         procedureRef = mFirebaseDatabase.getReference("PatientProcedure").child(patientKey);
         procedureRef.addValueEventListener(new ValueEventListener() {
@@ -61,7 +77,7 @@ public class PatientProceduresActivity extends AppCompatActivity {
                     PatientProcedures patientProcedures = ds.getValue(PatientProcedures.class);
                     patientProceduresList.add(patientProcedures);
                 }
-
+                tvNoInfo.setText(patientProceduresList.size() + " Procedure(s) found");
                 PatientProceduresAdapter patientProceduresAdapter = new PatientProceduresAdapter(PatientProceduresActivity.this, patientProceduresList, patientKey);
                 rvPatientProcedure.setAdapter(patientProceduresAdapter);
             }
@@ -77,7 +93,26 @@ public class PatientProceduresActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(PatientProceduresActivity.this, AddPatientProcedure.class);
             intent.putExtra("patientKey", patientKey);
+            intent.putExtra("action", "add");
+
             startActivity(intent);
+
+        }
+    };
+    public ValueEventListener setPatientInfo = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            tvPatientFullName = findViewById(R.id.tvPatientFullName);
+
+            String firstName = snapshot.getValue(Patient.class).getFirstName();
+            String middleName = snapshot.getValue(Patient.class).getMiddleName();
+            String lastName = snapshot.getValue(Patient.class).getLastName();
+            String fullName = firstName + ' ' + middleName + ' ' + lastName;
+            tvPatientFullName.setText(fullName);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
 
         }
     };

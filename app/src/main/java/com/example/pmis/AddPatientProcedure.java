@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,30 +42,47 @@ import java.util.List;
 import java.util.Locale;
 
 public class AddPatientProcedure extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+    private static final String TAG = "PROCEDURE_ADAPTER";
     String patientKey, userID;
     private EditText etPProcDate, etPProcNotes;
+    private TextView tvPProcTitle;
     private Button btnSave;
     private Spinner spinnerProcedure;
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference procedureRef, submitRef, presRef;
+    private DatabaseReference procedureRef, submitRef, editRef;
     private FirebaseAuth mAuth;
+    private String action, patientProcedureKey;
     final List<String> keyList = new ArrayList<>();
+    final List<String> procedureList = new ArrayList<String>();
+    private ArrayAdapter<String> arrayAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient_procedure);
-        Intent intent = getIntent();
-        patientKey = intent.getStringExtra("patientKey");
+        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
+        btnCancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        Intent getProcedureIntent = getIntent();
+        patientKey = getProcedureIntent.getStringExtra("patientKey");
+        action = getProcedureIntent.getStringExtra("action");
         btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(saveProcedure);
         etPProcNotes = findViewById(R.id.etPProcNotes);
         etPProcDate = findViewById(R.id.etPProcDate);
+        tvPProcTitle = findViewById(R.id.tvPProcTitle);
         etPProcDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
                     DialogFragment datePicker = new DatePickerFragment();
+
                     datePicker.show(getSupportFragmentManager(), "date picker");
+                    etPProcDate.clearFocus();
+
                 }
             }
         });
@@ -74,10 +92,10 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
         userID = user.getUid();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         procedureRef = mFirebaseDatabase.getReference("Procedures").child(userID);
-        procedureRef.addValueEventListener(new ValueEventListener() {
+        procedureRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                final List<String> procedureList = new ArrayList<String>();
+
 
                 for(DataSnapshot ds: snapshot.getChildren()){
 
@@ -91,8 +109,31 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
                     procedureList.add(name);
 
                 }
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(AddPatientProcedure.this, android.R.layout.simple_spinner_dropdown_item, procedureList);
+                arrayAdapter = new ArrayAdapter<>(AddPatientProcedure.this, android.R.layout.simple_spinner_dropdown_item, procedureList);
                 spinnerProcedure.setAdapter(arrayAdapter);
+                if(action.equals("edit")){
+                    patientProcedureKey = getProcedureIntent.getStringExtra("patientProcedureKey");
+
+                    Log.d(TAG, "procedureKey: " + patientProcedureKey);
+                    tvPProcTitle.setText("Edit Procedure");
+                    mFirebaseDatabase = FirebaseDatabase.getInstance();
+                    editRef = mFirebaseDatabase.getReference("PatientProcedure").child(patientKey).child(patientProcedureKey);
+                    editRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            int position;
+                            Log.d(TAG,"snapshot.getValue(PatientProcedures.class).getProcedure() " + snapshot.getValue(PatientProcedures.class).getProcedure());
+                            etPProcDate.setText(snapshot.getValue(PatientProcedures.class).getDate());
+                            spinnerProcedure.setSelection(arrayAdapter.getPosition(snapshot.getValue(PatientProcedures.class).getProcedure()));
+                            etPProcNotes.setText(snapshot.getValue(PatientProcedures.class).getNote());
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
             }
 
             @Override
@@ -101,41 +142,77 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
             }
         });
 
+
+
     }
     private final View.OnClickListener saveProcedure = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(validate()){
-                PatientProcedures patientProcedures = new PatientProcedures();
-                mFirebaseDatabase = FirebaseDatabase.getInstance();
-                submitRef = mFirebaseDatabase.getReference("PatientProcedure").child(patientKey);
-                String key = submitRef.push().getKey();
-                String date =etPProcDate.getText().toString().trim();
-                String note = etPProcNotes.getText().toString().trim();
-                String procedure = spinnerProcedure.getSelectedItem().toString().trim();
-                int procedurePosition = spinnerProcedure.getSelectedItemPosition();
-                String procedureKey = keyList.get(procedurePosition);
-                String currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
-                String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-                String dateUpdated = currentDate + ' ' + currentTime;
-                patientProcedures.setDateUpdated(dateUpdated);
-                patientProcedures.setDate(date);
-                patientProcedures.setNote(note);
-                patientProcedures.setProcedureKey(procedureKey);
-                patientProcedures.setProcedure(procedure);
-                patientProcedures.setKey(key);
-                submitRef.child(key).setValue(patientProcedures).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(AddPatientProcedure.this,"Patient Procedure has been added succesfully", Toast.LENGTH_LONG).show();
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(AddPatientProcedure.this, "Submitting Failed. Please try again", Toast.LENGTH_LONG).show();
-                    }
-                });
+            if(validate()) {
+
+                if(action.equals("add")) {
+                    PatientProcedures patientProcedures = new PatientProcedures();
+                    mFirebaseDatabase = FirebaseDatabase.getInstance();
+                    submitRef = mFirebaseDatabase.getReference("PatientProcedure").child(patientKey);
+                    String key = submitRef.push().getKey();
+                    String date = etPProcDate.getText().toString().trim();
+                    String note = etPProcNotes.getText().toString().trim();
+                    String procedure = spinnerProcedure.getSelectedItem().toString().trim();
+                    int procedurePosition = spinnerProcedure.getSelectedItemPosition();
+                    String procedureKey = keyList.get(procedurePosition);
+                    String currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
+                    String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                    String dateUpdated = currentDate + ' ' + currentTime;
+                    patientProcedures.setDateUpdated(dateUpdated);
+                    patientProcedures.setDate(date);
+                    patientProcedures.setNote(note);
+                    patientProcedures.setProcedureKey(procedureKey);
+                    patientProcedures.setProcedure(procedure);
+                    patientProcedures.setKey(key);
+                    submitRef.child(key).setValue(patientProcedures).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(AddPatientProcedure.this, "Patient Procedure has been added successfully", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AddPatientProcedure.this, "Submitting Failed. Please try again", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }if(action.equals("edit")){
+                    PatientProcedures patientProcedures = new PatientProcedures();
+                    mFirebaseDatabase = FirebaseDatabase.getInstance();
+                    submitRef = mFirebaseDatabase.getReference("PatientProcedure").child(patientKey).child(patientProcedureKey);
+                    String date = etPProcDate.getText().toString().trim();
+                    String note = etPProcNotes.getText().toString().trim();
+                    String procedure = spinnerProcedure.getSelectedItem().toString().trim();
+                    int procedurePosition = spinnerProcedure.getSelectedItemPosition();
+                    String procedureKey = keyList.get(procedurePosition);
+                    String currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
+                    String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                    String dateUpdated = currentDate + ' ' + currentTime;
+                    patientProcedures.setDateUpdated(dateUpdated);
+                    patientProcedures.setDate(date);
+                    patientProcedures.setNote(note);
+                    patientProcedures.setProcedureKey(procedureKey);
+                    patientProcedures.setProcedure(procedure);
+                    patientProcedures.setKey(patientProcedureKey);
+                    submitRef.setValue(patientProcedures).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(AddPatientProcedure.this, "Patient Procedure has been updated successfully", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AddPatientProcedure.this, "Patient Procedure update failed. Please try Again.", Toast.LENGTH_LONG).show();
+
+                        }
+                    });
+                }
             }
         }
     };

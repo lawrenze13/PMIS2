@@ -43,6 +43,13 @@ public class ProceduresActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_procedures);
+        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
+        btnCancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         fabAddProcedures = findViewById(R.id.fabAddProcedures);
         fabAddProcedures.setOnClickListener(addProcedures);
         RecyclerView rvProcedures = (RecyclerView)findViewById(R.id.rvProcedures);

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,14 +38,22 @@ public class PatientPrescriptionActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private String userID, patientKey, docName;
     private DatabaseReference userRef, presRef, docRef;
-    private TextView tvPatientFullName;
+    private TextView tvPatientFullName, tvRecordCount;
     private List<DrugPrescriptionMain> drugPrescriptionMainList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_prescription);
+        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
+        btnCancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         Intent intent = getIntent();
+        tvRecordCount = findViewById(R.id.tvRecordCount);
         rvPrescriptionList = findViewById(R.id.rvPrescriptionList);
         rvPrescriptionList.setLayoutManager(new LinearLayoutManager(this));
         patientKey = intent.getStringExtra("key");
@@ -62,6 +71,7 @@ public class PatientPrescriptionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(PatientPrescriptionActivity.this, AddPrescriptionActivity.class);
                 intent.putExtra("patientKey", patientKey);
+                intent.putExtra("action", "add");
                 startActivity(intent);
             }
         });
@@ -90,8 +100,8 @@ public class PatientPrescriptionActivity extends AppCompatActivity {
                     DrugPrescriptionMain drugPrescriptionMain = ds.getValue(DrugPrescriptionMain.class);
                     drugPrescriptionMainList.add(drugPrescriptionMain);
                 }
-
-                PatientPrescriptionAdapter patientPrescriptionAdapter = new PatientPrescriptionAdapter(PatientPrescriptionActivity.this, drugPrescriptionMainList, docName);
+                tvRecordCount.setText(drugPrescriptionMainList.size() + " prescription(s) found.");
+                PatientPrescriptionAdapter patientPrescriptionAdapter = new PatientPrescriptionAdapter(PatientPrescriptionActivity.this, drugPrescriptionMainList, docName, patientKey);
                 rvPrescriptionList.setAdapter(patientPrescriptionAdapter);
 
             }

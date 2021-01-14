@@ -2,6 +2,15 @@ package com.example.pmis.Model;
 
 public class Patient {
     public String firstName;
+    public String dateAdded;
+
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
+    }
 
     public Patient(String firstName, String middleName, String lastName, String sex, String contactNo, String address, String birthDate, String notes, String key, String email) {
         this.firstName = firstName;

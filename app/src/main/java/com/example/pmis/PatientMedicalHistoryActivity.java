@@ -8,10 +8,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.pmis.Adapter.PatientMedicalHistoryAdapter;
 import com.example.pmis.Model.DrugPrescriptionMain;
 import com.example.pmis.Model.MedicalHistory;
+import com.example.pmis.Model.Patient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,24 +32,38 @@ public class PatientMedicalHistoryActivity extends AppCompatActivity {
     private String patientKey, userID;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference myRef;
+    private DatabaseReference myRef, userRef;
     private StorageReference mStorageRef;
     private RecyclerView rvMedicalHistory;
+    private TextView tvNoInfo,tvPatientFullName;
     private List<MedicalHistory> medicalHistoryList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_medical_history);
+        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
+        btnCancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        Intent intent = getIntent();
+        patientKey = intent.getStringExtra("patientKey");
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        userRef = mFirebaseDatabase.getReference("Patient").child(userID).child(patientKey);
+        userRef.addValueEventListener(setPatientInfo);
+        tvNoInfo = findViewById(R.id.tvNoInfo);
         rvMedicalHistory = findViewById(R.id.rvMedicalHistory);
         rvMedicalHistory.setLayoutManager(new LinearLayoutManager(this));
         FloatingActionButton fabAddMedicalHistory = findViewById(R.id.fabAddMedicalHistory);
         fabAddMedicalHistory.setOnClickListener(addMedicalHistory);
-        Intent intent = getIntent();
-        patientKey = intent.getStringExtra("patientKey");
+
         medicalHistoryList = new ArrayList<>();
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        userID = user.getUid();
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference("MedicalHistory").child(patientKey);
         myRef.addValueEventListener(new ValueEventListener() {
@@ -57,6 +74,9 @@ public class PatientMedicalHistoryActivity extends AppCompatActivity {
                     MedicalHistory medicalHistory = ds.getValue(MedicalHistory.class);
                     medicalHistoryList.add(medicalHistory);
                 }
+                int count = medicalHistoryList.size();
+                String textCount = count + " medical record(s) found";
+                tvNoInfo.setText(textCount);
                 PatientMedicalHistoryAdapter patientMedicalHistoryAdapter = new PatientMedicalHistoryAdapter(PatientMedicalHistoryActivity.this, medicalHistoryList, patientKey);
                 rvMedicalHistory.setAdapter(patientMedicalHistoryAdapter);
             }
@@ -74,10 +94,27 @@ public class PatientMedicalHistoryActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(PatientMedicalHistoryActivity.this, AddMedicalHistoryActivity.class);
             intent.putExtra("patientKey", patientKey);
+            intent.putExtra("action", "add");
             startActivity(intent);
         }
     };
+    public ValueEventListener setPatientInfo = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            tvPatientFullName = findViewById(R.id.tvPatientFullName);
 
+            String firstName = snapshot.getValue(Patient.class).getFirstName();
+            String middleName = snapshot.getValue(Patient.class).getMiddleName();
+            String lastName = snapshot.getValue(Patient.class).getLastName();
+            String fullName = firstName + ' ' + middleName + ' ' + lastName;
+            tvPatientFullName.setText(fullName);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
 
 
 

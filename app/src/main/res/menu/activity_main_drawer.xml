@@ -6,24 +6,28 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_dashboard"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/clipboard"
             android:title="@string/menu_dashboard" />
         <item
             android:id="@+id/profileFragment"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_baseline_person_24"
             android:title="@string/my_profile" />
         <item
             android:id="@+id/clinicFragment"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/clinic"
             android:title="@string/menu_clinic" />
         <item
+            android:id="@+id/patientFragment"
+            android:icon="@drawable/stethoscope"
+            android:title="@string/patients" />
+        <item
             android:id="@+id/appointmentFragment"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_baseline_calendar_today_24"
             android:title="@string/appointments" />
 
         <item
             android:id="@+id/reportFragment"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_baseline_picture_as_pdf_24"
             android:title="@string/menu_report" />
     </group>
 </menu>

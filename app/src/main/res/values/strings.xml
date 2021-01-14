@@ -153,6 +153,8 @@
     <string name="patient_photo">patient photo</string>
     <string name="save">Save</string>
     <string name="appointments">Appointments</string>
+    <string name="patients">Patients</string>
+    <string name="add_data">Add Data</string>
     <!--    <string name="todo">TODO</string>-->
 
 </resources>

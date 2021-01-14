@@ -92,13 +92,6 @@
             tools:layout_editor_absoluteX="20dp">
 
             <ImageButton
-                android:id="@+id/ibPProcPayment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_baseline_monetization_on_24" />
-
-            <ImageButton
                 android:id="@+id/ibPProcEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

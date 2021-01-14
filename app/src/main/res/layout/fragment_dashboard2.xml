@@ -123,7 +123,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/tvAppointmentToday2"
+                            android:id="@+id/tvAppointmentUpcoming"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="20dp"
@@ -152,12 +152,12 @@
                             android:layout_marginStart="30dp"
                             android:text="Upcoming"
                             android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/tvAppointmentToday2"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvAppointmentUpcoming"
                             app:layout_constraintStart_toEndOf="@+id/tvAppointmentToday"
                             app:layout_constraintTop_toBottomOf="@+id/tvAppointmentToday" />
 
                         <Button
-                            android:id="@+id/button4"
+                            android:id="@+id/btnViewCalendar"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="250dp"
                             android:layout_height="wrap_content"
@@ -180,6 +180,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clPatients"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
@@ -205,7 +206,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/imageButton"
+                    android:id="@+id/ibAddPatient"
                     android:layout_width="39dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
@@ -274,7 +275,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/tvTotalPatient" />
 
                         <TextView
-                            android:id="@+id/textView44"
+                            android:id="@+id/tvlabelpatients"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="30dp"
@@ -285,7 +286,7 @@
                             app:layout_constraintTop_toTopOf="@+id/tvTotalPatient" />
 
                         <TextView
-                            android:id="@+id/textView45"
+                            android:id="@+id/tvlabelrecall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="30dp"
@@ -295,24 +296,110 @@
                             app:layout_constraintStart_toEndOf="@+id/tvTotalPatient"
                             app:layout_constraintTop_toBottomOf="@+id/tvTotalPatient" />
 
-                        <Button
-                            android:id="@+id/btnViewPatient"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="250dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="30dp"
-                            android:layout_marginBottom="10dp"
-                            android:fontFamily="@font/montserrat"
-                            android:text="View Device Calendar"
-                            android:textSize="12sp"
-                            app:icon="@drawable/ic_baseline_calendar_today_24"
-                            app:iconTint="@color/bgPrimary"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/clPatients">
+
+                <TextView
+                    android:id="@+id/tvPatientTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:drawableStart="@drawable/ic_baseline_monetization_on_24"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@color/bgPrimary"
+                    android:fontFamily="@font/montserrat"
+                    android:text="Payments"
+                    android:textColor="@color/bgPrimary"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                    app:layout_constraintTop_toTopOf="@+id/tvPatientTitle" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:cardCornerRadius="15dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPatientTitle"
+                    tools:layout_editor_absoluteX="188dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageButton
+                            android:id="@+id/ibViewPayments"
+                            android:layout_width="39dp"
+                            android:layout_height="36dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginEnd="15dp"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/ic_baseline_remove_red_eye_24"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                            app:layout_constraintTop_toBottomOf="@+id/ibViewPayments" />
+
+                        <TextView
+                            android:id="@+id/tvTotalRevenue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="45dp"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="12dp"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="0"
+                            android:textColor="@color/bgPrimary"
+                            android:textSize="35sp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView45"
-                            app:strokeColor="@color/bgPrimary"
-                            app:strokeWidth="1dp" />
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvTotalBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="0"
+                            android:textColor="@color/bgPrimary"
+                            android:textSize="35sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tvTotalRevenue" />
+
+                        <TextView
+                            android:id="@+id/tvlabelpatients"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="30dp"
+                            android:text="Total Revenue"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvTotalRevenue"
+                            app:layout_constraintStart_toEndOf="@+id/tvTotalRevenue"
+                            app:layout_constraintTop_toTopOf="@+id/tvTotalRevenue" />
+
+                        <TextView
+                            android:id="@+id/tvLabelBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="30dp"
+                            android:text="Total Balance"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvTotalBalance"
+                            app:layout_constraintStart_toEndOf="@+id/tvTotalBalance"
+                            app:layout_constraintTop_toBottomOf="@+id/tvTotalRevenue" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.cardview.widget.CardView>

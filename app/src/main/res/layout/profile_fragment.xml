@@ -19,6 +19,34 @@
             android:layout_height="match_parent">
 
 
+            <TextView
+                android:id="@+id/tvDocName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:text="NOT SET"
+                app:layout_constraintBottom_toBottomOf="@+id/textView33"
+                app:layout_constraintStart_toEndOf="@+id/textView33"
+                app:layout_constraintTop_toTopOf="@+id/textView33" />
+
+            <TextView
+                android:id="@+id/tvLicense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NOT SET"
+                app:layout_constraintBottom_toBottomOf="@+id/textView4"
+                app:layout_constraintStart_toStartOf="@+id/tvDocName"
+                app:layout_constraintTop_toTopOf="@+id/textView4" />
+
+            <TextView
+                android:id="@+id/tvDegree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NOT SET"
+                app:layout_constraintBottom_toBottomOf="@+id/textView6"
+                app:layout_constraintStart_toStartOf="@+id/tvDocName"
+                app:layout_constraintTop_toTopOf="@+id/textView6" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout3"
                 android:layout_width="match_parent"
@@ -74,7 +102,7 @@
                 android:text="@string/profile_title"
                 android:textSize="15dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintTop_toBottomOf="@+id/ivProfilePic" />
 
             <TextView
                 android:id="@+id/textView13"
@@ -142,15 +170,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
             <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
+                android:id="@+id/ivProfilePic"
+                android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="100dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/userimg_default"
-                tools:src="@drawable/userimg_default" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/editSex"
@@ -191,7 +217,7 @@
                 android:text="Edit Profile"
                 android:textSize="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/ivProfilePic"
                 tools:ignore="OnClick" />
 
             <TextView
@@ -237,7 +263,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="44dp"
                 android:layout_marginTop="20dp"
-                android:text="NOT SET"
                 app:layout_constraintStart_toEndOf="@+id/textView24"
                 app:layout_constraintTop_toBottomOf="@+id/textView23" />
 
@@ -246,7 +271,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="NOT SET"
                 app:layout_constraintStart_toStartOf="@+id/editClinicName"
                 app:layout_constraintTop_toBottomOf="@+id/editClinicName" />
 
@@ -255,7 +279,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="NOT SET"
                 app:layout_constraintStart_toStartOf="@+id/editContactNumber"
                 app:layout_constraintTop_toBottomOf="@+id/editContactNumber" />
 
@@ -264,7 +287,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="NOT SET"
                 app:layout_constraintStart_toStartOf="@+id/editAddress"
                 app:layout_constraintTop_toBottomOf="@+id/editAddress" />
 

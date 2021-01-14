@@ -31,8 +31,13 @@
     <fragment
         android:id="@+id/appointmentFragment"
         android:name="com.example.pmis.AppointmentFragment"
-        android:label="fragment_appointment"
+        android:label="Appointments"
         tools:layout="@layout/fragment_appointment" />
+    <fragment
+        android:id="@+id/patientFragment"
+        android:name="com.example.pmis.PatientFragment"
+        android:label="Patients"
+        tools:layout="@layout/patient_fragment" />
 
 
 </navigation>

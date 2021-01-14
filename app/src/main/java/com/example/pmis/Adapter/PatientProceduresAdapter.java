@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pmis.AddPatientPaymentActivity;
+import com.example.pmis.AddPatientProcedure;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.PatientProcedures;
 import com.example.pmis.Model.Procedures;
@@ -97,36 +98,16 @@ public class PatientProceduresAdapter extends RecyclerView.Adapter {
                 });
             }
         });
-        viewHolderClass.ibPProcPayment.setOnClickListener(new View.OnClickListener() {
+
+        viewHolderClass.ibPProcEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth = FirebaseAuth.getInstance();
-                FirebaseUser user = mAuth.getCurrentUser();
-                userID = user.getUid();
-                mFirebaseDatabase = FirebaseDatabase.getInstance();
-                myRef = mFirebaseDatabase.getReference("Procedures").child(userID).child(procedureKey);
-                myRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                Procedures procedures = new Procedures();
-                                String name = snapshot.getValue(Procedures.class).getName();
-                                String description = snapshot.getValue(Procedures.class).getDescription();
-                                int price = snapshot.getValue(Procedures.class).getPrice();
-                                Intent intent = new Intent(context, AddPatientPaymentActivity.class);
-                                intent.putExtra("procedureName", name);
-                                intent.putExtra("procedureDesc",description);
-                                intent.putExtra("procedurePrice",price);
-                                intent.putExtra("patientKey",patientKey);
-                                intent.putExtra("procedureKey",procedureKey);
-                                intent.putExtra("patientProcedureKey",mainKey);
-                                context.startActivity(intent);
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
+                Intent intent = new Intent(context, AddPatientProcedure.class);
+                intent.putExtra("patientKey", patientKey);
+                intent.putExtra("action", "edit");
+                intent.putExtra("patientProcedureKey",  fetchPatientProceduresList.get(position).getKey());
+                Log.d(TAG, "fetchPatientProceduresList.get(position).getKey(): " + fetchPatientProceduresList.get(position).getKey());
+                context.startActivity(intent);
             }
         });
     }
@@ -136,13 +117,13 @@ public class PatientProceduresAdapter extends RecyclerView.Adapter {
     }
     public class ViewHolderClass extends RecyclerView.ViewHolder {
         TextView tvPProcProcedure, tvPProcDateUpdated, tvPProcDate;
-        ImageButton ibPProcPayment, ibPProcEdit, ibPProcDelete;
+        ImageButton  ibPProcEdit, ibPProcDelete;
         public ViewHolderClass(@NonNull View itemView) {
             super(itemView);
             tvPProcProcedure = itemView.findViewById(R.id.tvPProcProcedure);
             tvPProcDateUpdated = itemView.findViewById(R.id.tvPProcDateUpdated);
             tvPProcDate = itemView.findViewById(R.id.tvPProcDate);
-            ibPProcPayment = itemView.findViewById( R.id.ibPProcPayment);
+
             ibPProcEdit = itemView.findViewById( R.id.ibPProcEdit);
             ibPProcDelete = itemView.findViewById( R.id.ibPProcDelete);
         }

@@ -2,12 +2,18 @@ package com.example.pmis;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.pmis.Model.UserInfo;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -18,8 +24,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -31,13 +40,17 @@ import androidx.appcompat.widget.Toolbar;
 public class HomeActivity extends AppCompatActivity {
 
 
+    private static final String TAG = "HOME_ACTIVITY";
     private AppBarConfiguration mAppBarConfiguration;
     private TextView lblFullName, lblClinic;
+    private ImageView imgProfile;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private String userID;
+    private StorageReference storageReference;
+    private FirebaseStorage firebaseStorage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,17 +63,31 @@ public class HomeActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_dashboard, R.id.profileFragment, R.id.clinicFragment,  R.id.reportFragment, R.id.appointmentFragment)
+                R.id.nav_dashboard, R.id.profileFragment, R.id.clinicFragment, R.id.patientFragment,  R.id.reportFragment, R.id.appointmentFragment)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
         drawerItems();
         clinicFragmentHeader();
     }
 
     private void clinicFragmentHeader() {
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_logout:
+                mAuth.signOut();
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
     }
 
@@ -105,6 +132,7 @@ public class HomeActivity extends AppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         lblFullName = (TextView)headerView.findViewById(R.id.lblFullName);
+        imgProfile = (ImageView) headerView.findViewById(R.id.imgProfile);
         lblClinic = (TextView)headerView.findViewById(R.id.lblClinic);
         String fullName;
             UserInfo uInfo = new UserInfo();
@@ -116,6 +144,19 @@ public class HomeActivity extends AppCompatActivity {
             fullName = uInfo.firstName + " " + uInfo.lastName;
             lblClinic.setText(uInfo.email);
             lblFullName.setText(fullName);
+        String photoUrl = datasnapshot.getValue(UserInfo.class).getPhotoUrl();
+            storageReference = FirebaseStorage.getInstance().getReference().child("images/profilePics/" + userID);
+            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide
+                            .with(getApplicationContext())
+                            .asBitmap()
+                            .load(uri)
+                            .centerCrop()
+                            .into(imgProfile);
+                }
+            });
 
 
     }

@@ -1,6 +1,7 @@
 package com.example.pmis.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +10,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.Procedures;
+import com.example.pmis.ProceduresActivity;
 import com.example.pmis.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 public class ProcedureListAdapter extends RecyclerView.Adapter {
+    private static final String TAG = "PROCEDURES_ADPATER";
     List<Procedures> fetchProcedureList;
     String name;
     private FirebaseDatabase mFirebaseDatabase;
@@ -95,6 +99,87 @@ public class ProcedureListAdapter extends RecyclerView.Adapter {
 
                     }
                 });
+            }
+        });
+        viewHolderClass.btnCEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                View mView = LayoutInflater.from(context).inflate(R.layout.procedures_dialog, null);
+                final TextView etPName = mView.findViewById(R.id.etPName);
+                final TextView etPDescription = mView.findViewById(R.id.etPDescription);
+                final TextView etPPrice = mView.findViewById(R.id.etPPrice);
+                etPName.setText(procedures.getName());
+                etPDescription.setText(procedures.getDescription());
+                etPPrice.setText(String.valueOf(procedures.getPrice()));
+                ImageButton btnPSubmit = (ImageButton) mView.findViewById(R.id.btnPSubmit);
+                ImageButton btnPCancel = (ImageButton)mView.findViewById(R.id.btnPCancel);
+                alert.setView(mView);
+                final AlertDialog alertDialog = alert.create();
+                alertDialog.setCanceledOnTouchOutside(false);
+                btnPCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+                btnPSubmit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(validate()){
+                            mAuth = FirebaseAuth.getInstance();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            userID = user.getUid();
+                            mFirebaseDatabase = FirebaseDatabase.getInstance();
+                            myRef = mFirebaseDatabase.getReference("Procedures").child(userID);
+                            String key = myRef.push().getKey();
+                            String price = etPPrice.getText().toString().trim();
+                            int fprice = Integer.parseInt(price);
+                            Procedures procedures = new Procedures();
+                            procedures.setName(etPName.getText().toString().trim());
+                            procedures.setDescription(etPDescription.getText().toString().trim());
+                            procedures.setPrice(fprice);
+                            procedures.setKey(fetchProcedureList.get(position).getKey());
+                            Log.d(TAG, "procedures.getKey(): " + fetchProcedureList.get(position).getKey());
+                            myRef.child(fetchProcedureList.get(position).getKey()).setValue(procedures).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(context,"Procedure updated successfully", Toast.LENGTH_LONG).show();
+                                    alertDialog.dismiss();
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(context,"Failed to update Procedure Item, Please Try again.", Toast.LENGTH_LONG).show();
+
+                                }
+                            });
+                        }
+                    }
+                    private boolean validate() {
+                        String procedureName = etPName.getText().toString().trim();
+                        String procedureDescription = etPDescription.getText().toString().trim();
+                        String procedurePrice = etPPrice.getText().toString().trim();
+                        if(procedureName.isEmpty()){
+                            etPName.setError("Procedure Name is required");
+                            etPName.requestFocus();
+                            return false;
+                        }
+                        if(procedureDescription.isEmpty()){
+                            etPDescription.setError("Procedure Description is required");
+                            etPDescription.requestFocus();
+                            return false;
+                        }
+                        if(procedurePrice.isEmpty()){
+                            etPPrice.setError("Price is required");
+                            etPPrice.requestFocus();
+                            return false;
+                        }
+                        return true;
+                    }
+                });
+                alertDialog.show();
             }
         });
 

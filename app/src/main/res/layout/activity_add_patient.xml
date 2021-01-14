@@ -13,57 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageView14"
-            android:layout_width="0dp"
-            android:layout_height="204dp"
-            android:layout_marginTop="160dp"
-            android:contentDescription="@string/todo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_wave" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout5"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/bgPrimary"
-            android:padding="30dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/imageView11"
-                android:layout_width="87dp"
-                android:layout_height="146dp"
-                android:contentDescription="@string/patient_photo"
-                android:src="@drawable/userimg_default"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <Button
-                android:id="@+id/button2"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat"
-                android:text="@string/upload_photo"
-                android:textColor="@color/white"
-                app:cornerRadius="15dp"
-                app:icon="@drawable/ic_baseline_image_24"
-                app:iconTint="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView11"
-                app:strokeColor="@color/white" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
@@ -77,6 +26,63 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imageView14"
+                        android:layout_width="0dp"
+                        android:layout_height="204dp"
+                        android:layout_marginTop="60dp"
+                        android:contentDescription="@string/todo"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/constraintLayout5"
+                        app:srcCompat="@drawable/ic_wave" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraintLayout5"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:background="@color/bgPrimary"
+                        android:padding="30dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivPatientPic"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:contentDescription="@string/patient_photo"
+                            android:src="@drawable/userimg_default"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.0" />
+
+                        <Button
+                            android:id="@+id/btnUpload"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:fontFamily="@font/montserrat"
+                            android:text="@string/upload_photo"
+                            android:textColor="@color/white"
+                            app:cornerRadius="15dp"
+                            app:icon="@drawable/ic_baseline_image_24"
+                            app:iconTint="@color/white"
+                            app:layout_constraintBottom_toBottomOf="@+id/ivPatientPic"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/ivPatientPic"
+                            app:layout_constraintTop_toTopOf="@+id/ivPatientPic"
+                            app:strokeColor="@color/white" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -208,7 +214,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_baseline_person_24"
+                        android:drawableStart="@drawable/ic_baseline_email_24"
                         android:drawablePadding="16dp"
                         android:fontFamily="@font/montserrat"
                         android:inputType="textEmailAddress"
@@ -237,7 +243,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_baseline_person_24"
+                        android:drawableStart="@drawable/ic_baseline_call_24"
                         android:drawablePadding="16dp"
                         android:fontFamily="@font/montserrat"
                         android:inputType="phone"
@@ -266,7 +272,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_baseline_person_24"
+                        android:drawableStart="@drawable/ic_baseline_location_on_24"
                         android:drawablePadding="16dp"
                         android:fontFamily="@font/montserrat"
                         android:inputType="text"
@@ -359,7 +365,6 @@
             android:layout_height="80dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:background="@color/white"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/clParent"
@@ -368,12 +373,11 @@
 
             <Button
                 android:id="@+id/btnSave"
-                style="@android:style/Widget.Holo.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="40dp"
                 android:background="@color/bgPrimary"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:text="@string/save"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

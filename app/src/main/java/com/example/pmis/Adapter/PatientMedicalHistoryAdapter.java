@@ -1,6 +1,7 @@
 package com.example.pmis.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -17,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.pmis.AddMedicalHistoryActivity;
+import com.example.pmis.AddPrescriptionActivity;
 import com.example.pmis.Model.DrugPrescriptionMain;
 import com.example.pmis.Model.MedicalHistory;
 import com.example.pmis.R;
@@ -43,7 +46,7 @@ public class PatientMedicalHistoryAdapter extends RecyclerView.Adapter {
     private FirebaseAuth mAuth;
     private DatabaseReference presRef;
     private StorageReference mStorageRef;
-    private String patientKey;
+    private String patientKey, medicalHistoryKey;
 
     public PatientMedicalHistoryAdapter(Context context, List<MedicalHistory> fetchMedicalHistoryList, String patientKey){
         this.fetchMedicalHistoryList = fetchMedicalHistoryList;
@@ -65,11 +68,11 @@ public class PatientMedicalHistoryAdapter extends RecyclerView.Adapter {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         ViewHolderClass viewHolderClass = (ViewHolderClass)holder;
         MedicalHistory medicalHistory = fetchMedicalHistoryList.get(position);
+        medicalHistoryKey = medicalHistory.getKey();
         viewHolderClass.tvMedDate.setText(medicalHistory.getDate());
         viewHolderClass.tvMedCaption.setText(medicalHistory.getCaption());
         StorageReference medicalHistoryRef = mStorageRef.child("images/medicalHistory/"+ patientKey + '/' + medicalHistory.getImageUrl());
 
-        Log.d(TAG, medicalHistory.getImageUrl());
         medicalHistoryRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -94,7 +97,7 @@ public class PatientMedicalHistoryAdapter extends RecyclerView.Adapter {
                             ds.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Toast.makeText(v.getContext(),"Item Deleted Succesfully", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(v.getContext(),"Item Deleted Successfully", Toast.LENGTH_LONG).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -111,6 +114,18 @@ public class PatientMedicalHistoryAdapter extends RecyclerView.Adapter {
 
                     }
                 });
+            }
+        });
+        viewHolderClass.ibMedEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AddMedicalHistoryActivity.class);
+                intent.putExtra("patientKey", patientKey);
+                intent.putExtra("action", "edit");
+
+                intent.putExtra("medicalHistoryKey", fetchMedicalHistoryList.get(position).getKey());
+
+                context.startActivity(intent);
             }
         });
     }

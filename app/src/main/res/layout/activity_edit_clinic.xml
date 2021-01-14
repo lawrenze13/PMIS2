@@ -20,22 +20,22 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="301dp">
 
                 <ImageView
                     android:id="@+id/imageView2"
                     android:layout_width="match_parent"
                     android:layout_height="130dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="20dp"
                     android:cropToPadding="true"
-                    app:layout_constraintTop_toBottomOf="@+id/btnProfilePic"
+                    app:layout_constraintTop_toBottomOf="@+id/ivProfilePic"
                     app:layout_goneMarginTop="0dp"
                     app:srcCompat="@drawable/ic_wave" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="250dp"
                     android:background="@color/bgPrimary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -79,33 +79,49 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/btnProfilePic"
+                    android:id="@+id/ivProfilePic"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginTop="45dp"
-                    android:background="@drawable/roundshape"
-                    android:src="@drawable/userimg_default"
+                    android:layout_marginTop="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+                <Button
+                    android:id="@+id/btnUpload2"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/upload_photo"
+                    android:textColor="@color/white"
+                    app:cornerRadius="15dp"
+                    app:icon="@drawable/ic_baseline_image_24"
+                    app:iconTint="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivProfilePic"
+                    app:strokeColor="@color/white" />
 
                 <TextView
                     android:id="@+id/txtClinicName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/montserrat"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnProfilePic" />
+                    app:layout_constraintTop_toBottomOf="@+id/btnUpload2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="429dp"
                 android:layout_marginStart="25dp"
                 android:layout_marginEnd="25dp">
 
@@ -114,7 +130,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="50dp"
                     android:text="Clinic Name"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -135,7 +150,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:text="Contact Number"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/etClinicName" />
@@ -144,9 +159,9 @@
                     android:id="@+id/etContactNo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_person_24"
+                    android:drawableLeft="@drawable/ic_baseline_call_24"
                     android:drawablePadding="16dp"
-                    android:inputType="textPersonName"
+                    android:inputType="number"
                     android:padding="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -156,7 +171,7 @@
                     android:id="@+id/etAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_email_24"
+                    android:drawableLeft="@drawable/ic_baseline_location_on_24"
                     android:drawablePadding="16dp"
                     android:inputType="textEmailAddress"
                     android:padding="10dp"
@@ -170,10 +185,56 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:text="Address"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/etContactNo" />
+
+                <TextView
+                    android:id="@+id/tvLabelLicense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="License No."
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etAddress" />
+
+                <EditText
+                    android:id="@+id/etLicense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_baseline_add_circle_24"
+                    android:drawablePadding="16dp"
+                    android:inputType="textEmailAddress"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvLabelLicense" />
+
+                <TextView
+                    android:id="@+id/tvLabelDegree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Degree"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etLicense" />
+
+                <EditText
+                    android:id="@+id/etDegree"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_baseline_history_24"
+                    android:drawablePadding="16dp"
+                    android:inputType="textEmailAddress"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvLabelDegree" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

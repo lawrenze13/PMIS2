@@ -1,9 +1,15 @@
 package com.example.pmis.Model;
 
 public class UserInfo {
-    public String firstName, lastName, email, age, sex ;
+    public String firstName, lastName, email, age, sex , photoUrl;
 
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
 
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
 
     public String getFirstName() {
         return firstName;

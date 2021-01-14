@@ -5,6 +5,16 @@ public class DrugPrescriptionMain {
     public String date;
     public String dateUpdated;
 
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+
+    public String dateAdded;
+
     public DrugPrescriptionMain(String key, String date) {
         this.key = key;
         this.date = date;

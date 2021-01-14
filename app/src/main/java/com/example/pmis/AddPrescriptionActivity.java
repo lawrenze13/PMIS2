@@ -3,18 +3,22 @@ package com.example.pmis;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pmis.Adapter.DrugListAdapter;
@@ -22,6 +26,7 @@ import com.example.pmis.Adapter.DrugPrescriptionAdapter;
 import com.example.pmis.Model.DrugPrescription;
 import com.example.pmis.Model.DrugPrescriptionMain;
 import com.example.pmis.Model.Drugs;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,36 +44,57 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class AddPrescriptionActivity extends AppCompatActivity {
+public class AddPrescriptionActivity extends AppCompatActivity  implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "patientKEY";
     private Button btnAddDrugPress, btnSave;
+    private TextView tvTitle;
     private EditText etPresDate;
     private RecyclerView rvDrugPrescription;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRef, drugRef, presRef;
-    private String userID, key, patientKey;
+    private DatabaseReference myRef, drugRef, editRef;
+    private String userID, key, patientKey,action, prescriptionKey;
     private List<Drugs> drugsList;
     private List<DrugPrescription> prescriptionList;
     private List<DrugPrescription> drugPrescriptionList;
+    private List<DrugPrescription> editDrugPrescriptionList;
     private DrugPrescriptionAdapter drugPrescriptionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_prescription);
+        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
+        btnCancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         Intent patientIntent = getIntent();
         patientKey = patientIntent.getStringExtra("patientKey");
-        setContentView(R.layout.activity_add_prescription);
-
+        action = patientIntent.getStringExtra("action");
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         drugsList = new ArrayList<>();
+
+        tvTitle = findViewById(R.id.tvTitle);
         rvDrugPrescription = findViewById(R.id.rvDrugPrescription);
         rvDrugPrescription.setLayoutManager(new LinearLayoutManager(this));
         drugPrescriptionList = new ArrayList<>();
         etPresDate = findViewById(R.id.etPresDate);
+        etPresDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    DialogFragment datePicker = new DatePickerFragment();
+                    datePicker.show(getSupportFragmentManager(), "date picker");
+                    etPresDate.clearFocus();
+                }
+            }
+        });
         btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(saveDrugPrescription);
         btnAddDrugPress = findViewById(R.id.btnAddDrugPres);
@@ -145,7 +172,10 @@ public class AddPrescriptionActivity extends AppCompatActivity {
                             DrugPrescription drugList = drugPrescription;
                             drugPrescriptionList.add(drugPrescription);
                             Log.d(TAG, String.valueOf(drugPrescriptionList.size()));
-                            drugPrescriptionAdapter = new DrugPrescriptionAdapter(AddPrescriptionActivity.this,drugPrescriptionList);
+
+                                drugPrescriptionAdapter = new DrugPrescriptionAdapter(AddPrescriptionActivity.this, drugPrescriptionList);
+
+
                             rvDrugPrescription.setAdapter(drugPrescriptionAdapter);
                             drugPrescriptionAdapter.notifyItemChanged(drugPrescriptionList.size(),drugPrescriptionList);
                             alertDialog.dismiss();
@@ -153,7 +183,13 @@ public class AddPrescriptionActivity extends AppCompatActivity {
                         }
                     }
                     private boolean validate() {
-                        String dDescInfo = spinDrugInfo.getSelectedItem().toString().trim();
+                        if(spinDrugInfo.getCount() != 0) {
+                            String dDescInfo = spinDrugInfo.getSelectedItem().toString().trim();
+                        }else{
+                            Toast.makeText(AddPrescriptionActivity.this, "Add Clinic Drug First", Toast.LENGTH_LONG).show();
+
+                            return false;
+                        }
                         String dDescQty = etQuantity.getText().toString().trim();
                         String dDFrequency = etFrequency.getText().toString().trim();
                         String dDDuration = etDuration.getText().toString().trim();
@@ -182,6 +218,40 @@ public class AddPrescriptionActivity extends AppCompatActivity {
 
 
         });
+
+
+
+        if(action.equals("edit")){
+            editDrugPrescriptionList = new ArrayList<>();
+            tvTitle.setText("Edit Prescription");
+            prescriptionKey = patientIntent.getStringExtra("prescriptionKey");
+
+            mFirebaseDatabase = FirebaseDatabase.getInstance();
+            editRef = mFirebaseDatabase.getReference("Prescription").child(patientKey).child(prescriptionKey);
+            editRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    DrugPrescription drugPrescription = new DrugPrescription();
+                    for(DataSnapshot ds: snapshot.child("drugList").getChildren()) {
+                        drugPrescription.setDrugInfo(ds.getValue(DrugPrescription.class).getDrugInfo());
+                        drugPrescription.setQuantity(ds.getValue(DrugPrescription.class).getQuantity());
+                        drugPrescription.setFrequency(ds.getValue(DrugPrescription.class).getFrequency());
+                        drugPrescription.setDuration(ds.getValue(DrugPrescription.class).getDuration());
+                        drugPrescriptionList.add(drugPrescription);
+                    }
+                    Log.d(TAG, String.valueOf(drugPrescriptionList.size()));
+                    drugPrescriptionAdapter = new DrugPrescriptionAdapter(AddPrescriptionActivity.this,drugPrescriptionList);
+                    rvDrugPrescription.setAdapter(drugPrescriptionAdapter);
+                    drugPrescriptionAdapter.notifyItemChanged(drugPrescriptionList.size(),drugPrescriptionList);
+                    etPresDate.setText(snapshot.getValue(DrugPrescriptionMain.class).getDate());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
     }
 
 
@@ -190,28 +260,53 @@ public class AddPrescriptionActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if(validateMain()){
-                DrugPrescriptionMain drugPrescriptionMain = new DrugPrescriptionMain();
-                mFirebaseDatabase = FirebaseDatabase.getInstance();
-                Log.d(TAG, patientKey);
-                myRef = mFirebaseDatabase.getReference("Prescription").child(patientKey);
-                String key = myRef.push().getKey();
-                drugPrescriptionMain.setDate(etPresDate.getText().toString().trim());
-                drugPrescriptionMain.setKey(key);
-                String currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
-                String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-                String dateUpdated = currentDate + ' ' + currentTime;
-                drugPrescriptionMain.setDateUpdated(dateUpdated);
-                myRef.child(key).setValue(drugPrescriptionMain).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        myRef.child(key).child("drugList").setValue(drugPrescriptionList).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(AddPrescriptionActivity.this, "Presciption has been added succesfully", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                });
+                    DrugPrescriptionMain drugPrescriptionMain = new DrugPrescriptionMain();
+
+                    drugPrescriptionMain.setDate(etPresDate.getText().toString().trim());
+                    String currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
+                    String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                    String dateUpdated = currentDate + ' ' + currentTime;
+                    drugPrescriptionMain.setDateUpdated(dateUpdated);
+                if(action.equals("add")) {
+                    mFirebaseDatabase = FirebaseDatabase.getInstance();
+                    myRef = mFirebaseDatabase.getReference("Prescription").child(patientKey);
+                    String key = myRef.push().getKey();
+                    drugPrescriptionMain.setKey(key);
+                    myRef.child(key).setValue(drugPrescriptionMain).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            myRef.child(key).child("drugList").setValue(drugPrescriptionList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(AddPrescriptionActivity.this, "Presciption has been added succesfully", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+                            });
+                        }
+                    });
+                }
+                if(action.equals("edit")){
+                    drugPrescriptionMain.setKey(prescriptionKey);
+                    mFirebaseDatabase = FirebaseDatabase.getInstance();
+                    myRef = mFirebaseDatabase.getReference("Prescription").child(patientKey).child(prescriptionKey);
+                    myRef.setValue(drugPrescriptionMain).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            myRef.child("drugList").setValue(drugPrescriptionList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(AddPrescriptionActivity.this, "Prescription has been updated successfully", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                }
             }
 
         }
@@ -232,5 +327,21 @@ public class AddPrescriptionActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String currentDateString = DateFormat.getDateInstance().format(cal.getTime());
+        etPresDate.setText(currentDateString);
 
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        Intent intent = new Intent(this, PatientPrescriptionActivity.class);
+//        intent.putExtra("key", patientKey);
+//        startActivity(intent);
+//    }
 }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
         mAuth =  FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progressBar);
 
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user.getUid() ){
-//            startActivity(new Intent(MainActivity.this, HomeActivity.class));
-//        }
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+        }
     }
     public void login(View v){
 //        Intent i = new Intent(this, home.class);
@@ -87,6 +88,12 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this,"Check your email to verify your account!", Toast.LENGTH_LONG).show();
                     }
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this,"Incorrect Credentials. Please Try again", Toast.LENGTH_LONG).show();
             }
         });
     }

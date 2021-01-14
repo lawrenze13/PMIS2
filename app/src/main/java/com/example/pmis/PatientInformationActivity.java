@@ -3,14 +3,29 @@ package com.example.pmis;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.pmis.Model.Clinic;
 import com.example.pmis.Model.Patient;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -18,32 +33,72 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class PatientInformationActivity extends AppCompatActivity {
+    private static final String TAG ="PATIENT ACTIVITY";
+    public static final int PICK_IMAGE = 1;
+    public static final int PICK_CAMERA = 2;
+    public static final int CAMERA_PERM_CODE = 101;
+
+    private FirebaseStorage storage;
+    private StorageReference storageReference, viewPhotoeReference;
+
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
-    private CardView cvPPrescription, cvMedicalHistory, cvProcedures;
-    private String userID, patientKey;
-    private static final String TAG = "patientKey" ;
-    private TextView tvPatientFullName, tvPatientEmail, tvPatientAddress, tvPatientContactNo, tvPatientBirthDate, tvPatientNotes, tvPatientGender, tvPatientAge;
+    private Button editInfo;
+    private CardView cvPPrescription, cvMedicalHistory, cvProcedures,cvPayments, cvPPhotos;
+    private ImageView ivPatientPic;
+    private String userID, patientKey, contactNo , fullName;
+    private ConstraintLayout clSched, clCall, clMessage, clDownload;
+    private Patient patientInfo;
+    private String  clinicName, clinicAddress, docName, clinicContactNo;
+    private TextView tvDateAdded, tvPatientFullName, tvPatientEmail, tvPatientAddress, tvPatientContactNo, tvPatientBirthDate, tvPatientNotes, tvPatientGender, tvPatientAge;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_information);
+        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
+        btnCancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         cvPPrescription = findViewById(R.id.cvPPrescription);
+        ivPatientPic = findViewById(R.id.ivPatientPic);
+
         cvPPrescription.setOnClickListener(viewPrescription);
+        cvPPhotos = findViewById(R.id.cvPPhotos);
+        cvPPhotos.setOnClickListener(viewPatientPhotos);
         cvMedicalHistory = findViewById(R.id.cvMedicalHistory);
         cvMedicalHistory.setOnClickListener(viewMedicalHistory);
         cvProcedures = findViewById(R.id.cvProcedures);
         cvProcedures.setOnClickListener(viewProcedures);
+        cvPayments = findViewById(R.id.cvPayments);
+        cvPayments.setOnClickListener(viewPayments);
         Intent intent = getIntent();
         patientKey = intent.getStringExtra("key");
         mAuth = FirebaseAuth.getInstance();
         ViewFinder();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        getClinicInfo();
+        getDoctorName();
         myRef = mFirebaseDatabase.getReference("Patient").child(userID).child(patientKey);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -51,14 +106,44 @@ public class PatientInformationActivity extends AppCompatActivity {
                 String firstName = snapshot.getValue(Patient.class).getFirstName();
                 String middleName = snapshot.getValue(Patient.class).getMiddleName();
                 String lastName = snapshot.getValue(Patient.class).getLastName();
-                String fullName = firstName + ' ' + middleName + ' ' + lastName;
+                fullName = firstName + ' ' + middleName + ' ' + lastName;
+                contactNo = snapshot.getValue(Patient.class).getContactNo();
                 tvPatientAddress.setText(snapshot.getValue(Patient.class).getAddress());
                 tvPatientBirthDate.setText(snapshot.getValue(Patient.class).getBirthDate());
                 tvPatientContactNo.setText(snapshot.getValue(Patient.class).getContactNo());
                 tvPatientEmail.setText(snapshot.getValue(Patient.class).getEmail());
                 tvPatientGender.setText(snapshot.getValue(Patient.class).getSex());
                 tvPatientNotes.setText(snapshot.getValue(Patient.class).getNotes());
+                tvDateAdded.setText(snapshot.getValue(Patient.class).getDateAdded());
+                contactNo = snapshot.getValue(Patient.class).getContactNo();
+                patientInfo = new Patient();
+
+                patientInfo.setAddress(snapshot.getValue(Patient.class).getAddress());
+                patientInfo.setBirthDate(snapshot.getValue(Patient.class).getBirthDate());
+                patientInfo.setContactNo(snapshot.getValue(Patient.class).getContactNo());
+                patientInfo.setEmail(snapshot.getValue(Patient.class).getEmail());
+                patientInfo.setSex(snapshot.getValue(Patient.class).getSex());
+                patientInfo.setNotes(snapshot.getValue(Patient.class).getNotes());
+                patientInfo.setDateAdded(snapshot.getValue(Patient.class).getDateAdded());
+                patientInfo.setFirstName(snapshot.getValue(Patient.class).getFirstName());
+                patientInfo.setMiddleName(snapshot.getValue(Patient.class).getMiddleName());
+                patientInfo.setLastName(snapshot.getValue(Patient.class).getLastName());
+                patientInfo.setKey(snapshot.getValue(Patient.class).getKey());
+
                 tvPatientFullName.setText(fullName);
+
+                viewPhotoeReference = FirebaseStorage.getInstance().getReference().child("images/patientPic/" + snapshot.getValue(Patient.class).getKey());
+                viewPhotoeReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide
+                                .with(PatientInformationActivity.this)
+                                .asBitmap()
+                                .load(uri)
+                                .centerCrop()
+                                .into(ivPatientPic);
+                    }
+                });
             }
 
             @Override
@@ -66,13 +151,188 @@ public class PatientInformationActivity extends AppCompatActivity {
 
             }
         });
+        editInfo = findViewById(R.id.editInfo);
+        editInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent schedIntent = new Intent(PatientInformationActivity.this,AddPatientActivity.class);
+                schedIntent.putExtra("patientKey", patientKey);
+                schedIntent.putExtra("action", "edit");
+                startActivity(schedIntent);
+            }
+        });
+
+        clDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                generatePDF();
+            }
+        });
+        clCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + contactNo));
+                startActivity(callIntent);
+            }
+        });
+        clMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("smsto:" + contactNo));
+                startActivity(intent);
+            }
+        });
+        clSched.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent schedIntent = new Intent(PatientInformationActivity.this,AddScheduleActivity.class);
+                schedIntent.putExtra("patientKey", patientKey);
+                schedIntent.putExtra("fullName", fullName);
+                startActivity(schedIntent);
+            }
+        });
+        ImageButton ibDownload = findViewById(R.id.ibDownload);
+        ibDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                generatePDF();
+            }
+        });
+        ImageButton ibSchedule = findViewById(R.id.ibSchedule);
+        ibSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent schedIntent = new Intent(PatientInformationActivity.this,AddScheduleActivity.class);
+                schedIntent.putExtra("patientKey", patientKey);
+                schedIntent.putExtra("fullName", fullName);
+                startActivity(schedIntent);
+            }
+        });
+    }
+
+    private void generatePDF() {
+        SimpleDateFormat format = new SimpleDateFormat("MMM dd yyyy", Locale.getDefault());
+        String currentDate = format.format(new Date());
+        PdfDocument myPdfDocument = new PdfDocument();
+
+        Paint paint = new Paint();
+        Paint forLinePaint = new Paint();
+        Paint solidLinePaint = new Paint();
+        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(300, 600, 1).create();
+        PdfDocument.Page myPage = myPdfDocument.startPage(myPageInfo);
+        Canvas canvas = myPage.getCanvas();
+        Typeface typeface = ResourcesCompat.getFont(PatientInformationActivity.this, R.font.montserrat);
+        paint.setTypeface(typeface);
+        paint.setTextSize(12f);
+        paint.setColor(Color.BLACK);
+        paint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(clinicName, canvas.getWidth() / 2, 20, paint);
+        paint.setTextSize(8f);
+        canvas.drawText(clinicAddress, canvas.getWidth() / 2, 35, paint);
+        canvas.drawText(clinicContactNo, canvas.getWidth() / 2, 44, paint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(8.5f);
+        canvas.drawText(docName, 20, 60, paint);
+        paint.setTextSize(7f);
+        canvas.drawText("General Dentist", 20, 68, paint);
+        paint.setTextSize(7f);
+        canvas.drawText("License No. 563242612", 20, 75, paint);
+
+        paint.setTextSize(7f);
+        paint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText(currentDate, 575, 75, paint);
+        solidLinePaint.setStyle(Paint.Style.STROKE);
+        solidLinePaint.setStrokeWidth(1);
+        canvas.drawLine(20, 80, 280, 80, solidLinePaint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(8f);
+        canvas.drawText("Full Name: ", 40, 110, paint);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(9f);
+        canvas.drawText(patientInfo.getFirstName() + " " + patientInfo.getMiddleName() + " " + patientInfo.getLastName(), 100, 110, paint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(8f);
+        canvas.drawText("Birthdate: ", 40, 120, paint);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(9f);
+        canvas.drawText( patientInfo.getBirthDate(), 100, 120, paint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(8f);
+        canvas.drawText("Gender: ", 40, 140, paint);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(9f);
+        canvas.drawText( patientInfo.getSex(), 100, 140, paint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(8f);
+        canvas.drawText("Address: ", 40, 160, paint);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(9f);
+        canvas.drawText( patientInfo.getAddress(), 100, 160, paint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(8f);
+        canvas.drawText("Contact No: ", 40, 180, paint);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(9f);
+        canvas.drawText( patientInfo.getContactNo(), 100, 180, paint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(8f);
+        canvas.drawText("Email: ", 40, 200, paint);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(9f);
+        canvas.drawText( patientInfo.getEmail(), 100, 200, paint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(8f);
+        canvas.drawText("Notes: ", 40, 220, paint);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(9f);
+        canvas.drawText( patientInfo.getNotes(), 100, 220, paint);
+        String fileName = "test.pdf";
+        myPdfDocument.finishPage(myPage);
+        File file = new File(getExternalFilesDir("/"),fileName);
+
+        try{
+            myPdfDocument.writeTo(new FileOutputStream(file));
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        myPdfDocument.close();
+        Intent target = new Intent(Intent.ACTION_VIEW);
+        target.setDataAndType(Uri.fromFile(file),"application/pdf");
+        target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Intent intent = Intent.createChooser(target, "Open File");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(intent);
 
     }
+
+
     private final View.OnClickListener viewPrescription  = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(PatientInformationActivity.this, PatientPrescriptionActivity.class);
             intent.putExtra("key", patientKey);
+            startActivity(intent);
+        }
+    };
+    private final View.OnClickListener viewPayments  = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(PatientInformationActivity.this, PatientPaymentActivity.class);
+            intent.putExtra("patientKey", patientKey);
             startActivity(intent);
         }
     };
@@ -92,14 +352,64 @@ public class PatientInformationActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
+    private final View.OnClickListener viewPatientPhotos = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(PatientInformationActivity.this, PatientPhotoActivity.class);
+            intent.putExtra("patientKey", patientKey);
+            startActivity(intent);
+        }
+    };
     private void ViewFinder() {
         tvPatientAddress = findViewById(R.id.tvPatientAddress);
-        tvPatientAge = findViewById(R.id.tvPatientAge);
         tvPatientBirthDate = findViewById(R.id.tvPatientBirthDate);
         tvPatientContactNo = findViewById(R.id.tvPatientContactNo);
         tvPatientEmail = findViewById(R.id.tvPatientEmail);
         tvPatientFullName = findViewById(R.id.tvPatientFullName);
         tvPatientGender = findViewById(R.id.tvPatientGender);
         tvPatientNotes = findViewById(R.id.tvPatientNotes);
+        clSched = findViewById(R.id.clSched);
+        clCall = findViewById(R.id.clCall);
+        clMessage = findViewById(R.id.clMessage);
+        clDownload = findViewById(R.id.clDownload);
+        tvDateAdded = findViewById(R.id.tvDateAdded);
+
+
+    }
+    private void getDoctorName() {
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference  docRef = mFirebaseDatabase.getReference("Users").child(userID);
+        docRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String firstName = snapshot.child("firstName").getValue(String.class);
+                String lastName = snapshot.child("lastName").getValue(String.class);
+
+                docName = "Dr. " +  firstName + ' ' + lastName + " D.M.D";
+                Log.d(TAG, "docName: " + docName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getClinicInfo() {
+        DatabaseReference clinicRef = mFirebaseDatabase.getReference("Clinic").child(userID);
+        clinicRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                clinicName = snapshot.getValue(Clinic.class).getClinicName();
+                clinicAddress = snapshot.getValue(Clinic.class).getAddress();
+                clinicContactNo = snapshot.getValue(Clinic.class).getContactNo();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
