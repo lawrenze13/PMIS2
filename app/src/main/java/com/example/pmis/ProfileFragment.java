@@ -155,11 +155,15 @@ public class ProfileFragment extends Fragment {
             String clinicName = editClinicName.getText().toString().trim();
             String address = editAddress.getText().toString().trim();
             String contactNo = editContactNumber.getText().toString().trim();
+            String license = tvLicense.getText().toString().trim();
+            String degree = tvDegree.getText().toString().trim();
             Intent intent = new Intent( getContext(),EditClinicActivity.class);
 
             intent.putExtra("clinicName",clinicName);
             intent.putExtra("address",address);
             intent.putExtra("contactNo",contactNo);
+            intent.putExtra("degree",degree);
+            intent.putExtra("license",license);
             startActivity(intent);
         }
     };

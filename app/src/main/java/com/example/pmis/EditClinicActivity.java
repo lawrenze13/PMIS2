@@ -122,6 +122,8 @@ public class EditClinicActivity extends AppCompatActivity {
         String clinicName = intent.getStringExtra("clinicName");
         String address = intent.getStringExtra("address");
         String contactNo = intent.getStringExtra("contactNo");
+        String license = intent.getStringExtra("license");
+        String degree = intent.getStringExtra("degree");
         if (clinicName == "NOT SET"){
             clinicName = " ";
         }
@@ -135,6 +137,8 @@ public class EditClinicActivity extends AppCompatActivity {
         etClinicName.setText(clinicName);
         etAddress.setText(address);
         etContactNo.setText(contactNo);
+        etLicense.setText(license);
+        etDegree.setText(degree);
         viewPhotoReference = FirebaseStorage.getInstance().getReference().child("images/clinicPic/" + loggedUserData.userID());
         viewPhotoReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -187,49 +191,76 @@ public class EditClinicActivity extends AppCompatActivity {
     }
     public void submit(View v){
         if(validateForm()){
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading..");
-            progressDialog.show();
+            if(filepath != null) {
+                ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setTitle("Uploading..");
+                progressDialog.show();
 
-            StorageReference ref = storageReference.child("images/clinicPic/" + loggedUserData.userID());
-            ref.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    mAuth = FirebaseAuth.getInstance();
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    userID = user.getUid();
-                    mFirebaseDatabase = FirebaseDatabase.getInstance();
-                    myRef = mFirebaseDatabase.getReference("Clinic").child(userID);
-                    Clinic clinic = new Clinic();
-                    clinic.setClinicName(etClinicName.getText().toString().trim());
-                    clinic.setAddress(etAddress.getText().toString().trim());
-                    clinic.setContactNo(etContactNo.getText().toString().trim());
-                    clinic.setDegree(etDegree.getText().toString().trim());
-                    clinic.setLicense(etLicense.getText().toString().trim());
-                    myRef.setValue(clinic).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(EditClinicActivity.this, "Update success!", Toast.LENGTH_LONG).show();
-                            finish();
+                StorageReference ref = storageReference.child("images/clinicPic/" + loggedUserData.userID());
+                ref.putFile(filepath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        mAuth = FirebaseAuth.getInstance();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        userID = user.getUid();
+                        mFirebaseDatabase = FirebaseDatabase.getInstance();
+                        myRef = mFirebaseDatabase.getReference("Clinic").child(userID);
+                        Clinic clinic = new Clinic();
+                        clinic.setClinicName(etClinicName.getText().toString().trim());
+                        clinic.setAddress(etAddress.getText().toString().trim());
+                        clinic.setContactNo(etContactNo.getText().toString().trim());
+                        clinic.setDegree(etDegree.getText().toString().trim());
+                        clinic.setLicense(etLicense.getText().toString().trim());
+                        myRef.setValue(clinic).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(EditClinicActivity.this, "Update success!", Toast.LENGTH_LONG).show();
+                                finish();
 
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(EditClinicActivity.this, "Failed to update. Please Try again!", Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(EditClinicActivity.this, "Failed to update. Please Try again!", Toast.LENGTH_LONG).show();
 
-                        }
-                    });
+                            }
+                        });
 
-                    progressDialog.dismiss();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(EditClinicActivity.this,"Failed to upload. Please try again", Toast.LENGTH_LONG).show();
-                }
-            });
+                        progressDialog.dismiss();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(EditClinicActivity.this, "Failed to upload. Please try again", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                mAuth = FirebaseAuth.getInstance();
+                FirebaseUser user = mAuth.getCurrentUser();
+                userID = user.getUid();
+                mFirebaseDatabase = FirebaseDatabase.getInstance();
+                myRef = mFirebaseDatabase.getReference("Clinic").child(userID);
+                Clinic clinic = new Clinic();
+                clinic.setClinicName(etClinicName.getText().toString().trim());
+                clinic.setAddress(etAddress.getText().toString().trim());
+                clinic.setContactNo(etContactNo.getText().toString().trim());
+                clinic.setDegree(etDegree.getText().toString().trim());
+                clinic.setLicense(etLicense.getText().toString().trim());
+                myRef.setValue(clinic).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(EditClinicActivity.this, "Update success!", Toast.LENGTH_LONG).show();
+                        finish();
 
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(EditClinicActivity.this, "Failed to update. Please Try again!", Toast.LENGTH_LONG).show();
+
+                    }
+                });
+            }
 
 
         }

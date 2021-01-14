@@ -165,15 +165,19 @@ public class DashboardFragment extends Fragment {
                                 try {
                                     Date date1 = df.parse(dbDate);
                                     Date date2 = df.parse(currentDate);
+                                    Log.d(TAG, "DATES  : " + date1 + " " + date2 );
                                     if(date1.compareTo(date2) > 0){
                                         upcomingCounter = upcomingCounter +1;
+                                    }
+                                    if(date1.equals(date2)){
+                                        Log.d(TAG, "FIREBASE: " + ds.getValue(Schedule.class).getDate());
+                                        counter = counter +1;
                                     }
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
                                 if(dbDate.equals(currentDate)) {
-                                    Log.d(TAG, "FIREBASE: " + ds.getValue(Schedule.class).getDate());
-                                    counter = counter +1;
+
                                 }
                             }
                             Log.d(TAG, "Upcoming : " + upcomingCounter);

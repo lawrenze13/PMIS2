@@ -210,12 +210,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(EditProfileActivity.this, "Update success!", Toast.LENGTH_LONG).show();
-                                Fragment frg = null;
-                                frg = getFragmentManager().findFragmentById(R.id.appointmentFragment);
-                                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                                ft.detach(frg);
-                                ft.detach(frg);
-                                ft.commit();
+
                                 finish();
 
                             }
@@ -235,6 +230,38 @@ public class EditProfileActivity extends AppCompatActivity {
                         Toast.makeText(EditProfileActivity.this,"Failed to upload. Please try again", Toast.LENGTH_LONG).show();
                     }
                 });
+            }else{
+                mAuth = FirebaseAuth.getInstance();
+                FirebaseUser user = mAuth.getCurrentUser();
+                userID = user.getUid();
+                mFirebaseDatabase = FirebaseDatabase.getInstance();
+                myRef = mFirebaseDatabase.getReference("Users").child(userID);
+                UserInfo userInfo = new UserInfo();
+                userInfo.setFirstName(etFirstName.getText().toString().trim());
+                userInfo.setLastName(etLastName.getText().toString().trim());
+                userInfo.setAge(etAge.getText().toString().trim());
+                userInfo.setEmail(etEmail.getText().toString().trim());
+                userInfo.setPhotoUrl(userID);
+                int selectedID = rgSex.getCheckedRadioButtonId();
+                rSex = (RadioButton)findViewById(selectedID);
+                userInfo.setSex(rSex.getText().toString().trim());
+                myRef.setValue(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(EditProfileActivity.this, "Update success!", Toast.LENGTH_LONG).show();
+
+                        finish();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(EditProfileActivity.this, "Failed to update. Please Try again!", Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+
             }
 
 
