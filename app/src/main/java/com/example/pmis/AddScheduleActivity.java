@@ -8,6 +8,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.pmis.Helpers.LoggedUserData;
+import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.Schedule;
 import com.example.pmis.Model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,7 +40,7 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
     private static final String TAG = "ADD_SCHEDULE";
     private EditText etSchedName, etSchedDoc, etSchedDate, etSchedStart, etSchedEnd, etSchedRemarks;
     private Button btnSchedSave;
-    String fullName, patientKey, docName;
+    String fullName, patientKey, docName, patientName;
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference docRef, saveRef;
@@ -59,10 +61,12 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
         Intent patientIntent = getIntent();
         fullName = patientIntent.getStringExtra("fullName");
         patientKey = patientIntent.getStringExtra("patientKey");
+
         etSchedName.setText(fullName);
         userID  = loggedUserData.userID();
         Log.d(TAG, userID);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        getPatientName();
         buildDoctorName();
         etSchedDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -114,6 +118,22 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
         });
         btnSchedSave.setOnClickListener(saveSchedule);
     }
+
+    private void getPatientName() {
+        DatabaseReference patientRef = mFirebaseDatabase.getReference("Patient").child(userID).child(patientKey);
+        patientRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                patientName = snapshot.getValue(Patient.class).getFirstName() + " " + snapshot.getValue(Patient.class).getLastName();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private final View.OnClickListener saveSchedule = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -146,7 +166,26 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
                             saveRef.child(scheduleKey).setValue(schedule).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-
+                                    SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy hh:mm");
+                                    Date scheduleStart = new Date();
+                                    Date scheduleEnd = new Date();
+                                    try {
+                                        scheduleStart = format.parse(schedule.getDate() + " " + schedule.getStartTime());
+                                        scheduleEnd = format.parse(schedule.getDate() + " " + schedule.getEndTime());
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Calendar calStart = Calendar.getInstance();
+                                    calStart.setTime(scheduleStart);
+                                    Calendar calEnd = Calendar.getInstance();
+                                    calEnd.setTime(scheduleEnd);
+                                    Intent intent = new Intent(Intent.ACTION_INSERT)
+                                            .setData(CalendarContract.Events.CONTENT_URI)
+                                            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calStart.getTimeInMillis())
+                                            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calEnd.getTimeInMillis())
+                                            .putExtra(CalendarContract.Events.TITLE, patientName)
+                                            .putExtra(CalendarContract.Events.DESCRIPTION, schedule.remarks);
+                                    startActivity( intent);
                                     Toast.makeText(AddScheduleActivity.this, "Schedule added succesfully", Toast.LENGTH_LONG).show();
                                     finish();
                                 }
