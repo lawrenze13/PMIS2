@@ -334,7 +334,8 @@ public class AddPrescriptionActivity extends AppCompatActivity  implements DateP
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         String currentDateString = DateFormat.getDateInstance().format(cal.getTime());
-        etPresDate.setText(currentDateString);
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+        etPresDate.setText(format.format(cal.getTime()));
 
     }
 

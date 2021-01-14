@@ -33,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -323,6 +324,8 @@ public class EditPatientPaymentActivity extends AppCompatActivity implements Dat
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         String currentDateString = DateFormat.getDateInstance().format(cal.getTime());
-        etPayDate.setText(currentDateString);
+        //etPayDate.setText(currentDateString);
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+        etPayDate.setText(format.format(cal.getTime()));
     }
 }

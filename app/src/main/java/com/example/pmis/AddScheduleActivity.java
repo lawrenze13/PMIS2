@@ -167,22 +167,26 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy hh:mm");
-                                    Date scheduleStart = new Date();
-                                    Date scheduleEnd = new Date();
+
+                                    Calendar calStart = Calendar.getInstance();
+                                    Calendar calEnd = Calendar.getInstance();
                                     try {
-                                        scheduleStart = format.parse(schedule.getDate() + " " + schedule.getStartTime());
-                                        scheduleEnd = format.parse(schedule.getDate() + " " + schedule.getEndTime());
+                                        Date  scheduleStart = format.parse(schedule.getDate() + " " + schedule.getStartTime());
+                                        Date  scheduleEnd = format.parse(schedule.getDate() + " " + schedule.getEndTime());
+                                        Log.d(TAG,"scheduleStart: " + scheduleStart);
+                                        Log.d(TAG,"scheduleEnd: " + scheduleEnd);
+                                        calStart.setTime(scheduleStart);
+
+                                        calEnd.setTime(scheduleEnd);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
-                                    Calendar calStart = Calendar.getInstance();
-                                    calStart.setTime(scheduleStart);
-                                    Calendar calEnd = Calendar.getInstance();
-                                    calEnd.setTime(scheduleEnd);
+
+
                                     Intent intent = new Intent(Intent.ACTION_INSERT)
                                             .setData(CalendarContract.Events.CONTENT_URI)
-                                            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calStart.getTimeInMillis())
-                                            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calEnd.getTimeInMillis())
+                                            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calStart.getTime())
+                                            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calEnd.getTime())
                                             .putExtra(CalendarContract.Events.TITLE, patientName)
                                             .putExtra(CalendarContract.Events.DESCRIPTION, schedule.remarks);
                                     startActivity( intent);
@@ -263,14 +267,7 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
         String remarks = etSchedRemarks.getText().toString().trim();
         String hourStart[] = startTime.split(":");
         String hourEnd[] = endTime.split(":");
-        if(Integer.parseInt(hourStart[0]) > Integer.parseInt(hourEnd[0])){
-            Toast.makeText(AddScheduleActivity.this,"Start Time cannot be Higher than End Time.", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if(startTime == endTime ){
-            Toast.makeText(AddScheduleActivity.this,"Start Time and End time cannot be equal", Toast.LENGTH_LONG).show();
-            return false;
-        }
+
         if(date.isEmpty()){
             etSchedDate.setError("Date is required");
             etSchedDate.requestFocus();
@@ -287,6 +284,14 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
         } if(remarks.isEmpty()){
             etSchedRemarks.setError("Remarks is required");
             etSchedRemarks.requestFocus();
+            return false;
+        }
+        if(Integer.parseInt(hourStart[0]) > Integer.parseInt(hourEnd[0])){
+            Toast.makeText(AddScheduleActivity.this,"Start Time cannot be Higher than End Time.", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if(startTime == endTime ){
+            Toast.makeText(AddScheduleActivity.this,"Start Time and End time cannot be equal", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -327,7 +332,9 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
         String currentDateString = DateFormat.getDateInstance().format(cal.getTime());
-        etSchedDate.setText(currentDateString);
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+        etSchedDate.setText(format.format(cal.getTime()));
     }
 }

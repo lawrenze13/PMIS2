@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class EditScheduleActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
@@ -204,6 +205,8 @@ public class EditScheduleActivity extends AppCompatActivity implements DatePicke
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         String currentDateString = DateFormat.getDateInstance().format(cal.getTime());
-        etSchedDate.setText(currentDateString);
+       // etSchedDate.setText(currentDateString);
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+        etSchedDate.setText(format.format(cal.getTime()));
     }
 }

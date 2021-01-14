@@ -241,7 +241,9 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         String currentDateString = DateFormat.getDateInstance().format(cal.getTime());
-        etPProcDate.setText(currentDateString);
+       // etPProcDate.setText(currentDateString);
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+        etPProcDate.setText(format.format(cal.getTime()));
 
     }
 }
