@@ -50,7 +50,7 @@ public class DashboardFragment extends Fragment {
     private String userID;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef, keyRef;
-    private ImageButton ibAppointmentsToday, ivSendAppointment, ibViewPatients,ibAddPatient;
+    private ImageButton ibAppointmentsToday, ivSendAppointment, ibViewPatients,ibAddPatient, ibAddAppointment;
     private Button btnViewCalendar, btnExample;
     private int counter, upcomingCounter, patientCounter;
     private double revenueTotal, fullPaymentTotal, balanceTotal;
@@ -90,6 +90,8 @@ public class DashboardFragment extends Fragment {
         tvAppointmentToday = view.findViewById(R.id.tvAppointmentToday);
         tvAppointmentUpcoming = view.findViewById(R.id.tvAppointmentUpcoming);
         tvTotalRevenue = view.findViewById(R.id.tvTotalRevenue);
+        ibAddAppointment = view.findViewById(R.id.ibAddAppointment);
+        ibAddAppointment.setOnClickListener(addAppointment);
         tvTotalBalance = view.findViewById(R.id.tvTotalBalance);
         ibViewPatients = view.findViewById(R.id.ibViewPatients);
         ibViewPatients.setOnClickListener(viewPatients);
@@ -239,6 +241,12 @@ public class DashboardFragment extends Fragment {
             ContentUris.appendId(builder, Calendar.getInstance().getTimeInMillis());
             Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
             startActivity(intent);
+        }
+    };
+    private final View.OnClickListener addAppointment = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
         }
     };
     private void addBalance(double installment) {
