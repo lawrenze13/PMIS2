@@ -43,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null){
+        if (user != null && user.isEmailVerified()){
             startActivity(new Intent(MainActivity.this, HomeActivity.class));
         }
+
     }
     public void login(View v){
 //        Intent i = new Intent(this, home.class);

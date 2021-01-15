@@ -65,6 +65,11 @@ public class SignUpActivity extends AppCompatActivity {
             txtPassword.requestFocus();
             return;
         }
+        if(password.length() < 6){
+            txtPassword.setError("Min. password length is 6 Characters");
+            txtPassword.requestFocus();
+            return;
+        }
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             txtEmail.setError("Please Provide a valid Email");
             txtPassword.requestFocus();
@@ -97,7 +102,7 @@ public class SignUpActivity extends AppCompatActivity {
                    });
 
                 }else{
-                    Toast.makeText(SignUpActivity.this,"Failed to login!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignUpActivity.this,"Failed to Register Please try again!", Toast.LENGTH_LONG).show();
                 }
             }
         });

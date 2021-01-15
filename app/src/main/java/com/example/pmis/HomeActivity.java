@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HOME_ACTIVITY";
     private AppBarConfiguration mAppBarConfiguration;
     private TextView lblFullName, lblClinic;
+    private Button btnSetupProfile;
     private ImageView imgProfile;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
@@ -138,6 +140,15 @@ public class HomeActivity extends AppCompatActivity {
         lblFullName = (TextView)headerView.findViewById(R.id.lblFullName);
         imgProfile = (ImageView) headerView.findViewById(R.id.imgProfile);
         lblClinic = (TextView)headerView.findViewById(R.id.lblClinic);
+        btnSetupProfile = (Button)headerView.findViewById(R.id.btnSetupProfile);
+        btnSetupProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, EditProfileActivity.class);
+                intent.putExtra("sex", "Male");
+                startActivity(intent);
+            }
+        });
         String fullName;
             UserInfo uInfo = new UserInfo();
             uInfo.setFirstName(datasnapshot.child(userID).getValue(UserInfo.class).getFirstName());
