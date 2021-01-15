@@ -27,6 +27,7 @@ import com.example.pmis.Model.PatientPayment;
 import com.example.pmis.Model.PaymentReportFacade;
 import com.example.pmis.Model.Schedule;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,7 +51,7 @@ public class DashboardFragment extends Fragment {
     private String userID;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef, keyRef;
-    private ImageButton ibAppointmentsToday, ivSendAppointment, ibViewPatients,ibAddPatient;
+    private ImageButton ibAppointmentsToday, ivSendAppointment, ibViewPatients,ibAddPatient, ibAddAppointment;
     private Button btnViewCalendar, btnExample;
     private int counter, upcomingCounter, patientCounter;
     private double revenueTotal, fullPaymentTotal, balanceTotal;
@@ -91,6 +92,8 @@ public class DashboardFragment extends Fragment {
         tvAppointmentUpcoming = view.findViewById(R.id.tvAppointmentUpcoming);
         tvTotalRevenue = view.findViewById(R.id.tvTotalRevenue);
         tvTotalBalance = view.findViewById(R.id.tvTotalBalance);
+        ibAddAppointment = view.findViewById(R.id.ibAddAppointment);
+        ibAddAppointment.setOnClickListener(addAppointment);
         ibViewPatients = view.findViewById(R.id.ibViewPatients);
         ibViewPatients.setOnClickListener(viewPatients);
         ibAppointmentsToday = view.findViewById(R.id.ibAppointmentsToday);
@@ -239,6 +242,12 @@ public class DashboardFragment extends Fragment {
             ContentUris.appendId(builder, Calendar.getInstance().getTimeInMillis());
             Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
             startActivity(intent);
+        }
+    };
+    private final View.OnClickListener addAppointment = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Navigation.findNavController(view).navigate(R.id.appointmentFragment);
         }
     };
     private void addBalance(double installment) {
