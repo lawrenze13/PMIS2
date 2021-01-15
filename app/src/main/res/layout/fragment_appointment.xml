@@ -12,16 +12,6 @@
         android:layout_height="match_parent"
         android:background="@color/bodyPrimary">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout10"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <ScrollView
             android:id="@+id/scrollView3"
@@ -30,9 +20,8 @@
             android:layout_marginTop="50dp"
             android:isScrollContainer="false"
             android:paddingTop="10dp"
-            android:paddingBottom="200dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -98,26 +87,19 @@
                     android:textColor="@color/bgPrimary"
                     android:textSize="12sp" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvSchedule"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="vertical" />
-
             </LinearLayout>
         </ScrollView>
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout4"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSchedule"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@color/bgPrimary"
+            android:layout_height="318dp"
+            android:layout_marginTop="20dp"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@+id/scrollView3" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAddSchedule"

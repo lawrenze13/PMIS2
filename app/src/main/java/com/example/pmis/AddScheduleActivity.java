@@ -175,21 +175,22 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
                                         Date  scheduleEnd = format.parse(schedule.getDate() + " " + schedule.getEndTime());
                                         Log.d(TAG,"scheduleStart: " + scheduleStart);
                                         Log.d(TAG,"scheduleEnd: " + scheduleEnd);
-                                        calStart.setTime(scheduleStart);
-
-                                        calEnd.setTime(scheduleEnd);
+//                                        calStart.setTime(scheduleStart);
+//
+//                                        calEnd.setTime(scheduleEnd);
+                                        Intent intent = new Intent(Intent.ACTION_INSERT)
+                                                .setData(CalendarContract.Events.CONTENT_URI)
+                                                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, scheduleStart)
+                                                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, scheduleEnd)
+                                                .putExtra(CalendarContract.Events.TITLE, patientName)
+                                                .putExtra(CalendarContract.Events.DESCRIPTION, schedule.remarks);
+                                        startActivity( intent);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
 
 
-                                    Intent intent = new Intent(Intent.ACTION_INSERT)
-                                            .setData(CalendarContract.Events.CONTENT_URI)
-                                            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calStart.getTime())
-                                            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, calEnd.getTime())
-                                            .putExtra(CalendarContract.Events.TITLE, patientName)
-                                            .putExtra(CalendarContract.Events.DESCRIPTION, schedule.remarks);
-                                    startActivity( intent);
+
                                     Toast.makeText(AddScheduleActivity.this, "Schedule added succesfully", Toast.LENGTH_LONG).show();
                                     finish();
                                 }
