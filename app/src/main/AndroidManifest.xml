@@ -22,7 +22,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PMIS"
         android:windowSoftInputMode="adjustResize">
-        <activity android:name=".EditPaymentInstallmentActivity"></activity>
+        <activity android:name=".StatisticsActivity"></activity>
+        <activity android:name=".NewUserActivity" />
+        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".EditPaymentInstallmentActivity" />
         <activity android:name=".UpcomingAppointmentActivity" />
         <activity android:name=".EditPatientInformationActivity" />
         <activity android:name=".AddPatientPhotoActivity" />

@@ -58,7 +58,6 @@ public class DrugPrescriptionAdapter extends RecyclerView.Adapter {
        ViewHolderClass viewHolderClass = (ViewHolderClass)holder;
         DrugPrescription drugPrescription = fetchDrugsPrescriptionList.get(position);
         viewHolderClass.tvDDescName.setText(drugPrescription.getDrugInfo());
-        viewHolderClass.tvDDescQuantity.setText(drugPrescription.getQuantity());
         viewHolderClass.tvDDescDuration.setText(drugPrescription.getDuration());
         viewHolderClass.tvDDescFrequency.setText(drugPrescription.getFrequency());
         viewHolderClass.btnDDescDelete.setOnClickListener(new View.OnClickListener() {
@@ -77,14 +76,12 @@ public class DrugPrescriptionAdapter extends RecyclerView.Adapter {
                 LayoutInflater inflater = LayoutInflater.from(context);
                 View mView = inflater.inflate(R.layout.add_drug_prescription_dialog, null);
                 String dDescInfo = drugPrescription.getDrugInfo();
-                String dDescQty = drugPrescription.getQuantity();
                 String dDescFrequency = drugPrescription.getFrequency();
                 String dDescDuration = drugPrescription.getDuration();
                 final Spinner spinDrugInfo = (Spinner) mView.findViewById(R.id.spinDrugInfo);
-                final EditText etQuantity = (EditText)mView.findViewById(R.id.etQuantity);
                 final EditText etFrequency = (EditText)mView.findViewById(R.id.etFrequency);
                 final EditText etDuration = (EditText)mView.findViewById(R.id.etDuration);
-                etQuantity.setText(dDescQty);
+
                 etFrequency.setText(dDescFrequency);
                 etDuration.setText(dDescDuration);
 
@@ -145,11 +142,11 @@ public class DrugPrescriptionAdapter extends RecyclerView.Adapter {
 
                         if(validate()){
                             String dDescInfo = spinDrugInfo.getSelectedItem().toString().trim();
-                            String dDescQty = etQuantity.getText().toString().trim();
+
                             String dDescFrequency = etFrequency.getText().toString().trim();
                             String dDescDuration = etDuration.getText().toString().trim();
                             newDrugPrescription.setDrugInfo(dDescInfo);
-                            newDrugPrescription.setQuantity(dDescQty);
+
                             newDrugPrescription.setFrequency(dDescFrequency);
                             newDrugPrescription.setDuration(dDescDuration);
                             fetchDrugsPrescriptionList.set(position, newDrugPrescription);
@@ -162,14 +159,10 @@ public class DrugPrescriptionAdapter extends RecyclerView.Adapter {
                     }
                     private boolean validate() {
                         String dDescInfo = spinDrugInfo.getSelectedItem().toString().trim();
-                        String dDescQty = etQuantity.getText().toString().trim();
+
                         String dDFrequency = etFrequency.getText().toString().trim();
                         String dDDuration = etDuration.getText().toString().trim();
-                        if(dDescQty.isEmpty()){
-                            etQuantity.setError("quantity is required");
-                            etQuantity.requestFocus();
-                            return false;
-                        }
+
                         if(dDFrequency.isEmpty()){
                             etFrequency.setError("Frequency and Dosage is required");
                             etFrequency.requestFocus();
@@ -195,12 +188,11 @@ public class DrugPrescriptionAdapter extends RecyclerView.Adapter {
         return fetchDrugsPrescriptionList.size();
     }
     public class ViewHolderClass extends RecyclerView.ViewHolder {
-        TextView tvDDescName, tvDDescQuantity, tvDDescFrequency, tvDDescDuration;
+        TextView tvDDescName, tvDDescFrequency, tvDDescDuration;
         ImageButton btnDDescEdit, btnDDescDelete;
         public ViewHolderClass(@NonNull View itemView) {
             super(itemView);
             tvDDescName = itemView.findViewById(R.id.tvDDescName);
-            tvDDescQuantity = itemView.findViewById(R.id.tvDDescQuantity);
             tvDDescFrequency = itemView.findViewById(R.id.tvDDescFrequency);
             tvDDescDuration = itemView.findViewById(R.id.tvDDescDuration);
             btnDDescEdit = itemView.findViewById( R.id.btnDDescEdit);

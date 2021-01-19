@@ -38,6 +38,11 @@
         android:name="com.example.pmis.PatientFragment"
         android:label="Patients"
         tools:layout="@layout/patient_fragment" />
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.example.pmis.StatisticsFragment"
+        android:label="fragment_statistics"
+        tools:layout="@layout/fragment_statistics" />
 
 
 </navigation>

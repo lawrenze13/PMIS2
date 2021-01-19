@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pmis.AppointmentFragment;
 import com.example.pmis.EditScheduleActivity;
+import com.example.pmis.Helpers.LoggedUserData;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.PatientScheduleFacade;
 import com.example.pmis.PatientInformationActivity;
@@ -50,6 +51,8 @@ public class ScheduleListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        LoggedUserData loggedUserData = new LoggedUserData();
+        String userID = loggedUserData.userID();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ViewHolderClass viewHolderClass = (ViewHolderClass)holder;
         PatientScheduleFacade patientScheduleFacade = fetchPatientScheduleFacadeList.get(position);
@@ -92,7 +95,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter {
         viewHolderClass.ibSCDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Query deleteQuery = ref.child("Schedules").child(patientKey).orderByChild("key").equalTo(scheduleKey);
+                Query deleteQuery = ref.child("Schedules").child(userID).orderByChild("key").equalTo(scheduleKey);
                 deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -101,9 +104,10 @@ public class ScheduleListAdapter extends RecyclerView.Adapter {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(v.getContext(),"Item Deleted Successfully", Toast.LENGTH_LONG).show();
-                                 
+                                    fetchPatientScheduleFacadeList.remove(position);
                                    notifyItemRemoved(position);
                                    notifyItemRangeChanged(position, fetchPatientScheduleFacadeList.size());
+
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override

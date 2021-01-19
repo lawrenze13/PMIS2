@@ -102,6 +102,21 @@
             android:onClick="login"
             android:text="@string/login"
             android:textColorLink="#FFFFFF"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/txtPassword"
+            app:rippleColor="#2E2488"
+            app:strokeColor="@color/white"
+            app:strokeWidth="5dp" />
+
+        <Button
+            android:id="@+id/btnForgot"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp"
+            android:background="#00FFFFFF"
+            android:onClick="login"
+            android:text="Forgot Password?"
+            android:textColorLink="#FFFFFF"
             app:layout_constraintTop_toBottomOf="@+id/txtPassword"
             app:rippleColor="#2E2488"
             app:strokeColor="@color/white"
@@ -125,6 +140,7 @@
             android:backgroundTintMode="add"
             android:onClick="signUp"
             android:text="Sign Up"
+            android:textSize="20sp"
             app:cornerRadius="20dp"
             app:strokeColor="@color/inputPrimary"
             app:strokeWidth="2sp" />

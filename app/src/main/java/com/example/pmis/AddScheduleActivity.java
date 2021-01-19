@@ -160,7 +160,7 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
                             schedule.setEndTime(endTime);
                             schedule.setRemarks(remarks);
                             mFirebaseDatabase = FirebaseDatabase.getInstance();
-                            saveRef = mFirebaseDatabase.getReference("Schedules").child(patientKey);
+                            saveRef = mFirebaseDatabase.getReference("Schedules").child(userID);
                             String scheduleKey = saveRef.push().getKey();
                             schedule.setKey(scheduleKey);
                             saveRef.child(scheduleKey).setValue(schedule).addOnSuccessListener(new OnSuccessListener<Void>() {

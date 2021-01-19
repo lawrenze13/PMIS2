@@ -14,4 +14,5 @@
     <color name="inputPrimary">#DFC3C3</color>
     <color name="cardPrimary">#A0B7DC</color>
     <color name="bodyPrimary">#E8E4DB</color>
+    <color name="black_semi_transparent">#B2000000</color>
 </resources>

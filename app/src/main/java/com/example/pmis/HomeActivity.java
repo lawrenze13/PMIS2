@@ -11,10 +11,12 @@ import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.pmis.Model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -38,6 +40,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.Set;
+
 public class HomeActivity extends AppCompatActivity {
 
     @Override
@@ -57,19 +61,66 @@ public class HomeActivity extends AppCompatActivity {
     private String userID;
     private StorageReference storageReference;
     private FirebaseStorage firebaseStorage;
+    private BottomAppBar bottomAppBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference("Users");
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        bottomAppBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
+        bottomAppBar.replaceMenu(R.menu.app_bar_menu);
+        bottomAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                switch (id){
+                    case R.id.menuAbout:
+                        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+                        connectedRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                boolean connected = snapshot.getValue(Boolean.class);
+                                if(connected){
+                                    Toast.makeText(HomeActivity.this, "You're currently Online.", Toast.LENGTH_LONG).show();
+                                }else{
+                                    Toast.makeText(HomeActivity.this, "You're currently Offline.", Toast.LENGTH_LONG).show();
+                                }
+                            }
 
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        break;
+                        case R.id.menuSettings:
+                            SettingsNavigationFragment settingsNavigationFragment = new SettingsNavigationFragment();
+                            settingsNavigationFragment.show(getSupportFragmentManager(), "TAG");
+                            break;
+
+                }
+                return false;
+            }
+        });
+//        bottomAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SettingsNavigationFragment settingsNavigationFragment = new SettingsNavigationFragment();
+//                settingsNavigationFragment.show(getSupportFragmentManager(), "TAG");
+//            }
+//        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_dashboard, R.id.profileFragment, R.id.clinicFragment, R.id.patientFragment,  R.id.reportFragment, R.id.appointmentFragment)
+                R.id.nav_dashboard, R.id.profileFragment, R.id.clinicFragment, R.id.patientFragment,  R.id.reportFragment, R.id.appointmentFragment, R.id.statisticsFragment)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -78,6 +129,22 @@ public class HomeActivity extends AppCompatActivity {
 
         drawerItems();
         clinicFragmentHeader();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = mFirebaseDatabase.getReference("Clinic").child(userID);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()){
+                    Intent intent = new Intent(HomeActivity.this, NewUserActivity.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void clinicFragmentHeader() {
@@ -91,6 +158,7 @@ public class HomeActivity extends AppCompatActivity {
                 mAuth.signOut();
                 finish();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -101,6 +169,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
+        bottomAppBar.replaceMenu(R.menu.app_bar_menu);
         return true;
     }
 
@@ -116,11 +185,7 @@ public class HomeActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void drawerItems(){
 
-        mAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference("Users");
-        FirebaseUser user = mAuth.getCurrentUser();
-        userID = user.getUid();
+
        myRef.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot datasnapshot) {

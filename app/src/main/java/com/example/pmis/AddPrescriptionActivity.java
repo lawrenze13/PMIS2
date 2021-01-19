@@ -105,7 +105,6 @@ public class AddPrescriptionActivity extends AppCompatActivity  implements DateP
                 final AlertDialog.Builder alert = new AlertDialog.Builder(AddPrescriptionActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.add_drug_prescription_dialog, null);
                 final Spinner spinDrugInfo = (Spinner) mView.findViewById(R.id.spinDrugInfo);
-                final EditText etQuantity = (EditText)mView.findViewById(R.id.etQuantity);
                 final EditText etFrequency = (EditText)mView.findViewById(R.id.etFrequency);
                 final EditText etDuration = (EditText)mView.findViewById(R.id.etDuration);
 
@@ -162,11 +161,9 @@ public class AddPrescriptionActivity extends AppCompatActivity  implements DateP
 
                         if(validate()){
                             String dDescInfo = spinDrugInfo.getSelectedItem().toString().trim();
-                            String dDescQty = etQuantity.getText().toString().trim();
                             String dDescFrequency = etFrequency.getText().toString().trim();
                             String dDescDuration = etDuration.getText().toString().trim();
                             drugPrescription.setDrugInfo(dDescInfo);
-                            drugPrescription.setQuantity(dDescQty);
                             drugPrescription.setFrequency(dDescFrequency);
                             drugPrescription.setDuration(dDescDuration);
                             DrugPrescription drugList = drugPrescription;
@@ -190,14 +187,9 @@ public class AddPrescriptionActivity extends AppCompatActivity  implements DateP
 
                             return false;
                         }
-                        String dDescQty = etQuantity.getText().toString().trim();
                         String dDFrequency = etFrequency.getText().toString().trim();
                         String dDDuration = etDuration.getText().toString().trim();
-                        if(dDescQty.isEmpty()){
-                            etQuantity.setError("quantity is required");
-                            etQuantity.requestFocus();
-                            return false;
-                        }
+
                         if(dDFrequency.isEmpty()){
                             etFrequency.setError("Frequency and Dosage is required");
                             etFrequency.requestFocus();
@@ -234,7 +226,6 @@ public class AddPrescriptionActivity extends AppCompatActivity  implements DateP
                     DrugPrescription drugPrescription = new DrugPrescription();
                     for(DataSnapshot ds: snapshot.child("drugList").getChildren()) {
                         drugPrescription.setDrugInfo(ds.getValue(DrugPrescription.class).getDrugInfo());
-                        drugPrescription.setQuantity(ds.getValue(DrugPrescription.class).getQuantity());
                         drugPrescription.setFrequency(ds.getValue(DrugPrescription.class).getFrequency());
                         drugPrescription.setDuration(ds.getValue(DrugPrescription.class).getDuration());
                         drugPrescriptionList.add(drugPrescription);

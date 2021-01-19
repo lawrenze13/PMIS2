@@ -270,8 +270,8 @@ public class ReportFragment extends Fragment {
                                 String patientKey = patientSnapshot.getValue(Patient.class).getKey();
                                 String patientName = patientSnapshot.getValue(Patient.class).getFirstName() + " " + patientSnapshot.getValue(Patient.class).getLastName();
 
-                                appointmentRef = mFirebaseDatabase.getReference("Schedules").child(patientKey);
-                                appointmentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                Query query = mFirebaseDatabase.getReference("Schedules").child(userID).orderByChild("patientKey").equalTo(patientKey);
+                                query.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         long currentDate = 0;
@@ -285,18 +285,19 @@ public class ReportFragment extends Fragment {
                                             e.printStackTrace();
                                         }
                                         for(DataSnapshot appointmentSnapShot: snapshot.getChildren()){
-                                            String appointmentDate = appointmentSnapShot.getValue(Schedule.class).getDate();
-                                            long appointmentLongDate = 0 ;
-                                            try {
-                                                Date newDateStr = format.parse(appointmentDate);
-                                                appointmentLongDate = newDateStr.getTime();
-                                                Log.d(TAG, "firebaseDate Appointment:" + appointmentLongDate);
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
-                                            }
-                                           setAppointmentCounter(position, currentDate, appointmentLongDate, appointmentSnapShot, patientName);
 
-                                        }
+                                                String appointmentDate = appointmentSnapShot.getValue(Schedule.class).getDate();
+                                                long appointmentLongDate = 0;
+                                                try {
+                                                    Date newDateStr = format.parse(appointmentDate);
+                                                    appointmentLongDate = newDateStr.getTime();
+                                                    Log.d(TAG, "firebaseDate Appointment:" + appointmentLongDate);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                setAppointmentCounter(position, currentDate, appointmentLongDate, appointmentSnapShot, patientName);
+                                            }
+
                                     }
 
                                     @Override

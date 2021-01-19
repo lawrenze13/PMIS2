@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.pmis.Adapter.PatientListAdapter;
+import com.example.pmis.Helpers.LoadingDialog;
 import com.example.pmis.Helpers.LoggedUserData;
 import com.example.pmis.Model.Installment;
 import com.example.pmis.Model.Patient;
@@ -55,6 +56,8 @@ public class DashboardFragment extends Fragment {
     private Button btnViewCalendar, btnExample;
     private int counter, upcomingCounter, patientCounter;
     private double revenueTotal, fullPaymentTotal, balanceTotal;
+    private int loadingCounter;
+    private LoadingDialog loadingDialog;
     public DashboardFragment() {
         // Required empty public constructor
     }
@@ -78,22 +81,25 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        loadingDialog = new LoadingDialog(getActivity());
+
         counter = 0;
+
         upcomingCounter = 0;
         patientCounter = 0;
         balanceTotal = 0;
         revenueTotal = 0;
         fullPaymentTotal = 0;
-        btnViewCalendar = view.findViewById(R.id.btnViewCalendar);
-        btnViewCalendar.setOnClickListener(viewDeviceCalendar);
-        ibAddPatient = view.findViewById(R.id.ibAddPatient);
-        ibAddPatient.setOnClickListener(addPatient);
+//        btnViewCalendar = view.findViewById(R.id.btnViewCalendar);
+//        btnViewCalendar.setOnClickListener(viewDeviceCalendar);
+//        ibAddPatient = view.findViewById(R.id.ibAddPatient);
+//        ibAddPatient.setOnClickListener(addPatient);
         tvAppointmentToday = view.findViewById(R.id.tvAppointmentToday);
         tvAppointmentUpcoming = view.findViewById(R.id.tvAppointmentUpcoming);
         tvTotalRevenue = view.findViewById(R.id.tvTotalRevenue);
         tvTotalBalance = view.findViewById(R.id.tvTotalBalance);
-        ibAddAppointment = view.findViewById(R.id.ibAddAppointment);
-        ibAddAppointment.setOnClickListener(addAppointment);
+//        ibAddAppointment = view.findViewById(R.id.ibAddAppointment);
+//        ibAddAppointment.setOnClickListener(addAppointment);
         ibViewPatients = view.findViewById(R.id.ibViewPatients);
         ibViewPatients.setOnClickListener(viewPatients);
         ibAppointmentsToday = view.findViewById(R.id.ibAppointmentsToday);
@@ -109,111 +115,125 @@ public class DashboardFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-               List<String> patientKeyList = new ArrayList<>();
-                patientCounter = 0;
-                for(DataSnapshot ds: snapshot.getChildren()) {
-                    String patientKey = ds.getValue(Patient.class).getKey();
-                    patientCounter = patientCounter + 1;
-                    DatabaseReference  paymentRef = mFirebaseDatabase.getReference("Payments").child(patientKey);
-                    paymentRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                            balanceTotal = 0;
-                            revenueTotal = 0;
-                            fullPaymentTotal = 0;
-                            double dbAmount = 0;
-                            for(DataSnapshot installment: snapshot.child("INSTALLMENT").getChildren()){
-                                for(DataSnapshot payment: installment.child("payment").getChildren()){
-                                    String amount = payment.getValue(Installment.class).getAmount();
-                                    dbAmount = dbAmount + Double.parseDouble(amount);
-                                    Log.d(TAG, "amount:" + amount);
-                                    addRevenue(Double.parseDouble(amount));
+                    List<String> patientKeyList = new ArrayList<>();
+                    patientCounter = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        if (snapshot.exists()) {
+                        String patientKey = ds.getValue(Patient.class).getKey();
+                        patientCounter = patientCounter + 1;
+                        DatabaseReference paymentRef = mFirebaseDatabase.getReference("Payments").child(patientKey);
+                        paymentRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                                }
-                                String total = installment.getValue(PatientPayment.class).getTotal();
-                                double installmentBalance = Double.parseDouble(total) - dbAmount;
-                                addBalance(installmentBalance);
-                            }
-                            for(DataSnapshot fullPayment: snapshot.child("FULL PAYMENT").getChildren()){
-                                String total = fullPayment.getValue(PatientPayment.class).getTotal();
-                                fullPaymentTotal = fullPaymentTotal + Double.parseDouble(total);
-                                Log.d(TAG, "total:" + total);
-                                addRevenue(Double.parseDouble(total));
-
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-                    keyRef = mFirebaseDatabase.getReference("Schedules").child(ds.getValue(Patient.class).getKey());
-                    keyRef.addValueEventListener(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            counter = 0;
-                            upcomingCounter = 0;
+                                balanceTotal = 0;
+                                revenueTotal = 0;
+                                fullPaymentTotal = 0;
+                                double dbAmount = 0;
+                                for (DataSnapshot installment : snapshot.child("INSTALLMENT").getChildren()) {
+                                    for (DataSnapshot payment : installment.child("payment").getChildren()) {
+                                        String amount = payment.getValue(Installment.class).getAmount();
+                                        dbAmount = dbAmount + Double.parseDouble(amount);
+                                        Log.d(TAG, "amount:" + amount);
+                                        addRevenue(Double.parseDouble(amount));
 
 
-                            Date c = Calendar.getInstance().getTime();
-                            SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-                            String currentDate = df.format(c);
-                            Log.d(TAG, currentDate);
-                            for(DataSnapshot ds: snapshot.getChildren()) {
-                                String dbDate = ds.getValue(Schedule.class).getDate();
-                                try {
-                                    Date date1 = df.parse(dbDate);
-                                    Date date2 = df.parse(currentDate);
-                                    Log.d(TAG, "DATES  : " + date1 + " " + date2 );
-                                    if(date1.compareTo(date2) > 0){
-                                        upcomingCounter = upcomingCounter +1;
                                     }
-                                    if(date1.equals(date2)){
-                                        Log.d(TAG, "FIREBASE: " + ds.getValue(Schedule.class).getDate());
-                                        counter = counter +1;
-                                    }
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
+                                    String total = installment.getValue(PatientPayment.class).getTotal();
+                                    double installmentBalance = Double.parseDouble(total) - dbAmount;
+                                    addBalance(installmentBalance);
                                 }
-                                if(dbDate.equals(currentDate)) {
+                                for (DataSnapshot fullPayment : snapshot.child("FULL PAYMENT").getChildren()) {
+                                    String total = fullPayment.getValue(PatientPayment.class).getTotal();
+                                    fullPaymentTotal = fullPaymentTotal + Double.parseDouble(total);
+                                    Log.d(TAG, "total:" + total);
+                                    addRevenue(Double.parseDouble(total));
 
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+
+                        });
+
+                        keyRef = mFirebaseDatabase.getReference("Schedules").child(userID);
+                        keyRef.addValueEventListener(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot schedSnapshot : snapshot.getChildren()) {
+                                        if (schedSnapshot.getValue(Schedule.class).getPatientKey() != null) {
+                                            Log.d(TAG, "COMPARE: " + schedSnapshot.getValue(Schedule.class).getPatientKey() + " " + (patientKey));
+                                            if (schedSnapshot.getValue(Schedule.class).getPatientKey().equals(patientKey)) {
+                                                Date c = Calendar.getInstance().getTime();
+                                                SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+                                                String currentDate = df.format(c);
+                                                String dbDate = schedSnapshot.getValue(Schedule.class).getDate();
+                                                try {
+                                                    Date date1 = df.parse(dbDate);
+                                                    Date date2 = df.parse(currentDate);
+                                                    Log.d(TAG, "DATES  : " + date1 + " " + date2);
+                                                    if (date1.compareTo(date2) > 0) {
+                                                        upcomingCounter = upcomingCounter + 1;
+                                                    }
+                                                    if (date1.equals(date2)) {
+                                                        Log.d(TAG, "FIREBASE: " + ds.getValue(Schedule.class).getDate());
+                                                        counter = counter + 1;
+                                                    }
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                Log.d(TAG, "Upcoming : " + upcomingCounter);
+                                                tvAppointmentUpcoming.setText(String.valueOf(upcomingCounter));
+                                                Log.d(TAG, "FIREBASE counter: " + counter);
+                                                tvAppointmentToday.setText(String.valueOf(counter));
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                            Log.d(TAG, "Upcoming : " + upcomingCounter);
-                            tvAppointmentUpcoming.setText(String.valueOf(upcomingCounter));
-                            Log.d(TAG, "FIREBASE counter: " + counter);
-                            tvAppointmentToday.setText(String.valueOf(counter));
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
+                    Log.d(TAG, "PATIENT TOTAL: " + patientCounter);
+                    tvTotalPatient.setText(String.valueOf(patientCounter));
                 }
-                Log.d(TAG, "PATIENT TOTAL: " + patientCounter);
-                tvTotalPatient.setText(String.valueOf(patientCounter));
 
-            }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled (@NonNull DatabaseError error){
 
-            }
+                }
         });
     }
-    private final View.OnClickListener addPatient = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(getContext(), AddPatientActivity.class);
-            intent.putExtra("action", "add");
-            getContext().startActivity(intent);
+
+    private void addLoadingCounter() {
+        loadingCounter++;
+        if(loadingCounter == 2){
+            loadingDialog.dismissDialog();
         }
-    };
+    }
+
+//    private final View.OnClickListener addPatient = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            Intent intent = new Intent(getContext(), AddPatientActivity.class);
+//            intent.putExtra("action", "add");
+//            getContext().startActivity(intent);
+//        }
+//    };
     private final View.OnClickListener viewAppointments = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -234,16 +254,16 @@ public class DashboardFragment extends Fragment {
             startActivity(intent);
         }
     };
-    private final View.OnClickListener viewDeviceCalendar = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
-            builder.appendPath("time");
-            ContentUris.appendId(builder, Calendar.getInstance().getTimeInMillis());
-            Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
-            startActivity(intent);
-        }
-    };
+//    private final View.OnClickListener viewDeviceCalendar = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+//            builder.appendPath("time");
+//            ContentUris.appendId(builder, Calendar.getInstance().getTimeInMillis());
+//            Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+//            startActivity(intent);
+//        }
+//    };
     private final View.OnClickListener addAppointment = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

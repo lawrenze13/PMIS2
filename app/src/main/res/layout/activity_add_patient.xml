@@ -8,6 +8,14 @@
     android:orientation="vertical"
     tools:context=".AddPatientActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/myToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bgPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clParent"
         android:layout_width="match_parent"
@@ -16,11 +24,11 @@
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
-            android:layout_height="685dp"
-            android:layout_marginTop="50dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout17"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -29,7 +37,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="203dp">
 
                     <ImageView
                         android:id="@+id/imageView14"
@@ -49,6 +57,7 @@
                         android:background="@color/bgPrimary"
                         android:padding="30dp"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
@@ -89,7 +98,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="25dp"
                     android:layout_marginEnd="25dp"
-                    android:paddingBottom="300dp">
+                    android:paddingBottom="150dp">
 
                     <TextView
                         android:id="@+id/textView7"
@@ -111,6 +120,7 @@
                         android:drawablePadding="16dp"
                         android:fontFamily="@font/montserrat"
                         android:inputType="textPersonName"
+                        android:maxLength="40"
                         android:padding="10dp"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -136,6 +146,7 @@
                         android:drawablePadding="16dp"
                         android:fontFamily="@font/montserrat"
                         android:inputType="textPersonName"
+                        android:maxLength="15"
                         android:padding="10dp"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -162,6 +173,7 @@
                         android:drawablePadding="16dp"
                         android:fontFamily="@font/montserrat"
                         android:inputType="textPersonName"
+                        android:maxLength="20"
                         android:padding="10dp"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -218,6 +230,7 @@
                         android:drawablePadding="16dp"
                         android:fontFamily="@font/montserrat"
                         android:inputType="textEmailAddress"
+                        android:maxLength="30"
                         android:padding="10dp"
                         android:textSize="12sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -247,6 +260,7 @@
                         android:drawablePadding="16dp"
                         android:fontFamily="@font/montserrat"
                         android:inputType="phone"
+                        android:maxLength="12"
                         android:padding="10dp"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -266,6 +280,18 @@
                         android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/etPEmail" />
+                    <TextView
+                        android:id="@+id/textView37"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/address"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/etPContactNo" />
 
                     <EditText
                         android:id="@+id/etPAddress"
@@ -284,17 +310,89 @@
                         app:layout_constraintTop_toBottomOf="@+id/textView37" />
 
                     <TextView
-                        android:id="@+id/textView37"
+                        android:id="@+id/textLabelProvince"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="10dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat"
-                        android:text="@string/address"
+                        android:text="Province"
                         android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/etPContactNo" />
+                        app:layout_constraintTop_toBottomOf="@+id/etPAddress" />
+
+                    <EditText
+                        android:id="@+id/etPProvince"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_baseline_location_on_24"
+                        android:drawablePadding="16dp"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textLabelProvince" />
+
+                    <TextView
+                        android:id="@+id/tvLabelCity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/montserrat"
+                        android:text="City"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="@+id/etPCity"
+                        app:layout_constraintTop_toBottomOf="@+id/etPAddress" />
+
+                    <EditText
+                        android:id="@+id/etPCity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_baseline_location_on_24"
+                        android:drawablePadding="16dp"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/etPProvince"
+                        app:layout_constraintTop_toBottomOf="@+id/tvLabelCity" />
+
+                    <TextView
+                        android:id="@+id/tvLabelBarangay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/montserrat"
+                        android:text="Barangay"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/etPCity" />
+
+                    <EditText
+                        android:id="@+id/etPBarangay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableStart="@drawable/ic_baseline_location_on_24"
+                        android:drawablePadding="16dp"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvLabelBarangay" />
 
                     <TextView
                         android:id="@+id/textView38"
@@ -307,7 +405,7 @@
                         android:text="@string/birthdate"
                         android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/etPAddress" />
+                        app:layout_constraintTop_toBottomOf="@+id/etPBarangay" />
 
                     <EditText
                         android:id="@+id/etPBirthDate"
@@ -361,10 +459,10 @@
         </ScrollView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout17"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
+            android:background="@color/bgPrimary"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/clParent"
@@ -373,12 +471,17 @@
 
             <Button
                 android:id="@+id/btnSave"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:background="@color/bgPrimary"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:text="@string/save"
+                android:textColor="@color/white"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
