@@ -130,6 +130,7 @@ public class InstallmentBreakdownActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(v.getContext(),"Item Deleted Successfully", Toast.LENGTH_LONG).show();
+                                finish();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
