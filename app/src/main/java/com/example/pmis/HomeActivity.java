@@ -1,6 +1,8 @@
 package com.example.pmis;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.pmis.Model.AppointmentStatus;
 import com.example.pmis.Model.Clinic;
 import com.example.pmis.Model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -73,6 +76,8 @@ public class HomeActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private SharedPreferences sharedPreferences;
     private BottomAppBar bottomAppBar;
+    private FloatingActionButton floatingActionButton2;
+    private String selectedItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +91,8 @@ public class HomeActivity extends AppCompatActivity {
         myRef = mFirebaseDatabase.getReference("Users");
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
+        floatingActionButton2 = (FloatingActionButton) findViewById(R.id.floatingActionButton2);
+        floatingActionButton2.setOnClickListener(addButton);
         bottomAppBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
         bottomAppBar.replaceMenu(R.menu.app_bar_menu);
         bottomAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -166,7 +173,44 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+    private final View.OnClickListener addButton = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String[] choices = {"Add Patient", "Add Appointment", "Add Payment"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            builder.setTitle("Add");
+            builder.setSingleChoiceItems(choices,0 , new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectedItem = choices[which];
 
+                }
+            });
+            builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(selectedItem.equals("Add Patient")){
+                        Intent intent = new Intent(HomeActivity.this, AddPatientActivity.class);
+                        intent.putExtra("action", "add");
+                        startActivity(intent);
+                    }else if(selectedItem.equals("Add Appointment")){
+                        Intent intent = new Intent(HomeActivity.this, PatientActivity.class);
+                        startActivity(intent);
+                    }else if(selectedItem.equals("Add Payment")){
+                        Intent intent = new Intent(HomeActivity.this, PatientActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
+    };
     private void clinicFragmentHeader() {
 
     }
