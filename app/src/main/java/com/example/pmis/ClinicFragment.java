@@ -1,6 +1,7 @@
 package com.example.pmis;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -41,7 +42,9 @@ public class ClinicFragment extends Fragment {
     private StorageReference storageReference, viewPhotoReference;
     private DatabaseReference myRef;
     private String userID;
-
+    private static final String SHARED_PREF_NAME = "myPref";
+    private static final String KEY_DOC_NAME = "docName";
+    private SharedPreferences sharedPreferences;
 
     public ClinicFragment() {
         // Required empty public constructor
@@ -65,7 +68,7 @@ public class ClinicFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        sharedPreferences = getContext().getSharedPreferences(SHARED_PREF_NAME, getContext().MODE_PRIVATE);
         cvProcedures = (CardView)view.findViewById(R.id.cvProcedures);
         cvProcedures.setOnClickListener(procedureList);
         cvDrugList = (CardView)view.findViewById(R.id.cvDrugList);
@@ -76,6 +79,7 @@ public class ClinicFragment extends Fragment {
         tvLicense = (TextView) view.findViewById(R.id.tvLicense3);
         tvDegree = (TextView) view.findViewById(R.id.tvDegree3);
         tvDocName = (TextView) view.findViewById(R.id.tvDocName3);
+        tvDocName.setText(sharedPreferences.getString(KEY_DOC_NAME, ""));
         imageView11 = view.findViewById(R.id.imageView11);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();

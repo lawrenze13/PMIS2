@@ -87,7 +87,7 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
                 etPayAmount.setText(snapshot.getValue(PatientPayment.class).getTotal());
                 etPayRemarks.setText(snapshot.getValue(PatientPayment.class).getRemarks());
                 etPayDentist.setText(snapshot.getValue(PatientPayment.class).getDocName());
-                etPayDentist.setText(snapshot.getValue(PatientPayment.class).getDocName());
+                etPayPlan.setText(snapshot.getValue(PatientPayment.class).getPlanName());
                 int index = keyList.indexOf(snapshot.getValue(PatientPayment.class).getProcedureKey());
                 spinnerProcedure.setSelection(index);
                 for(DataSnapshot payment: snapshot.child("payment").getChildren()){
@@ -133,6 +133,7 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
                     String date = etPayDate.getText().toString().trim();
                     String total = etPayAmount.getText().toString().trim();
                     String remarks = etPayRemarks.getText().toString().trim();
+                    String payPlan = etPayPlan.getText().toString().trim();
                     String type = spinnerPaymentType.getSelectedItem().toString().trim();
                     String method = spinnerPaymentMethod.getSelectedItem().toString().trim();
                     String docName = etPayDentist.getText().toString().trim();
@@ -147,6 +148,7 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
                     patientPayment.setTotal(total);
                     patientPayment.setRemarks(remarks);
                     patientPayment.setDateUpdated(dateUpdated);
+                    patientPayment.setPlanName(payPlan);
                     patientPayment.setKey(paymentKey);
                     DatabaseReference saveInsRef, saveRef;
                     saveRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(paymentKey);
@@ -263,6 +265,7 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
         etPayDate = findViewById(R.id.etPayDate);
         etPayAmount = findViewById(R.id.etPayAmount);
         etPayRemarks = findViewById(R.id.etPayRemarks);
+        etPayPlan = findViewById(R.id.etPayPlan);
 
 
         spinnerPaymentType = findViewById(R.id.spinnerPaymentType);

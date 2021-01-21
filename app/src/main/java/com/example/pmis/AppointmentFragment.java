@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.pmis.Adapter.PatientListAdapter;
 import com.example.pmis.Adapter.ScheduleListAdapter;
 import com.example.pmis.Helpers.LoggedUserData;
+import com.example.pmis.Model.AppointmentStatus;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.PatientScheduleFacade;
 import com.example.pmis.Model.Schedule;
@@ -60,8 +61,9 @@ public class AppointmentFragment extends Fragment {
     private List<Schedule> scheduleList;
     private LoggedUserData loggedUserData;
     private String userID;
-    private   String patientName, schedDate, startTime, endTime, note, contactNo, patientKey, scheduleKey;
+    private   String patientName, schedDate, startTime, endTime, note, contactNo, patientKey, scheduleKey, status;
     private List<String> patientKeyList;
+    private List<String> patientNameList;
     private ArrayList<String> keyList;
     private ArrayList<PatientScheduleFacade> patientScheduleFacadeArrayList;
     private ScheduleListAdapter scheduleListAdapter;
@@ -105,6 +107,7 @@ public class AppointmentFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         keyList = new ArrayList<String>();
+        patientNameList = new ArrayList<>();
         patientKeyList = new ArrayList<>();
         patientScheduleFacadeArrayList = new ArrayList<>();
         SimpleDateFormat month_date = new SimpleDateFormat("MMM");
@@ -128,13 +131,12 @@ public class AppointmentFragment extends Fragment {
                     Log.d(TAG, "EVENT DATA: " + sched.getPatientKey() + " " + sched.getScheduleKey());
                     String patientKey =  sched.getPatientKey();
                     String eventSchedKey= sched.getScheduleKey();
-                    String patientName= sched.getPatientName();
                     String contactNo= sched.getContactNo();
                             schedRef = mFirebaseDatabase.getReference("Schedules").child(userID).child(eventSchedKey);
                             schedRef.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                       if(snapshot.exists()){
+                                       if(snapshot.hasChildren()){
                                            Schedule schedule = snapshot.getValue(Schedule.class);
                                            schedDate = snapshot.getValue(Schedule.class).getDate();
                                            startTime = snapshot.getValue(Schedule.class).getStartTime();
@@ -142,7 +144,7 @@ public class AppointmentFragment extends Fragment {
                                            note = snapshot.getValue(Schedule.class).getRemarks();
                                            scheduleKey = snapshot.getValue(Schedule.class).getKey();
                                            PatientScheduleFacade patientScheduleFacade = new PatientScheduleFacade();
-                                           patientScheduleFacade.setPatientName(patientName);
+
                                            patientScheduleFacade.setContactNo(contactNo);
                                            patientScheduleFacade.setDate(schedDate);
                                            patientScheduleFacade.setEndTime(endTime);
@@ -150,12 +152,28 @@ public class AppointmentFragment extends Fragment {
                                            patientScheduleFacade.setNote(note);
                                            patientScheduleFacade.setPatientKey(patientKey);
                                            patientScheduleFacade.setScheduleKey(scheduleKey);
-                                           patientScheduleFacadeArrayList.add(patientScheduleFacade);
-                                           schedCounter[0]++;
-                                           Log.d(TAG, "sched counter: " +   schedCounter[0] + " " + events.size());
-                                           if (schedCounter[0] == events.size()){
-                                             scheduleListAdapter.notifyDataSetChanged();
-                                           }
+                                           DatabaseReference statusRef = mFirebaseDatabase.getReference("AppointmentStatus").child(userID).child(scheduleKey);
+                                           statusRef.addValueEventListener(new ValueEventListener() {
+                                               @Override
+                                               public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                   if(snapshot.hasChildren()) {
+                                                       status = snapshot.getValue(AppointmentStatus.class).getStatus();
+                                                       patientScheduleFacade.setStatus(status);
+                                                       patientScheduleFacadeArrayList.add(patientScheduleFacade);
+                                                       schedCounter[0]++;
+                                                       Log.d(TAG, "sched counter: " + schedCounter[0] + " " + events.size());
+                                                       if (schedCounter[0] == events.size()) {
+                                                           scheduleListAdapter.notifyDataSetChanged();
+                                                       }
+                                                   }
+                                               }
+
+                                               @Override
+                                               public void onCancelled(@NonNull DatabaseError error) {
+
+                                               }
+                                           });
+
                                        }
                                 }
 
@@ -193,9 +211,10 @@ public class AppointmentFragment extends Fragment {
                     String patientKey = patient.getKey();
                     patientKeyList.add(patientKey);
                     patientName = ds.getValue(Patient.class).getFirstName() + ' ' + ds.getValue(Patient.class).getLastName();
+                    patientNameList.add(patientName);
                     contactNo = ds.getValue(Patient.class).getContactNo();
                 }
-                buildCalendarEvent(patientKeyList, patientName, contactNo);
+                buildCalendarEvent(patientKeyList, contactNo);
             }
 
             @Override
@@ -206,7 +225,7 @@ public class AppointmentFragment extends Fragment {
 
     }
 
-    public void buildCalendarEvent(List<String> patientKeyList, String patientName, String contactNo) {
+    public void buildCalendarEvent(List<String> patientKeyList, String contactNo) {
             DatabaseReference patientRef = mFirebaseDatabase.getReference("Schedules").child(userID);
             patientRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -231,7 +250,6 @@ public class AppointmentFragment extends Fragment {
                                         scheduler.setPatientKey(schedule.getPatientKey());
                                         scheduler.setScheduleKey(schedule.getKey());
                                         scheduler.setContactNo(contactNo);
-                                        scheduler.setPatientName(patientName);
                                         ev1 = new Event(Color.BLUE, cal.getTimeInMillis(), scheduler);
                                         compactCalendarView.addEvent(ev1);
                                     } catch (ParseException e) {

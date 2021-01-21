@@ -2,6 +2,7 @@ package com.example.pmis;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.pmis.Model.Clinic;
 import com.example.pmis.Model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -48,7 +50,14 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
 
     }
-
+    private static final String SHARED_PREF_NAME = "myPref";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_ADDRESS = "address";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_CONTACT_NO = "contactNo";
+    private static final String KEY_DOC_NAME = "docName";
+    private static final String KEY_LICENSE = "license";
+    private static final String KEY_DEGREE = "degree";
     private static final String TAG = "HOME_ACTIVITY";
     private AppBarConfiguration mAppBarConfiguration;
     private TextView lblFullName, lblClinic;
@@ -61,6 +70,8 @@ public class HomeActivity extends AppCompatActivity {
     private String userID;
     private StorageReference storageReference;
     private FirebaseStorage firebaseStorage;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences sharedPreferences;
     private BottomAppBar bottomAppBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +79,8 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference("Users");
@@ -134,6 +147,13 @@ public class HomeActivity extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                editor.putString(KEY_NAME, snapshot.getValue(Clinic.class).getClinicName());
+                editor.putString(KEY_CONTACT_NO, snapshot.getValue(Clinic.class).getContactNo());
+                editor.putString(KEY_ADDRESS, snapshot.getValue(Clinic.class).getAddress());
+                editor.putString(KEY_DEGREE, snapshot.getValue(Clinic.class).getDegree());
+                editor.putString(KEY_LICENSE, snapshot.getValue(Clinic.class).getLicense());
+                editor.putString("photoURL", snapshot.getValue(Clinic.class).getPhotoUrl());
+                editor.apply();
                 if(!snapshot.exists()){
                     Intent intent = new Intent(HomeActivity.this, NewUserActivity.class);
                     startActivity(intent);
@@ -205,15 +225,7 @@ public class HomeActivity extends AppCompatActivity {
         lblFullName = (TextView)headerView.findViewById(R.id.lblFullName);
         imgProfile = (ImageView) headerView.findViewById(R.id.imgProfile);
         lblClinic = (TextView)headerView.findViewById(R.id.lblClinic);
-        btnSetupProfile = (Button)headerView.findViewById(R.id.btnSetupProfile);
-        btnSetupProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, EditProfileActivity.class);
-                intent.putExtra("sex", "Male");
-                startActivity(intent);
-            }
-        });
+
         String fullName;
             UserInfo uInfo = new UserInfo();
             uInfo.setFirstName(datasnapshot.child(userID).getValue(UserInfo.class).getFirstName());
@@ -221,8 +233,13 @@ public class HomeActivity extends AppCompatActivity {
             uInfo.setAge(datasnapshot.child(userID).getValue(UserInfo.class).getAge());
             uInfo.setEmail(datasnapshot.child(userID).getValue(UserInfo.class).getEmail());
             uInfo.setSex(datasnapshot.child(userID).getValue(UserInfo.class).getSex());
+
             fullName = uInfo.firstName + " " + uInfo.lastName;
-            lblClinic.setText(uInfo.email);
+              String  docName = "Dr. " +  fullName + " D.M.D";
+              editor.putString(KEY_DOC_NAME, docName);
+              editor.apply();
+
+        lblClinic.setText(uInfo.email);
             lblFullName.setText(fullName);
         String photoUrl = datasnapshot.getValue(UserInfo.class).getPhotoUrl();
             storageReference = FirebaseStorage.getInstance().getReference().child("images/profilePics/" + userID);

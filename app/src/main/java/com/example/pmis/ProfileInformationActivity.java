@@ -1,24 +1,18 @@
 package com.example.pmis;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.pmis.Model.Clinic;
 import com.example.pmis.Model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,8 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class ProfileFragment extends Fragment {
-    private TextView editFirstName, editLastName, editEmail, editSex, editAge, editClinicName, editAddress, editContactNumber, tvDocName,tvDegree, tvLicense;
+public class ProfileInformationActivity extends AppCompatActivity {
+    private TextView editFirstName, editLastName, editEmail, editSex, editAge, editClinicName, editAddress, editContactNumber;
     private ProfileViewModel mViewModel;
     private Button btnEditClinic, btnEditProfile;
     private View view;
@@ -44,30 +38,20 @@ public class ProfileFragment extends Fragment {
     private FirebaseStorage firebaseStorage;
     private String userID;
     private ImageView ivProfilePic;
-    public static ProfileFragment newInstance() {
-        return new ProfileFragment();
-    }
-
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.profile_fragment, container, false);
-        return  view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ivProfilePic =  view.findViewById(R.id.ivProfilePic);
-        btnEditProfile = (Button) view.findViewById(R.id.btnEditProfile);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile_information);
+        ivProfilePic =  findViewById(R.id.ivProfilePic3);
+        btnEditProfile = (Button) findViewById(R.id.btnEditProfile);
         btnEditProfile.setOnClickListener(editProfile);
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        editFirstName = (TextView) view.findViewById(R.id.editFirstName);
-        editLastName = (TextView) view.findViewById(R.id.editLastName);
+        editFirstName = (TextView) findViewById(R.id.editFirstName);
+        editLastName = (TextView) findViewById(R.id.editLastName);
 
-        editEmail = (TextView) view.findViewById(R.id.editEmail);
-        editSex = (TextView) view.findViewById(R.id.editSex);
-        editAge = (TextView) view.findViewById(R.id.editAge);
+        editEmail = (TextView) findViewById(R.id.editEmail);
+        editSex = (TextView) findViewById(R.id.editSex);
+        editAge = (TextView) findViewById(R.id.editAge);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -86,7 +70,7 @@ public class ProfileFragment extends Fragment {
                         @Override
                         public void onSuccess(Uri uri) {
                             Glide
-                                    .with(view)
+                                    .with(ProfileInformationActivity.this)
                                     .asBitmap()
                                     .load(uri)
                                     .centerCrop()
@@ -94,18 +78,17 @@ public class ProfileFragment extends Fragment {
                         }
                     });
                 }
-                        uInfo.setFirstName(datasnapshot.child("firstName").getValue(String.class));
-                        uInfo.setLastName(datasnapshot.child("lastName").getValue(String.class));
-                        uInfo.setAge(datasnapshot.child("age").getValue(String.class));
-                        uInfo.setEmail(datasnapshot.child("email").getValue(String.class));
-                        uInfo.setSex(datasnapshot.child("sex").getValue(String.class));
-                        editFirstName.setText(uInfo.firstName);
-                        editLastName.setText(uInfo.lastName);
-                        editEmail.setText(uInfo.email);
-                        editSex.setText(uInfo.sex);
-                        editAge.setText(uInfo.age);
-                        String docName = "Dr. " + uInfo.firstName + ' ' + uInfo.lastName + " D.M.D";
-                        tvDocName.setText(docName);
+                uInfo.setFirstName(datasnapshot.child("firstName").getValue(String.class));
+                uInfo.setLastName(datasnapshot.child("lastName").getValue(String.class));
+                uInfo.setAge(datasnapshot.child("age").getValue(String.class));
+                uInfo.setEmail(datasnapshot.child("email").getValue(String.class));
+                uInfo.setSex(datasnapshot.child("sex").getValue(String.class));
+                editFirstName.setText(uInfo.firstName);
+                editLastName.setText(uInfo.lastName);
+                editEmail.setText(uInfo.email);
+                editSex.setText(uInfo.sex);
+                editAge.setText(uInfo.age);
+
             }
 
             @Override
@@ -113,12 +96,11 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-
     }
     private final View.OnClickListener editProfile = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent( getContext(),EditProfileActivity.class);
+            Intent intent = new Intent(ProfileInformationActivity.this,EditProfileActivity.class);
             String sex = editSex.getText().toString().trim();
             intent.putExtra("sex",sex);
             startActivity(intent);

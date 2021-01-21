@@ -1,9 +1,17 @@
 package com.example.pmis.Model;
 
 public class PatientScheduleFacade {
-    String patientName, date, startTime, endTime, note, contactNo, patientKey, scheduleKey;
+    String patientName, date, startTime, endTime, note, contactNo, patientKey, scheduleKey, status;
     public PatientScheduleFacade(){
 
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getPatientName() {

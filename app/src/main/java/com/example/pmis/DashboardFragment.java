@@ -3,10 +3,12 @@ package com.example.pmis;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -38,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,14 +50,14 @@ import java.util.Locale;
 public class DashboardFragment extends Fragment {
     private static final String TAG = "DASHBOARD_FRAG";
     private LoggedUserData loggedUserData;
-    private TextView tvAppointmentToday,tvAppointmentUpcoming, tvTotalPatient,tvTotalRevenue, tvTotalBalance;
+    private TextView tvAppointmentToday,tvAppointmentUpcoming, tvTotalPatient,tvTotalRevenue, tvTotalBalance, tvTotalPatientRecall;
     private View view;
     private String userID;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef, keyRef;
     private ImageButton ibAppointmentsToday, ivSendAppointment, ibViewPatients,ibAddPatient, ibAddAppointment;
     private Button btnViewCalendar, btnExample;
-    private int counter, upcomingCounter, patientCounter;
+    private int counter, upcomingCounter, patientCounter, recallCounter;
     private double revenueTotal, fullPaymentTotal, balanceTotal;
     private int loadingCounter;
     private LoadingDialog loadingDialog;
@@ -90,6 +93,7 @@ public class DashboardFragment extends Fragment {
         balanceTotal = 0;
         revenueTotal = 0;
         fullPaymentTotal = 0;
+        recallCounter = 0;
 //        btnViewCalendar = view.findViewById(R.id.btnViewCalendar);
 //        btnViewCalendar.setOnClickListener(viewDeviceCalendar);
 //        ibAddPatient = view.findViewById(R.id.ibAddPatient);
@@ -107,6 +111,7 @@ public class DashboardFragment extends Fragment {
         ivSendAppointment = view.findViewById(R.id.ivSendAppointment);
         ivSendAppointment.setOnClickListener(viewUpcomingAppointments);
         tvTotalPatient = view.findViewById(R.id.tvTotalPatient);
+        tvTotalPatientRecall = view.findViewById(R.id.tvTotalPatientRecall);
         loggedUserData = new LoggedUserData();
         userID = loggedUserData.userID();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -137,8 +142,6 @@ public class DashboardFragment extends Fragment {
                                         dbAmount = dbAmount + Double.parseDouble(amount);
                                         Log.d(TAG, "amount:" + amount);
                                         addRevenue(Double.parseDouble(amount));
-
-
                                     }
                                     String total = installment.getValue(PatientPayment.class).getTotal();
                                     double installmentBalance = Double.parseDouble(total) - dbAmount;
@@ -163,10 +166,11 @@ public class DashboardFragment extends Fragment {
 
                         keyRef = mFirebaseDatabase.getReference("Schedules").child(userID);
                         keyRef.addValueEventListener(new ValueEventListener() {
-
+                            @RequiresApi(api = Build.VERSION_CODES.O)
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
+
                                     for (DataSnapshot schedSnapshot : snapshot.getChildren()) {
                                         if (schedSnapshot.getValue(Schedule.class).getPatientKey() != null) {
                                             Log.d(TAG, "COMPARE: " + schedSnapshot.getValue(Schedule.class).getPatientKey() + " " + (patientKey));
@@ -178,6 +182,7 @@ public class DashboardFragment extends Fragment {
                                                 try {
                                                     Date date1 = df.parse(dbDate);
                                                     Date date2 = df.parse(currentDate);
+                                                    Date forRecall = Date.from(ZonedDateTime.now().minusMonths(3).toInstant());
                                                     Log.d(TAG, "DATES  : " + date1 + " " + date2);
                                                     if (date1.compareTo(date2) > 0) {
                                                         upcomingCounter = upcomingCounter + 1;
@@ -185,6 +190,9 @@ public class DashboardFragment extends Fragment {
                                                     if (date1.equals(date2)) {
                                                         Log.d(TAG, "FIREBASE: " + ds.getValue(Schedule.class).getDate());
                                                         counter = counter + 1;
+                                                    }else if(date1.before(forRecall)){
+                                                        recallCounter++;
+
                                                     }
                                                 } catch (ParseException e) {
                                                     e.printStackTrace();
@@ -194,6 +202,7 @@ public class DashboardFragment extends Fragment {
                                                 tvAppointmentUpcoming.setText(String.valueOf(upcomingCounter));
                                                 Log.d(TAG, "FIREBASE counter: " + counter);
                                                 tvAppointmentToday.setText(String.valueOf(counter));
+                                                tvTotalPatientRecall.setText(String.valueOf(recallCounter));
                                             }
                                         }
                                     }

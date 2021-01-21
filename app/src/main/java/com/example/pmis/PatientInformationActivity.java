@@ -66,7 +66,7 @@ public class PatientInformationActivity extends AppCompatActivity {
     private ConstraintLayout clSched, clCall, clMessage, clDownload;
     private Patient patientInfo;
     private String  clinicName, clinicAddress, docName, clinicContactNo;
-    private TextView tvDateAdded, tvPatientFullName, tvPatientEmail, tvPatientAddress, tvPatientContactNo, tvPatientBirthDate, tvPatientNotes, tvPatientGender, tvPatientAge;
+    private TextView tvPatientAddress2, tvDateAdded, tvPatientFullName, tvPatientEmail, tvPatientAddress, tvPatientContactNo, tvPatientBirthDate, tvPatientNotes, tvPatientGender, tvPatientAge;
     private List<MedicalHistory> medicalHistoryList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +110,11 @@ public class PatientInformationActivity extends AppCompatActivity {
                 String firstName = snapshot.getValue(Patient.class).getFirstName();
                 String middleName = snapshot.getValue(Patient.class).getMiddleName();
                 String lastName = snapshot.getValue(Patient.class).getLastName();
+                String address2 = snapshot.getValue(Patient.class).getBarangay() + ", " + snapshot.getValue(Patient.class).getCity() + ", " + snapshot.getValue(Patient.class).getProvince();
                 fullName = firstName + ' ' + middleName + ' ' + lastName;
                 contactNo = snapshot.getValue(Patient.class).getContactNo();
                 tvPatientAddress.setText(snapshot.getValue(Patient.class).getAddress());
+                tvPatientAddress2.setText(address2);
                 tvPatientBirthDate.setText(snapshot.getValue(Patient.class).getBirthDate());
                 tvPatientContactNo.setText(snapshot.getValue(Patient.class).getContactNo());
                 tvPatientEmail.setText(snapshot.getValue(Patient.class).getEmail());
@@ -159,9 +161,8 @@ public class PatientInformationActivity extends AppCompatActivity {
         editInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent schedIntent = new Intent(PatientInformationActivity.this,AddPatientActivity.class);
+                Intent schedIntent = new Intent(PatientInformationActivity.this,EditPatientInformationActivity.class);
                 schedIntent.putExtra("patientKey", patientKey);
-                schedIntent.putExtra("action", "edit");
                 startActivity(schedIntent);
             }
         });
@@ -455,6 +456,7 @@ public class PatientInformationActivity extends AppCompatActivity {
         }
     };
     private void ViewFinder() {
+        tvPatientAddress2 = findViewById(R.id.tvPatientAddress2);
         tvPatientAddress = findViewById(R.id.tvPatientAddress);
         tvPatientBirthDate = findViewById(R.id.tvPatientBirthDate);
         tvPatientContactNo = findViewById(R.id.tvPatientContactNo);

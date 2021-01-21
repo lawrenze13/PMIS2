@@ -169,8 +169,13 @@ public class EditClinicActivity extends AppCompatActivity {
             etAddress.requestFocus();
             return false;
         }
-        if(contactNo.isEmpty()){
+        if(contactNo.isEmpty() || contactNo.length() < 7){
             etContactNo.setError("Contact No. is required");
+            etContactNo.requestFocus();
+            return false;
+        }
+        if(contactNo.length() < 7){
+            etContactNo.setError("Min. length is 7");
             etContactNo.requestFocus();
             return false;
         }

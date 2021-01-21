@@ -1,6 +1,7 @@
 package com.example.pmis.Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pmis.AddPatientPaymentActivity;
@@ -71,31 +73,47 @@ public class PatientProceduresAdapter extends RecyclerView.Adapter {
         viewHolderClass.ibPProcDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Query deleteQuery = ref.child("PatientProcedure").child(patientKey).orderByChild("key").equalTo(patientProcedures.getKey());
-                deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Delete");
+                builder.setMessage("Are you sure you want to Delete this item?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot ds: snapshot.getChildren()){
-                            ds.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(v.getContext(),"Item Deleted Succesfully", Toast.LENGTH_LONG).show();
+                    public void onClick(DialogInterface dialog, int which) {
+                        Query deleteQuery = ref.child("PatientProcedure").child(patientKey).orderByChild("key").equalTo(patientProcedures.getKey());
+                        deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot ds: snapshot.getChildren()){
+                                    ds.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(v.getContext(),"Item Deleted Succesfully", Toast.LENGTH_LONG).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(v.getContext(),"Item not deleted! please try again.", Toast.LENGTH_LONG).show();
+
+                                        }
+                                    });
                                 }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(v.getContext(),"Item not deleted! please try again.", Toast.LENGTH_LONG).show();
+                            }
 
-                                }
-                            });
-                        }
-                    }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
+                            }
+                        });
                     }
                 });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+
             }
         });
 

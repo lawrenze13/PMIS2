@@ -162,6 +162,7 @@
                     android:drawableLeft="@drawable/ic_baseline_call_24"
                     android:drawablePadding="16dp"
                     android:inputType="number"
+                    android:maxLength="11"
                     android:padding="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

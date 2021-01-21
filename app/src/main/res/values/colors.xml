@@ -15,4 +15,5 @@
     <color name="cardPrimary">#A0B7DC</color>
     <color name="bodyPrimary">#E8E4DB</color>
     <color name="black_semi_transparent">#B2000000</color>
+    <color name="dirty_white">#FAF4F3</color>
 </resources>

@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/statisticsFragment"
         android:name="com.example.pmis.StatisticsFragment"
-        android:label="fragment_statistics"
+        android:label="Statistics"
         tools:layout="@layout/fragment_statistics" />
 
 
