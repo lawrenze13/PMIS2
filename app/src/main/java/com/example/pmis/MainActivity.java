@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pmis.Helpers.LoadingDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -29,17 +30,29 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
     private TextView lblFullName, lblClinic;
     private EditText txtEmail, txtPassword;
-    private Button btnSignup;
+    private Button btnSignup, btnForgot;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
+    private LoadingDialog loadingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         txtEmail = findViewById(R.id.txtEmail);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         txtPassword = findViewById(R.id.txtPassword);
+        btnForgot = findViewById(R.id.btnForgot);
+        loadingDialog = new LoadingDialog(MainActivity.this);
+        btnForgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
         mAuth =  FirebaseAuth.getInstance();
+
         progressBar = findViewById(R.id.progressBar);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -49,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void login(View v){
-//        Intent i = new Intent(this, home.class);
-//        startActivity(i);
+
         String email = txtEmail.getText().toString().trim();
         String password = txtPassword.getText().toString().trim();
         if(email.isEmpty()){
@@ -65,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             txtEmail.setError("Please Provide a valid Email");
-            txtPassword.requestFocus();
+            txtEmail.requestFocus();
             return;
         }
         if(password.length() < 6){
@@ -73,19 +85,24 @@ public class MainActivity extends AppCompatActivity {
             txtPassword.requestFocus();
             return;
         }
-        progressBar.setVisibility(View.VISIBLE);
+        loadingDialog.startLoadingDialog();
 
         mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
+                    boolean isNew = task.getResult().getAdditionalUserInfo().isNewUser();
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if(user.isEmailVerified()){
-                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
-
+                        loadingDialog.dismissDialog();
+                        if(isNew){
+                            startActivity(new Intent(MainActivity.this, NewUserActivity.class));
+                        }else {
+                            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                        }
                     }else{
                         user.sendEmailVerification();
-                        progressBar.setVisibility(View.GONE);
+                        loadingDialog.dismissDialog();
                         Toast.makeText(MainActivity.this,"Check your email to verify your account!", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -93,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                progressBar.setVisibility(View.GONE);
+                loadingDialog.dismissDialog();
                 Toast.makeText(MainActivity.this,"Incorrect Credentials. Please Try again", Toast.LENGTH_LONG).show();
             }
         });

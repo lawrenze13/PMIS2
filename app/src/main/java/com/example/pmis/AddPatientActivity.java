@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.example.pmis.Model.Patient;
@@ -54,7 +55,7 @@ public class AddPatientActivity extends AppCompatActivity {
     public static final int PICK_IMAGE = 1;
     public static final int PICK_CAMERA = 2;
     public static final int CAMERA_PERM_CODE = 101;
-    private EditText etPatientBirthdate ,etPFirstName, etPMiddleName, etPLastName, etPEmail, etPContactNo, etPAddress, etPNotes;
+    private EditText etPatientBirthdate ,etPFirstName, etPMiddleName, etPLastName, etPEmail, etPContactNo, etPAddress, etPNotes, etPProvince, etPCity, etPBarangay;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private Button btnUpload;
     private RadioGroup rgPSex;
@@ -72,6 +73,17 @@ public class AddPatientActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Add Patient");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         etPFirstName = findViewById(R.id.etPFirstName);
@@ -80,6 +92,9 @@ public class AddPatientActivity extends AppCompatActivity {
         etPEmail = findViewById(R.id.etPEmail);
         etPContactNo = findViewById(R.id.etPContactNo);
         etPAddress = findViewById(R.id.etPAddress);
+        etPProvince = findViewById(R.id.etPProvince);
+        etPCity = findViewById(R.id.etPCity);
+        etPBarangay = findViewById(R.id.etPBarangay);
         etPNotes = findViewById(R.id.etPNotes);
         rgPSex = findViewById(R.id.rgPSex);
         etPatientBirthdate = findViewById(R.id.etPBirthDate);
@@ -92,30 +107,30 @@ public class AddPatientActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        if(action.equals("edit")) {
-            Log.d(TAG, "action: " + action);
-            patientKey = intent.getStringExtra("patientKey");
-            Log.d(TAG, "patientKey: " + patientKey);
-            editRef = FirebaseDatabase.getInstance().getReference("Patient").child(userID).child(patientKey);
-            editRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    etPFirstName.setText(snapshot.getValue(Patient.class).getFirstName());
-                    etPMiddleName.setText(snapshot.getValue(Patient.class).getMiddleName());
-                    etPLastName.setText(snapshot.getValue(Patient.class).getLastName());
-                    etPEmail.setText(snapshot.getValue(Patient.class).getEmail());
-                    etPContactNo.setText(snapshot.getValue(Patient.class).getContactNo());
-                    etPAddress.setText(snapshot.getValue(Patient.class).getAddress());
-                    etPNotes.setText(snapshot.getValue(Patient.class).getNotes());
-                    etPatientBirthdate.setText(snapshot.getValue(Patient.class).getBirthDate());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
+//        if(action.equals("edit")) {
+//            Log.d(TAG, "action: " + action);
+//            patientKey = intent.getStringExtra("patientKey");
+//            Log.d(TAG, "patientKey: " + patientKey);
+//            editRef = FirebaseDatabase.getInstance().getReference("Patient").child(userID).child(patientKey);
+//            editRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    etPFirstName.setText(snapshot.getValue(Patient.class).getFirstName());
+//                    etPMiddleName.setText(snapshot.getValue(Patient.class).getMiddleName());
+//                    etPLastName.setText(snapshot.getValue(Patient.class).getLastName());
+//                    etPEmail.setText(snapshot.getValue(Patient.class).getEmail());
+//                    etPContactNo.setText(snapshot.getValue(Patient.class).getContactNo());
+//                    etPAddress.setText(snapshot.getValue(Patient.class).getAddress());
+//                    etPNotes.setText(snapshot.getValue(Patient.class).getNotes());
+//                    etPatientBirthdate.setText(snapshot.getValue(Patient.class).getBirthDate());
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+       // }
         Button btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +164,9 @@ public class AddPatientActivity extends AppCompatActivity {
                                     patient.setContactNo(etPContactNo.getText().toString().trim());
                                     patient.setSorter(etPFirstName.getText().toString().toLowerCase().trim() + ' ' + etPLastName.getText().toString().toLowerCase().trim());
                                     patient.setAddress(etPAddress.getText().toString().trim());
+                                    patient.setProvince(etPProvince.getText().toString().trim());
+                                    patient.setCity(etPCity.getText().toString().trim());
+                                    patient.setBarangay(etPBarangay.getText().toString().trim());
                                     patient.setNotes(etPNotes.getText().toString().trim());
                                     patient.setBirthDate(etPatientBirthdate.getText().toString().trim());
                                     String currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
@@ -160,12 +178,12 @@ public class AddPatientActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             String success;
-                                            if(action.equals("edit")){
-                                                success = "Patient Edited Succesfully ";
-                                            }else {
+//                                            if(action.equals("edit")){
+//                                                success = "Patient Edited Succesfully ";
+//                                            }else {
                                                 Log.d(TAG, "submitaction: " + action);
                                                 success = "Patient Added Succesfully ";
-                                            }
+//                                            }
                                             Toast.makeText(AddPatientActivity.this, success, Toast.LENGTH_LONG).show();
                                             finish();
                                         }
@@ -234,6 +252,9 @@ public class AddPatientActivity extends AppCompatActivity {
         String email = etPEmail.getText().toString().trim();
         String contactNo = etPContactNo.getText().toString().trim();
         String address = etPAddress.getText().toString().trim();
+        String province = etPProvince.getText().toString().trim();
+        String city = etPCity.getText().toString().trim();
+        String barangay = etPBarangay.getText().toString().trim();
         String notes = etPNotes.getText().toString().trim();
         String birthDate = etPatientBirthdate.getText().toString().trim();
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -246,11 +267,7 @@ public class AddPatientActivity extends AppCompatActivity {
             etPFirstName.requestFocus();
             return false;
         }
-//        if(middleName.equals("")){
-//            etPMiddleName.setError("Middle Name is required.");
-//            etPMiddleName.requestFocus();
-//            return false;
-//        }
+
         if(lastName.equals("")){
             etPLastName.setError("Last Name is required.");
             etPLastName.requestFocus();
@@ -271,11 +288,21 @@ public class AddPatientActivity extends AppCompatActivity {
             etPAddress.requestFocus();
             return false;
         }
-//        if(notes.equals("")){
-//            etPNotes.setError("Notes is required.");
-//            etPNotes.requestFocus();
-//            return false;
-//        }
+        if(province.isEmpty()){
+            etPProvince.setError("Province is required.");
+            etPProvince.requestFocus();
+            return false;
+        }
+        if(city.isEmpty()){
+            etPCity.setError("City is required.");
+            etPCity.requestFocus();
+            return false;
+        }
+        if(barangay.equals("")){
+            etPBarangay.setError("Barangay is required.");
+            etPBarangay.requestFocus();
+            return false;
+        }
         if(birthDate.equals("")){
             etPatientBirthdate.setError("Contact No. is required.");
             etPatientBirthdate.requestFocus();

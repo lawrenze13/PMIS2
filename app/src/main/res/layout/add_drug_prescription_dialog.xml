@@ -96,29 +96,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvQuantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:text="Quantity"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinDrugInfo" />
-
-        <EditText
-            android:id="@+id/etQuantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_baseline_medical_services_24"
-            android:drawablePadding="16dp"
-            android:inputType="number"
-            android:padding="10dp"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvQuantity" />
-
         <EditText
             android:id="@+id/etFrequency"
             android:layout_width="match_parent"
@@ -142,7 +119,7 @@
             android:layout_marginTop="20dp"
             android:text="Frequency and Dosage"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etQuantity" />
+            app:layout_constraintTop_toBottomOf="@+id/spinDrugInfo" />
 
         <Spinner
             android:id="@+id/spinDrugInfo"

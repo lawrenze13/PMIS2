@@ -58,24 +58,17 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         ivProfilePic =  view.findViewById(R.id.ivProfilePic);
-        btnEditClinic = (Button) view.findViewById(R.id.btnEditClinic);
-        btnEditClinic.setOnClickListener(editClinic);
         btnEditProfile = (Button) view.findViewById(R.id.btnEditProfile);
         btnEditProfile.setOnClickListener(editProfile);
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         editFirstName = (TextView) view.findViewById(R.id.editFirstName);
         editLastName = (TextView) view.findViewById(R.id.editLastName);
-        tvLicense = (TextView) view.findViewById(R.id.tvLicense);
-        tvDegree = (TextView) view.findViewById(R.id.tvDegree);
+
         editEmail = (TextView) view.findViewById(R.id.editEmail);
         editSex = (TextView) view.findViewById(R.id.editSex);
         editAge = (TextView) view.findViewById(R.id.editAge);
-        tvDocName = (TextView) view.findViewById(R.id.tvDocName);
-        editClinicName = (TextView) view.findViewById(R.id.editClinicName);
-        editContactNumber = (TextView) view.findViewById(R.id.editContactNumber);
-        editAddress = (TextView) view.findViewById(R.id.editAddress);
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
@@ -113,8 +106,6 @@ public class ProfileFragment extends Fragment {
                         editAge.setText(uInfo.age);
                         String docName = "Dr. " + uInfo.firstName + ' ' + uInfo.lastName + " D.M.D";
                         tvDocName.setText(docName);
-
-
             }
 
             @Override
@@ -122,51 +113,8 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-        clinicRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                Clinic clinic = new Clinic();
-                    if(datasnapshot.exists()) {
-                        clinic.setClinicName(datasnapshot.getValue(Clinic.class).getClinicName());
-                        clinic.setAddress(datasnapshot.getValue(Clinic.class).getAddress());
-                        clinic.setContactNo(datasnapshot.getValue(Clinic.class).getContactNo());
-                        clinic.setLicense(datasnapshot.getValue(Clinic.class).getLicense());
-                        clinic.setDegree(datasnapshot.getValue(Clinic.class).getDegree());
-                        editClinicName.setText(clinic.clinicName);
-                        editContactNumber.setText(clinic.contactNo);
-                        editAddress.setText(clinic.address);
-                        tvDegree.setText(clinic.getDegree());
-                        tvLicense.setText(clinic.getLicense());
-                        clinic.setPhotoUrl(datasnapshot.getValue(Clinic.class).getPhotoUrl());
-                    }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
-
-    private final View.OnClickListener editClinic = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            String clinicName = editClinicName.getText().toString().trim();
-            String address = editAddress.getText().toString().trim();
-            String contactNo = editContactNumber.getText().toString().trim();
-            String license = tvLicense.getText().toString().trim();
-            String degree = tvDegree.getText().toString().trim();
-            Intent intent = new Intent( getContext(),EditClinicActivity.class);
-
-            intent.putExtra("clinicName",clinicName);
-            intent.putExtra("address",address);
-            intent.putExtra("contactNo",contactNo);
-            intent.putExtra("degree",degree);
-            intent.putExtra("license",license);
-            startActivity(intent);
-        }
-    };
     private final View.OnClickListener editProfile = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

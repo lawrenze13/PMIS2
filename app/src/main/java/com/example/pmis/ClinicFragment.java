@@ -1,6 +1,7 @@
 package com.example.pmis;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,10 +14,12 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.pmis.Model.Clinic;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,7 +34,7 @@ import com.google.firebase.storage.StorageReference;
 public class ClinicFragment extends Fragment {
     private View view;
     private CardView cvDrugList, cvClinicInfo, cvPatientList,cvProcedures;
-    private TextView tvClinicName, tvClinicAddress;
+    private TextView editClinicName, editAddress, editContactNumber, tvDocName,tvDegree, tvLicense;
     private ImageView imageView11;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
@@ -39,8 +42,9 @@ public class ClinicFragment extends Fragment {
     private StorageReference storageReference, viewPhotoReference;
     private DatabaseReference myRef;
     private String userID;
-    private String mParam1;
-    private String mParam2;
+    private static final String SHARED_PREF_NAME = "myPref";
+    private static final String KEY_DOC_NAME = "docName";
+    private SharedPreferences sharedPreferences;
 
     public ClinicFragment() {
         // Required empty public constructor
@@ -64,15 +68,19 @@ public class ClinicFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        cvClinicInfo = (CardView)view.findViewById(R.id.cvClinicInfo);
-        cvClinicInfo.setOnClickListener(clinicInfo);
+        sharedPreferences = getContext().getSharedPreferences(SHARED_PREF_NAME, getContext().MODE_PRIVATE);
         cvProcedures = (CardView)view.findViewById(R.id.cvProcedures);
         cvProcedures.setOnClickListener(procedureList);
         cvDrugList = (CardView)view.findViewById(R.id.cvDrugList);
         cvDrugList.setOnClickListener(drugList);
-        tvClinicName = view.findViewById(R.id.tvClinicName);
+        editClinicName = (TextView) view.findViewById(R.id.editClinicName3);
+        editContactNumber = (TextView) view.findViewById(R.id.editContactNumber3);
+        editAddress = (TextView) view.findViewById(R.id.editAddress3);
+        tvLicense = (TextView) view.findViewById(R.id.tvLicense3);
+        tvDegree = (TextView) view.findViewById(R.id.tvDegree3);
+        tvDocName = (TextView) view.findViewById(R.id.tvDocName3);
+        tvDocName.setText(sharedPreferences.getString(KEY_DOC_NAME, ""));
         imageView11 = view.findViewById(R.id.imageView11);
-        tvClinicAddress = view.findViewById(R.id.tvClinicAddress);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
@@ -81,20 +89,26 @@ public class ClinicFragment extends Fragment {
         clinicRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                tvClinicName.setText(snapshot.child("clinicName").getValue(String.class));
-                tvClinicAddress.setText(snapshot.child("address").getValue(String.class));
-                viewPhotoReference = FirebaseStorage.getInstance().getReference().child("images/clinicPic/" + userID);
-                viewPhotoReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide
-                                .with(view)
-                                .asBitmap()
-                                .load(uri)
-                                .centerCrop()
-                                .into(imageView11);
-                    }
-                });
+                if(snapshot.exists()) {
+                    editClinicName.setText(snapshot.getValue(Clinic.class).getClinicName());
+                    editAddress.setText(snapshot.getValue(Clinic.class).getAddress());
+                    editContactNumber.setText(snapshot.getValue(Clinic.class).getContactNo());
+                    tvDegree.setText(snapshot.getValue(Clinic.class).getDegree());
+                    tvLicense.setText(snapshot.getValue(Clinic.class).getLicense());
+                    viewPhotoReference = FirebaseStorage.getInstance().getReference().child("images/clinicPic/" + userID);
+                    viewPhotoReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide
+                                    .with(view)
+                                    .asBitmap()
+                                    .load(uri)
+                                    .centerCrop()
+                                    .into(imageView11);
+                        }
+
+                    });
+                }
             }
 
             @Override
@@ -102,21 +116,27 @@ public class ClinicFragment extends Fragment {
 
             }
         });
-        cvPatientList = view.findViewById(R.id.cvPatientList);
-        cvPatientList.setOnClickListener(new View.OnClickListener() {
+        Button btnEditClinic2 = (Button) view.findViewById(R.id.btnEditClinic2);
+        btnEditClinic2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(),PatientActivity.class);
+                String clinicName = editClinicName.getText().toString().trim();
+                String address = editAddress.getText().toString().trim();
+                String contactNo = editContactNumber.getText().toString().trim();
+                String license = tvLicense.getText().toString().trim();
+                String degree = tvDegree.getText().toString().trim();
+                Intent intent = new Intent( getContext(),EditClinicActivity.class);
+
+                intent.putExtra("clinicName",clinicName);
+                intent.putExtra("address",address);
+                intent.putExtra("contactNo",contactNo);
+                intent.putExtra("degree",degree);
+                intent.putExtra("license",license);
                 startActivity(intent);
             }
         });
     }
-    public final View.OnClickListener clinicInfo = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            Navigation.findNavController(view).navigate(R.id.profileFragment);
-        }
-    };
+
     public final View.OnClickListener drugList = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -19,6 +21,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.pmis.Helpers.LoggedUserData;
+import com.example.pmis.Model.AppointmentStatus;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.Schedule;
 import com.example.pmis.Model.UserInfo;
@@ -86,10 +89,23 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
                     int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
                     int minute = mCurrentTime.get(Calendar.MINUTE);
                     TimePickerDialog mTimePicker;
-                    mTimePicker = new TimePickerDialog(AddScheduleActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    mTimePicker = new TimePickerDialog(AddScheduleActivity.this,  android.R.style.Theme_Holo_Light_Dialog_MinWidth, new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            etSchedStart.setText(hourOfDay + ":" + minute);
+                            String minutePadded ="";
+                            String hourPadded ="";
+                            if(minute < 10){
+                                minutePadded = String.format("%01d", minute);
+                            }else{
+                                 minutePadded = String.valueOf(minute);
+                            }
+                            if(hourOfDay < 10){
+                                hourPadded = String.format("%01d", hourOfDay);
+                            }else{
+                                 hourPadded = String.valueOf(hourOfDay);
+                            }
+                            etSchedStart.setText(hourPadded + ":" + minutePadded);
+                            etSchedStart.clearFocus();
                         }
                     }, hour, minute, true);
                     mTimePicker.setTitle("Select Start Time");
@@ -105,10 +121,23 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
                     int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
                     int minute = mCurrentTime.get(Calendar.MINUTE);
                     TimePickerDialog mTimePicker;
-                    mTimePicker = new TimePickerDialog(AddScheduleActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    mTimePicker = new TimePickerDialog(AddScheduleActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            etSchedEnd.setText(hourOfDay + ":" + minute);
+                             String minutePadded ="";
+                            String hourPadded ="";
+                            if(minute < 10){
+                                minutePadded = String.format("%01d", minute);
+                            }else{
+                                minutePadded = String.valueOf(minute);
+                            }
+                            if(hourOfDay < 10){
+                                hourPadded = String.format("%01d", hourOfDay);
+                            }else{
+                                hourPadded = String.valueOf(hourOfDay);
+                            }
+                            etSchedEnd.setText(hourPadded + ":" + minutePadded);
+                            etSchedEnd.clearFocus();
                         }
                     }, hour, minute, true);
                     mTimePicker.setTitle("Select End Time");
@@ -160,41 +189,72 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
                             schedule.setEndTime(endTime);
                             schedule.setRemarks(remarks);
                             mFirebaseDatabase = FirebaseDatabase.getInstance();
-                            saveRef = mFirebaseDatabase.getReference("Schedules").child(patientKey);
+                            saveRef = mFirebaseDatabase.getReference("Schedules").child(userID);
                             String scheduleKey = saveRef.push().getKey();
                             schedule.setKey(scheduleKey);
-                            saveRef.child(scheduleKey).setValue(schedule).addOnSuccessListener(new OnSuccessListener<Void>() {
+                             AlertDialog.Builder builder = new AlertDialog.Builder(AddScheduleActivity.this);
+                            builder.setTitle("Save to Device Calendar");
+                            builder.setMessage("Do you also want this to save on your Device Calendar?");
+                            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onSuccess(Void aVoid) {
-                                    SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy hh:mm");
-
-                                    Calendar calStart = Calendar.getInstance();
-                                    Calendar calEnd = Calendar.getInstance();
-                                    try {
-                                        Date  scheduleStart = format.parse(schedule.getDate() + " " + schedule.getStartTime());
-                                        Date  scheduleEnd = format.parse(schedule.getDate() + " " + schedule.getEndTime());
-                                        Log.d(TAG,"scheduleStart: " + scheduleStart);
-                                        Log.d(TAG,"scheduleEnd: " + scheduleEnd);
+                                public void onClick(DialogInterface dialog, int which) {
+                                    saveRef.child(scheduleKey).setValue(schedule).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            AppointmentStatus appointmentStatus = new AppointmentStatus();
+                                            appointmentStatus.setStatus("Pending");
+                                            appointmentStatus.setScheduleKey(scheduleKey);
+                                            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("AppointmentStatus").child(userID).child(scheduleKey);
+                                            myRef.setValue(appointmentStatus);
+                                            SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy hh:mm");
+                                            Calendar calStart = Calendar.getInstance();
+                                            Calendar calEnd = Calendar.getInstance();
+                                            try {
+                                                Date  scheduleStart = format.parse(schedule.getDate() + " " + schedule.getStartTime());
+                                                Date  scheduleEnd = format.parse(schedule.getDate() + " " + schedule.getEndTime());
+                                                Log.d(TAG,"scheduleStart: " + scheduleStart);
+                                                Log.d(TAG,"scheduleEnd: " + scheduleEnd);
 //                                        calStart.setTime(scheduleStart);
 //
 //                                        calEnd.setTime(scheduleEnd);
-                                        Intent intent = new Intent(Intent.ACTION_INSERT)
-                                                .setData(CalendarContract.Events.CONTENT_URI)
-                                                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, scheduleStart)
-                                                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, scheduleEnd)
-                                                .putExtra(CalendarContract.Events.TITLE, patientName)
-                                                .putExtra(CalendarContract.Events.DESCRIPTION, schedule.remarks);
-                                        startActivity( intent);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
+                                                Intent intent = new Intent(Intent.ACTION_INSERT)
+                                                        .setData(CalendarContract.Events.CONTENT_URI)
+                                                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, scheduleStart)
+                                                        .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, scheduleEnd)
+                                                        .putExtra(CalendarContract.Events.TITLE, patientName)
+                                                        .putExtra(CalendarContract.Events.DESCRIPTION, schedule.remarks);
+                                                startActivity( intent);
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                            }
 
 
 
-                                    Toast.makeText(AddScheduleActivity.this, "Schedule added succesfully", Toast.LENGTH_LONG).show();
-                                    finish();
+                                            Toast.makeText(AddScheduleActivity.this, "Schedule added succesfully", Toast.LENGTH_LONG).show();
+                                            finish();
+                                        }
+                                    });
                                 }
                             });
+                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    saveRef.child(scheduleKey).setValue(schedule).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            AppointmentStatus appointmentStatus = new AppointmentStatus();
+                                            appointmentStatus.setStatus("Pending");
+                                            appointmentStatus.setScheduleKey(scheduleKey);
+                                            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("AppointmentStatus").child(userID).child(scheduleKey);
+                                            myRef.setValue(appointmentStatus);
+                                            Toast.makeText(AddScheduleActivity.this, "Schedule added succesfully", Toast.LENGTH_LONG).show();
+                                            finish();
+                                        }
+                                    });
+                                }
+                            });
+                            builder.show();
+
                 String dateTimeStart = date + " " + startTime;
                 String dateTimeEnd = date + " " + endTime;
 //                SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy hh:mm");

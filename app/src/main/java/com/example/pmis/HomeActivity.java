@@ -1,7 +1,10 @@
 package com.example.pmis;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,10 +14,14 @@ import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.pmis.Model.AppointmentStatus;
+import com.example.pmis.Model.Clinic;
 import com.example.pmis.Model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -38,13 +45,22 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.Set;
+
 public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
 
     }
-
+    private static final String SHARED_PREF_NAME = "myPref";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_ADDRESS = "address";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_CONTACT_NO = "contactNo";
+    private static final String KEY_DOC_NAME = "docName";
+    private static final String KEY_LICENSE = "license";
+    private static final String KEY_DEGREE = "degree";
     private static final String TAG = "HOME_ACTIVITY";
     private AppBarConfiguration mAppBarConfiguration;
     private TextView lblFullName, lblClinic;
@@ -57,19 +73,74 @@ public class HomeActivity extends AppCompatActivity {
     private String userID;
     private StorageReference storageReference;
     private FirebaseStorage firebaseStorage;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences sharedPreferences;
+    private BottomAppBar bottomAppBar;
+    private FloatingActionButton floatingActionButton2;
+    private String selectedItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference("Users");
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        floatingActionButton2 = (FloatingActionButton) findViewById(R.id.floatingActionButton2);
+        floatingActionButton2.setOnClickListener(addButton);
+        bottomAppBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
+        bottomAppBar.replaceMenu(R.menu.app_bar_menu);
+        bottomAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                switch (id){
+                    case R.id.menuAbout:
+                        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+                        connectedRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                boolean connected = snapshot.getValue(Boolean.class);
+                                if(connected){
+                                    Toast.makeText(HomeActivity.this, "You're currently Online.", Toast.LENGTH_LONG).show();
+                                }else{
+                                    Toast.makeText(HomeActivity.this, "You're currently Offline.", Toast.LENGTH_LONG).show();
+                                }
+                            }
 
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        break;
+                        case R.id.menuSettings:
+                            SettingsNavigationFragment settingsNavigationFragment = new SettingsNavigationFragment();
+                            settingsNavigationFragment.show(getSupportFragmentManager(), "TAG");
+                            break;
+
+                }
+                return false;
+            }
+        });
+//        bottomAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SettingsNavigationFragment settingsNavigationFragment = new SettingsNavigationFragment();
+//                settingsNavigationFragment.show(getSupportFragmentManager(), "TAG");
+//            }
+//        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_dashboard, R.id.profileFragment, R.id.clinicFragment, R.id.patientFragment,  R.id.reportFragment, R.id.appointmentFragment)
+                R.id.nav_dashboard, R.id.profileFragment, R.id.clinicFragment, R.id.patientFragment,  R.id.reportFragment, R.id.appointmentFragment, R.id.statisticsFragment)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -78,8 +149,68 @@ public class HomeActivity extends AppCompatActivity {
 
         drawerItems();
         clinicFragmentHeader();
-    }
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = mFirebaseDatabase.getReference("Clinic").child(userID);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                editor.putString(KEY_NAME, snapshot.getValue(Clinic.class).getClinicName());
+                editor.putString(KEY_CONTACT_NO, snapshot.getValue(Clinic.class).getContactNo());
+                editor.putString(KEY_ADDRESS, snapshot.getValue(Clinic.class).getAddress());
+                editor.putString(KEY_DEGREE, snapshot.getValue(Clinic.class).getDegree());
+                editor.putString(KEY_LICENSE, snapshot.getValue(Clinic.class).getLicense());
+                editor.putString("photoURL", snapshot.getValue(Clinic.class).getPhotoUrl());
+                editor.apply();
+                if(!snapshot.exists()){
+                    Intent intent = new Intent(HomeActivity.this, NewUserActivity.class);
+                    startActivity(intent);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private final View.OnClickListener addButton = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String[] choices = {"Add Patient", "Add Appointment", "Add Payment"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            builder.setTitle("Add");
+            builder.setSingleChoiceItems(choices,0 , new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectedItem = choices[which];
+
+                }
+            });
+            builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(selectedItem.equals("Add Patient")){
+                        Intent intent = new Intent(HomeActivity.this, AddPatientActivity.class);
+                        intent.putExtra("action", "add");
+                        startActivity(intent);
+                    }else if(selectedItem.equals("Add Appointment")){
+                        Intent intent = new Intent(HomeActivity.this, PatientActivity.class);
+                        startActivity(intent);
+                    }else if(selectedItem.equals("Add Payment")){
+                        Intent intent = new Intent(HomeActivity.this, PatientActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
+    };
     private void clinicFragmentHeader() {
 
     }
@@ -91,6 +222,7 @@ public class HomeActivity extends AppCompatActivity {
                 mAuth.signOut();
                 finish();
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -101,6 +233,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
+        bottomAppBar.replaceMenu(R.menu.app_bar_menu);
         return true;
     }
 
@@ -116,11 +249,7 @@ public class HomeActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void drawerItems(){
 
-        mAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference("Users");
-        FirebaseUser user = mAuth.getCurrentUser();
-        userID = user.getUid();
+
        myRef.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
@@ -140,15 +269,7 @@ public class HomeActivity extends AppCompatActivity {
         lblFullName = (TextView)headerView.findViewById(R.id.lblFullName);
         imgProfile = (ImageView) headerView.findViewById(R.id.imgProfile);
         lblClinic = (TextView)headerView.findViewById(R.id.lblClinic);
-        btnSetupProfile = (Button)headerView.findViewById(R.id.btnSetupProfile);
-        btnSetupProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, EditProfileActivity.class);
-                intent.putExtra("sex", "Male");
-                startActivity(intent);
-            }
-        });
+
         String fullName;
             UserInfo uInfo = new UserInfo();
             uInfo.setFirstName(datasnapshot.child(userID).getValue(UserInfo.class).getFirstName());
@@ -156,8 +277,13 @@ public class HomeActivity extends AppCompatActivity {
             uInfo.setAge(datasnapshot.child(userID).getValue(UserInfo.class).getAge());
             uInfo.setEmail(datasnapshot.child(userID).getValue(UserInfo.class).getEmail());
             uInfo.setSex(datasnapshot.child(userID).getValue(UserInfo.class).getSex());
+
             fullName = uInfo.firstName + " " + uInfo.lastName;
-            lblClinic.setText(uInfo.email);
+              String  docName = "Dr. " +  fullName + " D.M.D";
+              editor.putString(KEY_DOC_NAME, docName);
+              editor.apply();
+
+        lblClinic.setText(uInfo.email);
             lblFullName.setText(fullName);
         String photoUrl = datasnapshot.getValue(UserInfo.class).getPhotoUrl();
             storageReference = FirebaseStorage.getInstance().getReference().child("images/profilePics/" + userID);

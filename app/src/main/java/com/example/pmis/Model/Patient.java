@@ -4,6 +4,31 @@ public class Patient {
     public String firstName;
     public String dateAdded;
     public String sorter;
+    public String province, city, barangay;
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getBarangay() {
+        return barangay;
+    }
+
+    public void setBarangay(String barangay) {
+        this.barangay = barangay;
+    }
 
     public String getSorter() {
         return sorter;

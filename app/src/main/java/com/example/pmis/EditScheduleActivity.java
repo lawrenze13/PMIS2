@@ -8,6 +8,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class EditScheduleActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+    private static final String TAG = "EDIT_SCHEDULE";
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef, docRef, saveRef;
     private Button btnSchedSave;
@@ -55,6 +57,7 @@ public class EditScheduleActivity extends AppCompatActivity implements DatePicke
         patientKey = intent.getStringExtra("patientKey");
         scheduleKey = intent.getStringExtra("scheduleKey");
         fullName = intent.getStringExtra("fullName");
+        Log.d(TAG, "patientKey: " + patientKey);
         etSchedName.setText(fullName);
         etSchedDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -105,7 +108,7 @@ public class EditScheduleActivity extends AppCompatActivity implements DatePicke
         });
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         buildDoctorName();
-        myRef = mFirebaseDatabase.getReference("Schedules").child(patientKey).child(scheduleKey);
+        myRef = mFirebaseDatabase.getReference("Schedules").child(userID).child(scheduleKey);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -139,7 +142,7 @@ public class EditScheduleActivity extends AppCompatActivity implements DatePicke
                 schedule.setEndTime(endTime);
                 schedule.setRemarks(remarks);
                 mFirebaseDatabase = FirebaseDatabase.getInstance();
-                saveRef = mFirebaseDatabase.getReference("Schedules").child(patientKey).child(scheduleKey);
+                saveRef = mFirebaseDatabase.getReference("Schedules").child(userID).child(scheduleKey);
                 schedule.setKey(scheduleKey);
                 saveRef.setValue(schedule).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

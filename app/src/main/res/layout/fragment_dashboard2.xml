@@ -65,16 +65,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageButton
-                    android:id="@+id/ibAddAppointment"
-                    android:layout_width="39dp"
-                    android:layout_height="36dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_baseline_add_circle_24"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvAppointmentTitle"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tvAppointmentTitle" />
-
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -166,6 +156,7 @@
                             android:fontFamily="@font/montserrat"
                             android:text="View Device Calendar"
                             android:textSize="12sp"
+                            android:visibility="gone"
                             app:icon="@drawable/ic_baseline_calendar_today_24"
                             app:iconTint="@color/bgPrimary"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -205,16 +196,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageButton
-                    android:id="@+id/ibAddPatient"
-                    android:layout_width="39dp"
-                    android:layout_height="36dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_baseline_add_circle_24"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvPatientTitle"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tvPatientTitle" />
-
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -238,12 +219,35 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
+                        <ImageButton
+                            android:id="@+id/ibViewPatients2"
+                            android:layout_width="39dp"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="15dp"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/ic_baseline_send_24"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvlabelpatients2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tvlabelpatients2" />
+
                         <TextView
                             android:id="@+id/tvTotalPatient"
                             android:layout_width="wrap_content"
                             android:layout_height="45dp"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="12dp"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="0"
+                            android:textColor="@color/bgPrimary"
+                            android:textSize="35sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvTotalPatientRecall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="45dp"
+                            android:layout_marginStart="20dp"
                             android:layout_marginBottom="12dp"
                             android:fontFamily="@font/montserrat_bold"
                             android:text="0"
@@ -251,7 +255,7 @@
                             android:textSize="35sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toBottomOf="@+id/tvTotalPatient" />
 
                         <TextView
                             android:id="@+id/tvlabelpatients"
@@ -263,6 +267,17 @@
                             app:layout_constraintBottom_toBottomOf="@+id/tvTotalPatient"
                             app:layout_constraintStart_toEndOf="@+id/tvTotalPatient"
                             app:layout_constraintTop_toTopOf="@+id/tvTotalPatient" />
+
+                        <TextView
+                            android:id="@+id/tvlabelpatients2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="30dp"
+                            android:text="Total Patients for Recall"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvTotalPatientRecall"
+                            app:layout_constraintStart_toEndOf="@+id/tvTotalPatientRecall"
+                            app:layout_constraintTop_toBottomOf="@+id/tvTotalPatient" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
