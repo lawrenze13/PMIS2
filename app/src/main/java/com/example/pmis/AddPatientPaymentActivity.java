@@ -116,8 +116,8 @@ public class AddPatientPaymentActivity extends AppCompatActivity implements Date
         btnPaySave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                     if (validateFullPayment()) {
+                        btnPaySave.setEnabled(false);
                         String date = etPayDate.getText().toString().trim();
                         String total = etPayAmount.getText().toString().trim();
                         String remarks = etPayRemarks.getText().toString().trim();
@@ -131,7 +131,8 @@ public class AddPatientPaymentActivity extends AppCompatActivity implements Date
                         Log.d(TAG, "procedureKey: " + procedureKey);
                         DateUpdatedHelper dateUpdatedHelper = new DateUpdatedHelper();
                         String dateUpdated = dateUpdatedHelper.getDateUpdated();
-                        saveRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type);
+                        saveRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child(type).child(patientKey);
+                   //     saveRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type);
                         String key = saveRef.push().getKey();
                         PatientPayment patientPayment = new PatientPayment();
                         patientPayment.setDocName(docName);
@@ -148,6 +149,7 @@ public class AddPatientPaymentActivity extends AppCompatActivity implements Date
 
                         patientPayment.setProcedureKey(procedureKey);
                         patientPayment.setMethod(method);
+                        patientPayment.setPatientKey(patientKey);
                         patientPayment.setTotal(total);
                         patientPayment.setRemarks(remarks);
                         patientPayment.setDateUpdated(dateUpdated);
@@ -170,11 +172,13 @@ public class AddPatientPaymentActivity extends AppCompatActivity implements Date
                                 e.printStackTrace();
                             }
                             installment.setDateUpdated(dateUpdated);
-                            saveInsRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(key);
+                            saveInsRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child(type).child(patientKey).child(key);
+                           // saveInsRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(key);
                             saveInsRef.setValue(patientPayment).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    DatabaseReference savePayment = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(key).child("payment");
+                                    DatabaseReference savePayment = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child(type).child(patientKey).child(key).child("payment");
+                               //     DatabaseReference savePayment = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(key).child("payment");
                                     String installmentKey = savePayment.push().getKey();
                                     installment.setKey(installmentKey);
                                     savePayment.child(installmentKey).setValue(installment).addOnSuccessListener(new OnSuccessListener<Void>() {

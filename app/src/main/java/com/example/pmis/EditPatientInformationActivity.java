@@ -345,6 +345,10 @@ public class EditPatientInformationActivity extends AppCompatActivity {
             etPContactNo.setError("Contact No. is required.");
             etPContactNo.requestFocus();
             return false;
+        } if(contactNo.length() < 7){
+            etPContactNo.setError("Min Length is 7");
+            etPContactNo.requestFocus();
+            return false;
         }
         if(address.equals("")){
             etPAddress.setError("Address is required.");

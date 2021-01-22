@@ -97,7 +97,7 @@ public class PatientPaymentActivity extends AppCompatActivity {
         );
         tabLayoutMediator.attach();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        fullRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child("FULL PAYMENT");
+        fullRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("FULL PAYMENT").child(patientKey);
         fullRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -118,7 +118,7 @@ public class PatientPaymentActivity extends AppCompatActivity {
 
             }
         });
-        insRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child("INSTALLMENT");
+        insRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey);
         insRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

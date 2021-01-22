@@ -167,6 +167,7 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
         @Override
         public void onClick(View v) {
             if(validate()){
+                btnSchedSave.setEnabled(false);
                 DatabaseReference checkHourRef = mFirebaseDatabase.getReference("Schedules").child(patientKey);
                 String startTime = etSchedStart.getText().toString().trim();
                 String endTime = etSchedEnd.getText().toString().trim();

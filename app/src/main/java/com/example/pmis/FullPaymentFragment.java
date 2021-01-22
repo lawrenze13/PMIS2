@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.pmis.Adapter.PatientFullPaymentAdapter;
+import com.example.pmis.Helpers.LoggedUserData;
 import com.example.pmis.Model.MedicalHistory;
 import com.example.pmis.Model.PatientPayment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,7 +41,8 @@ public class FullPaymentFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
-
+    private String userID;
+    private LoggedUserData loggedUserData = new LoggedUserData();
     public FullPaymentFragment() {
         // Required empty public constructor
     }
@@ -57,6 +59,7 @@ public class FullPaymentFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        userID = loggedUserData.userID();
         Intent intent = getActivity().getIntent();
         patientPaymentList = new ArrayList<>();
         patientKey = intent.getStringExtra("patientKey");
@@ -66,7 +69,7 @@ public class FullPaymentFragment extends Fragment {
         rvFullPayment = view.findViewById(R.id.rvFullPayment);
         rvFullPayment.setLayoutManager(new LinearLayoutManager(getContext()));
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child("FULL PAYMENT");
+        myRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("FULL PAYMENT").child(patientKey);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

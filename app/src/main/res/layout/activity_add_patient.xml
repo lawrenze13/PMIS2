@@ -260,7 +260,7 @@
                         android:drawablePadding="16dp"
                         android:fontFamily="@font/montserrat"
                         android:inputType="phone"
-                        android:maxLength="12"
+                        android:maxLength="11"
                         android:padding="10dp"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"

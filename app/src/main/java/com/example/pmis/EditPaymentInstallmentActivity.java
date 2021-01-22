@@ -53,6 +53,7 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
     private final List<String> procedureList = new ArrayList<String>();
     private final List<String> priceList = new ArrayList<String>();
     private final List<Installment> installmentList = new ArrayList<Installment>();
+    private String userID;
     private int amount = 0;
     final List<String> keyList = new ArrayList<>();
     @Override
@@ -66,7 +67,8 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
                 finish();
             }
         });
-
+        LoggedUserData loggedUserData = new LoggedUserData();
+        userID = loggedUserData.userID();
         Intent paymentIntent = getIntent();
         paymentKey = paymentIntent.getStringExtra("paymentKey");
         patientKey = paymentIntent.getStringExtra("patientKey");
@@ -76,7 +78,7 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
         buildPaymentTypeDropdown();
         buildProcedureDropdown();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child("INSTALLMENT").child(paymentKey);
+        myRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey).child(paymentKey);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -151,11 +153,11 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
                     patientPayment.setPlanName(payPlan);
                     patientPayment.setKey(paymentKey);
                     DatabaseReference saveInsRef, saveRef;
-                    saveRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(paymentKey);
+                    saveRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child(type).child(patientKey).child(paymentKey);
                         saveRef.setValue(patientPayment).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                DatabaseReference savePayment = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(paymentKey).child("payment");
+                                DatabaseReference savePayment = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child(type).child(patientKey).child(paymentKey).child("payment");
                                 for(Installment installment: installmentList){
                                     savePayment.child(installment.getKey()).setValue(installment).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -207,7 +209,7 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
             return  false;
         }
         if(remarks.isEmpty()){
-            etPayRemarks.setError("Total Amount is required.");
+            etPayRemarks.setError("Remarks is required.");
             etPayRemarks.requestFocus();
             return false;
         }

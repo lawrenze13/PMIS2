@@ -79,12 +79,12 @@ public class ClinicFragment extends Fragment {
         tvLicense = (TextView) view.findViewById(R.id.tvLicense3);
         tvDegree = (TextView) view.findViewById(R.id.tvDegree3);
         tvDocName = (TextView) view.findViewById(R.id.tvDocName3);
-        tvDocName.setText(sharedPreferences.getString(KEY_DOC_NAME, ""));
         imageView11 = view.findViewById(R.id.imageView11);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        getDocName();
         DatabaseReference clinicRef = mFirebaseDatabase.getReference("Clinic").child(userID);
         clinicRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -133,6 +133,25 @@ public class ClinicFragment extends Fragment {
                 intent.putExtra("degree",degree);
                 intent.putExtra("license",license);
                 startActivity(intent);
+            }
+        });
+    }
+
+    private void getDocName() {
+       DatabaseReference docRef = mFirebaseDatabase.getReference("Users").child(userID);
+        docRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String firstName = snapshot.child("firstName").getValue(String.class);
+                String lastName = snapshot.child("lastName").getValue(String.class);
+
+                 String  docName = "Dr. " +  firstName + ' ' + lastName + " D.M.D";
+                tvDocName.setText(docName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }

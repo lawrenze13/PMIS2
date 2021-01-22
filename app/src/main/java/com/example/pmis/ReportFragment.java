@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.StrictMode;
 import android.util.Log;
@@ -78,6 +80,7 @@ public class ReportFragment extends Fragment {
     private List<Schedule> scheduleList;
     private List<PatientProcedures> proceduresList;
 
+
     String userID, clinicName, clinicAddress, docName, clinicContactNo, license, degree;
     public ReportFragment() {
         // Required empty public constructor
@@ -98,6 +101,7 @@ public class ReportFragment extends Fragment {
         spinnerFilterProcedure = view.findViewById(R.id.spinnerFilterProcedure);
         tvTotalProcedure = view.findViewById(R.id.tvTotalProcedure);
         btnPayment = view.findViewById(R.id.btnPayment);
+
         btnPayment.setOnClickListener(generatePaymentPDF);
         btnProcedure = view.findViewById(R.id.btnProcedure);
         btnProcedure.setOnClickListener(generateProcedurePDF);
@@ -111,6 +115,7 @@ public class ReportFragment extends Fragment {
         tvTotalAppointments = view.findViewById(R.id.tvTotalAppointments);
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         userID = loggedUserData.userID();
+
         getClinicInfo();
         getDoctorName();
 
@@ -725,7 +730,6 @@ public class ReportFragment extends Fragment {
 
     private void buildPaymentReport(long start, long end) {
         myRef = mFirebaseDatabase.getReference("Patient").child(userID);
-
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

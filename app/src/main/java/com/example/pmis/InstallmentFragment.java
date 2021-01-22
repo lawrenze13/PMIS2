@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.pmis.Adapter.PatientFullPaymentAdapter;
 import com.example.pmis.Adapter.PatientInstallmentAdapter;
+import com.example.pmis.Helpers.LoggedUserData;
 import com.example.pmis.Model.Installment;
 import com.example.pmis.Model.PatientPayment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +42,7 @@ public class InstallmentFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
-
+    private String userID;
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -50,11 +51,12 @@ public class InstallmentFragment extends Fragment {
         installmentList = new ArrayList<>();
         patientKey = intent.getStringExtra("patientKey");
         Log.d(TAG, "patient key: "+ patientKey);
-
+        LoggedUserData loggedUserData = new LoggedUserData();
+        userID = loggedUserData.userID();
         rvInstallment = view.findViewById(R.id.rvInstallment);
         rvInstallment.setLayoutManager(new LinearLayoutManager(getContext()));
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child("INSTALLMENT");
+        myRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

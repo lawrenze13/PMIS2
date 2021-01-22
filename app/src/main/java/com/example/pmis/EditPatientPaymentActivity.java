@@ -52,6 +52,8 @@ public class EditPatientPaymentActivity extends AppCompatActivity implements Dat
     private final List<String> procedureList = new ArrayList<String>();
     private final List<String> priceList = new ArrayList<String>();
     final List<String> keyList = new ArrayList<>();
+    String userID;
+    private LoggedUserData loggedUserData = new LoggedUserData();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,17 +69,18 @@ public class EditPatientPaymentActivity extends AppCompatActivity implements Dat
         paymentKey = paymentIntent.getStringExtra("paymentKey");
         patientKey = paymentIntent.getStringExtra("patientKey");
         Log.d(TAG, "payment_patient: " + paymentKey + " " + patientKey);
+        userID = loggedUserData.userID();
         viewfinder();
         buildPaymentMethodDropdown();
         buildPaymentTypeDropdown();
         buildProcedureDropdown();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child("FULL PAYMENT").child(paymentKey);
+        myRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("FULL PAYMENT").child(patientKey).child(paymentKey);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 PatientPayment patientPayment = new PatientPayment();
-                String type = snapshot.getValue(PatientPayment.class).getType();
+                  String type = "FULL PAYMENT";
                 etPayDate.setText(snapshot.getValue(PatientPayment.class).getDate());
                 etPayDentist.setText(snapshot.getValue(PatientPayment.class).getDocName());
                 etPayAmount.setText(snapshot.getValue(PatientPayment.class).getTotal());
@@ -138,51 +141,21 @@ public class EditPatientPaymentActivity extends AppCompatActivity implements Dat
                     patientPayment.setDateUpdated(dateUpdated);
                     patientPayment.setKey(paymentKey);
                     DatabaseReference saveInsRef, saveRef;
-                    saveRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(paymentKey);
-                    if(type.equals("INSTALLMENT")){
-                        patientPayment.setInitialPayment(initialPayment);
-                        patientPayment.setInitialRemarks(initialRemarks);
-                        patientPayment.setPlanName(planName);
-                        Installment installment = new Installment();
-                        installment.setAmount(initialPayment);
-                        installment.setRemarks(initialRemarks);
-                        installment.setMethod(method);
-                        saveInsRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(paymentKey);
-                        saveInsRef.setValue(patientPayment).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                DatabaseReference savePayment = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(paymentKey).child("payment");
-                                String paymentKey = savePayment.push().getKey();
-                                savePayment.child(paymentKey).setValue(installment).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(EditPatientPaymentActivity.this, "Patient Payment has been edited successfully", Toast.LENGTH_LONG).show();
-                                        finish();
-                                    }
-                                });
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(EditPatientPaymentActivity.this, "Submitting Failed. Please try again", Toast.LENGTH_LONG).show();
-
-                            }
-                        });
-                    }else {
-                        saveRef.setValue(patientPayment).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    saveRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child(type).child(patientKey).child(paymentKey);
+                    saveRef.setValue(patientPayment).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(EditPatientPaymentActivity.this, "Patient Payment has been edited successfully", Toast.LENGTH_LONG).show();
                                 finish();
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
+                    }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(EditPatientPaymentActivity.this, "Submitting Failed. Please try again", Toast.LENGTH_LONG).show();
 
                             }
-                        });
-                    }
+                    });
+
                 }
             }
         });

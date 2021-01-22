@@ -33,5 +33,9 @@
             android:id="@+id/statisticsFragment"
             android:icon="@drawable/ic_baseline_picture_as_pdf_24"
             android:title="Statistics" />
+        <item
+            android:id="@+id/reportBetaFragment"
+            android:icon="@drawable/ic_baseline_picture_as_pdf_24"
+            android:title="Report Beta" />
     </group>
 </menu>

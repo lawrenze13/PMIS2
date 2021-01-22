@@ -84,8 +84,8 @@ public class ScheduleListAdapter extends RecyclerView.Adapter {
         try {
             Date date1 = df.parse(date);
             Date date2 = df.parse(currentDate);
-            Log.d(TAG, "COMPARE DATE : " + date1 + " " + date2);
-            if(date1.before(date2) || date1.equals(date2)){
+//            Log.d(TAG, "COMPARE DATE : " + date1 + " " + date2);
+//            if(date1.before(date2) || date1.equals(date2)){
                 viewHolderClass.btnAction.setVisibility(View.VISIBLE);
                 DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("AppointmentStatus").child(fetchPatientScheduleFacadeList.get(position).getScheduleKey());
                 myRef.addValueEventListener(new ValueEventListener() {
@@ -108,9 +108,9 @@ public class ScheduleListAdapter extends RecyclerView.Adapter {
 
                     }
                 });
-            }else{
-                viewHolderClass.btnAction.setVisibility(View.GONE);
-            }
+//            }else{
+//                viewHolderClass.btnAction.setVisibility(View.GONE);
+//            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -141,7 +141,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter {
             public void onClick(View v) {
                 String currentStatus = viewHolderClass.btnAction.getText().toString().trim();
                 int statusPosition = 0;
-                String[] status = {"Pending","Completed", "Cancelled"};
+                String[] status = {"Pending","Completed", "Cancelled", "Rescheduled"};
                 for(int i = 0; i<status.length; i++){
                     if (status[i].equals(currentStatus)){
                         statusPosition = i;
@@ -160,6 +160,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter {
                 builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         viewHolderClass.btnAction.setText(selectedItem);
                         AppointmentStatus appointmentStatus = new AppointmentStatus();
                         appointmentStatus.setStatus(selectedItem);
@@ -167,6 +168,14 @@ public class ScheduleListAdapter extends RecyclerView.Adapter {
                         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("AppointmentStatus").child(userID).child(fetchPatientScheduleFacadeList.get(position).getScheduleKey());
                         myRef.setValue(appointmentStatus);
                         Toast.makeText(context,"Status changed Succesfully.", Toast.LENGTH_LONG).show();
+                        if(selectedItem.equals("Rescheduled")){
+                            Intent intent = new Intent(context, EditScheduleActivity.class);
+                            intent.putExtra("patientKey", patientKey);
+                            intent.putExtra("scheduleKey", scheduleKey);
+                            intent.putExtra("fullName", viewHolderClass.tvSCPatientName.getText().toString().trim());
+
+                            context.startActivity(intent);
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
