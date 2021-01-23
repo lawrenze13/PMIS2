@@ -2,6 +2,7 @@ package com.example.pmis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
@@ -53,20 +54,26 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
     private final List<String> procedureList = new ArrayList<String>();
     private final List<String> priceList = new ArrayList<String>();
     private final List<Installment> installmentList = new ArrayList<Installment>();
+    private String userID;
     private int amount = 0;
     final List<String> keyList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_payment_installment);
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar13);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Edit Payment");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
+        LoggedUserData loggedUserData = new LoggedUserData();
+        userID = loggedUserData.userID();
         Intent paymentIntent = getIntent();
         paymentKey = paymentIntent.getStringExtra("paymentKey");
         patientKey = paymentIntent.getStringExtra("patientKey");
@@ -76,7 +83,7 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
         buildPaymentTypeDropdown();
         buildProcedureDropdown();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child("INSTALLMENT").child(paymentKey);
+        myRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey).child(paymentKey);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -151,11 +158,11 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
                     patientPayment.setPlanName(payPlan);
                     patientPayment.setKey(paymentKey);
                     DatabaseReference saveInsRef, saveRef;
-                    saveRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(paymentKey);
+                    saveRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child(type).child(patientKey).child(paymentKey);
                         saveRef.setValue(patientPayment).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                DatabaseReference savePayment = mFirebaseDatabase.getReference("Payments").child(patientKey).child(type).child(paymentKey).child("payment");
+                                DatabaseReference savePayment = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child(type).child(patientKey).child(paymentKey).child("payment");
                                 for(Installment installment: installmentList){
                                     savePayment.child(installment.getKey()).setValue(installment).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -207,7 +214,7 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
             return  false;
         }
         if(remarks.isEmpty()){
-            etPayRemarks.setError("Total Amount is required.");
+            etPayRemarks.setError("Remarks is required.");
             etPayRemarks.requestFocus();
             return false;
         }
@@ -247,8 +254,8 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
         spinnerProcedure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String price = priceList.get(position);
-                etPayAmount.setText(price);
+                //String price = priceList.get(position);
+              //  etPayAmount.setText(price);
             }
 
             @Override

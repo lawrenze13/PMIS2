@@ -47,7 +47,17 @@ public class DrugListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drug_list);
-
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar11);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Drug List");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         searchDrugs = (SearchView) findViewById(R.id.searchDrugs);
         fabAddDrug = (FloatingActionButton)findViewById(R.id.fabAddDrug);
         fabAddDrug.setOnClickListener(addDrug);

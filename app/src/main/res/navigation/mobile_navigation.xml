@@ -43,6 +43,11 @@
         android:name="com.example.pmis.StatisticsFragment"
         android:label="Statistics"
         tools:layout="@layout/fragment_statistics" />
+    <fragment
+        android:id="@+id/reportBetaFragment"
+        android:name="com.example.pmis.ReportBetaFragment"
+        android:label="Report"
+        tools:layout="@layout/fragment_report_beta" />
 
 
 </navigation>

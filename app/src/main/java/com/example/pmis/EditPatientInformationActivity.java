@@ -75,7 +75,7 @@ public class EditPatientInformationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_patient_information);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Add Patient");
+        getSupportActionBar().setTitle("Edit Patient");
         myToolbar.setTitleTextColor(getColor(R.color.white));
         myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -343,6 +343,10 @@ public class EditPatientInformationActivity extends AppCompatActivity {
         }
         if(contactNo.equals("")){
             etPContactNo.setError("Contact No. is required.");
+            etPContactNo.requestFocus();
+            return false;
+        } if(contactNo.length() < 7){
+            etPContactNo.setError("Min Length is 7");
             etPContactNo.requestFocus();
             return false;
         }

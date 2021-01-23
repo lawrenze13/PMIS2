@@ -115,6 +115,47 @@ public class DashboardFragment extends Fragment {
         loggedUserData = new LoggedUserData();
         userID = loggedUserData.userID();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference paymentRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID);
+        paymentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                balanceTotal = 0;
+                revenueTotal = 0;
+                fullPaymentTotal = 0;
+
+                for (DataSnapshot installment : snapshot.child("INSTALLMENT").getChildren()) {
+                    for(DataSnapshot patientInsSnapshot: installment.getChildren()) {
+                        double dbAmount = 0;
+                        Log.d(TAG, "installment: " + patientInsSnapshot.getValue(PatientPayment.class).getKey());
+                        for (DataSnapshot payment : patientInsSnapshot.child("payment").getChildren()) {
+                            String amount = payment.getValue(Installment.class).getAmount();
+                            dbAmount = dbAmount +  Double.parseDouble(amount);
+                            Log.d(TAG, "amount:" + amount);
+                            addRevenue(Double.parseDouble(amount));
+                        }
+                        String total = patientInsSnapshot.getValue(PatientPayment.class).getTotal();
+                            double installmentBalance = Double.parseDouble(total) - dbAmount;
+                        Log.d(TAG, "BALANCE:" + Double.parseDouble(total) + " " +  dbAmount);
+                            addBalance(installmentBalance);
+                    }
+                }
+                for (DataSnapshot fullPayment : snapshot.child("FULL PAYMENT").getChildren()) {
+                    for(DataSnapshot patientFullSnapshot: fullPayment.getChildren()) {
+                        String total = patientFullSnapshot.getValue(PatientPayment.class).getTotal();
+                        fullPaymentTotal = fullPaymentTotal + Double.parseDouble(total);
+                        Log.d(TAG, "total:" + total);
+                        addRevenue(Double.parseDouble(total));
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
         myRef = mFirebaseDatabase.getReference("Patient").child(userID);
         myRef.keepSynced(true);
         myRef.addValueEventListener(new ValueEventListener() {
@@ -127,42 +168,7 @@ public class DashboardFragment extends Fragment {
                         if (snapshot.exists()) {
                         String patientKey = ds.getValue(Patient.class).getKey();
                         patientCounter = patientCounter + 1;
-                        DatabaseReference paymentRef = mFirebaseDatabase.getReference("Payments").child(patientKey);
-                        paymentRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                                balanceTotal = 0;
-                                revenueTotal = 0;
-                                fullPaymentTotal = 0;
-                                double dbAmount = 0;
-                                for (DataSnapshot installment : snapshot.child("INSTALLMENT").getChildren()) {
-                                    for (DataSnapshot payment : installment.child("payment").getChildren()) {
-                                        String amount = payment.getValue(Installment.class).getAmount();
-                                        dbAmount = dbAmount + Double.parseDouble(amount);
-                                        Log.d(TAG, "amount:" + amount);
-                                        addRevenue(Double.parseDouble(amount));
-                                    }
-                                    String total = installment.getValue(PatientPayment.class).getTotal();
-                                    double installmentBalance = Double.parseDouble(total) - dbAmount;
-                                    addBalance(installmentBalance);
-                                }
-                                for (DataSnapshot fullPayment : snapshot.child("FULL PAYMENT").getChildren()) {
-                                    String total = fullPayment.getValue(PatientPayment.class).getTotal();
-                                    fullPaymentTotal = fullPaymentTotal + Double.parseDouble(total);
-                                    Log.d(TAG, "total:" + total);
-                                    addRevenue(Double.parseDouble(total));
-
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-
-                        });
 
                         keyRef = mFirebaseDatabase.getReference("Schedules").child(userID);
                         keyRef.addValueEventListener(new ValueEventListener() {
@@ -280,8 +286,9 @@ public class DashboardFragment extends Fragment {
         }
     };
     private void addBalance(double installment) {
+        Log.d(TAG, "balanceTotal:"  + balanceTotal + " " + installment);
         balanceTotal = balanceTotal + installment;
-        Log.d(TAG, "balanceTotal:"  + balanceTotal);
+
         tvTotalBalance.setText("P"+String.valueOf(balanceTotal));
     }
 

@@ -8,19 +8,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pmis.EditPaymentInstallmentActivity;
+import com.example.pmis.Helpers.LoggedUserData;
 import com.example.pmis.InstallmentBreakdownActivity;
 import com.example.pmis.Model.Installment;
 import com.example.pmis.Model.PatientPayment;
 import com.example.pmis.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
@@ -36,6 +43,8 @@ public class PatientInstallmentAdapter extends  RecyclerView.Adapter{
     private DatabaseReference presRef;
     private StorageReference mStorageRef;
     private String patientKey, paymentKey;
+    private String userID;
+    private LoggedUserData loggedUserData = new LoggedUserData();
     String  docName,  type,  method,  date,  total,  remarks,dateUpdated, planName;
 
     public PatientInstallmentAdapter(Context context, List<PatientPayment> fetchPatientPayment, String patientKey, DataSnapshot snapshot){
@@ -56,6 +65,7 @@ public class PatientInstallmentAdapter extends  RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ViewHolderClass viewHolderClass = (ViewHolderClass)holder;
+        userID = loggedUserData.userID();
         PatientPayment patientPayment = fetchPatientPayment.get(position);
         paymentKey = patientPayment.getKey();
         docName = patientPayment.getDocName();
@@ -105,6 +115,38 @@ public class PatientInstallmentAdapter extends  RecyclerView.Adapter{
                 context.startActivity(intent);
             }
         });
+        viewHolderClass.ibPayDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFirebaseDatabase = FirebaseDatabase.getInstance();
+                Query query = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey).orderByChild("key").equalTo( fetchPatientPayment.get(position).getKey());
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot ds: snapshot.getChildren()){
+                            ds.getRef().removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(v.getContext(),"Item Deleted Successfully", Toast.LENGTH_LONG).show();
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(v.getContext(),"Item not deleted! please try again.", Toast.LENGTH_LONG).show();
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
 
 
     }
@@ -115,14 +157,14 @@ public class PatientInstallmentAdapter extends  RecyclerView.Adapter{
     }
     public class ViewHolderClass extends RecyclerView.ViewHolder {
         TextView tvFPLastUpdate, tvFPDentist, tvFPDate, tvFPAmount, tvFPTotalPaid,tvFPBalance, tvFPNoPayments,tvPlanName;
-        ImageButton ibPayView, ibMedDelete, ibPayEdit;
+        ImageButton ibPayView, ibPayDelete, ibPayEdit;
         public ViewHolderClass(@NonNull View itemView) {
             super(itemView);
             tvFPLastUpdate = itemView.findViewById(R.id.tvFPLastUpdate);
             tvFPDentist = itemView.findViewById(R.id.tvInsDentist);
             tvFPDate = itemView.findViewById(R.id.tvFPDate);
             tvFPAmount = itemView.findViewById(R.id.tvFPAmount);
-            ibMedDelete = itemView.findViewById(R.id.ibMedDelete);
+            ibPayDelete = itemView.findViewById(R.id.ibPayDelete);
             ibPayView = itemView.findViewById(R.id.ibPayView);
             ibPayEdit = itemView.findViewById(R.id.ibPayEdit);
             tvFPTotalPaid = itemView.findViewById(R.id.tvFPTotalPaid);

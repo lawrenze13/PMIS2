@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.pmis.Adapter.PatientInstallmentBreakdownAdapter;
 import com.example.pmis.Adapter.PatientPrescriptionAdapter;
+import com.example.pmis.Helpers.LoggedUserData;
 import com.example.pmis.Model.DrugPrescriptionMain;
 import com.example.pmis.Model.Installment;
 import com.example.pmis.Model.PatientPayment;
@@ -49,7 +50,10 @@ public class InstallmentBreakdownActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_installment_breakdown);
+        LoggedUserData loggedUserData = new LoggedUserData();
+        userID = loggedUserData.userID();
         fabAddInstallment = findViewById(R.id.fabAddInstallment);
         tvPlanName = findViewById(R.id.tvPlanName);
         ibPayDelete = findViewById(R.id.ibPayDelete);
@@ -68,7 +72,7 @@ public class InstallmentBreakdownActivity extends AppCompatActivity {
         installmentList = new ArrayList<>();
         Log.d(TAG, "patientKey: " + patientKey);
         Log.d(TAG, "paymentKey: " + paymentKey);
-        paymentRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child("INSTALLMENT").child(paymentKey);
+        paymentRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey).child(paymentKey);
         paymentRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -121,7 +125,7 @@ public class InstallmentBreakdownActivity extends AppCompatActivity {
     private final View.OnClickListener deleteInstallment = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Query query = mFirebaseDatabase.getReference("Payments").child(patientKey).child("INSTALLMENT").orderByChild("key").equalTo(paymentKey);
+            Query query = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey).orderByChild("key").equalTo(paymentKey);
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {

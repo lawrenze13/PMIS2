@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private BottomAppBar bottomAppBar;
     private FloatingActionButton floatingActionButton2;
-    private String selectedItem;
+    private String selectedItem = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_dashboard, R.id.profileFragment, R.id.clinicFragment, R.id.patientFragment,  R.id.reportFragment, R.id.appointmentFragment, R.id.statisticsFragment)
+                R.id.nav_dashboard, R.id.profileFragment, R.id.clinicFragment, R.id.patientFragment,  R.id.appointmentFragment, R.id.reportBetaFragment, R.id.statisticsFragment)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -197,7 +197,7 @@ public class HomeActivity extends AppCompatActivity {
             builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if(selectedItem.equals("Add Patient")){
+                    if(selectedItem.equals("Add Patient") || selectedItem.equals("")){
                         Intent intent = new Intent(HomeActivity.this, AddPatientActivity.class);
                         intent.putExtra("action", "add");
                         startActivity(intent);

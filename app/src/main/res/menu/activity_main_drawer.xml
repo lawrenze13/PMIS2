@@ -26,12 +26,13 @@
             android:title="@string/appointments" />
 
         <item
-            android:id="@+id/reportFragment"
+            android:id="@+id/reportBetaFragment"
             android:icon="@drawable/ic_baseline_picture_as_pdf_24"
             android:title="@string/menu_report" />
         <item
             android:id="@+id/statisticsFragment"
             android:icon="@drawable/ic_baseline_picture_as_pdf_24"
             android:title="Statistics" />
+    
     </group>
 </menu>

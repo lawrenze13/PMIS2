@@ -41,7 +41,7 @@ public class PatientFullPaymentAdapter extends RecyclerView.Adapter {
     private DatabaseReference presRef;
     private StorageReference mStorageRef;
     private String patientKey, paymentKey;
-    String  docName,  type,  method,  date,  total,  remarks,dateUpdated;
+    String  docName,  type,  method,  date,  total,  remarks,dateUpdated, userID;
 
     public PatientFullPaymentAdapter(Context context, List<PatientPayment> fetchPatientPayment, String patientKey){
         this.fetchPatientPayment = fetchPatientPayment;
@@ -62,7 +62,8 @@ public class PatientFullPaymentAdapter extends RecyclerView.Adapter {
         ViewHolderClass viewHolderClass = (ViewHolderClass)holder;
         PatientPayment patientPayment = fetchPatientPayment.get(position);
         paymentKey = patientPayment.getKey();
-
+        LoggedUserData loggedUserData = new LoggedUserData();
+        userID = loggedUserData.userID();
         docName = patientPayment.getDocName();
         type = patientPayment.getKey();
         method = patientPayment.getMethod();
@@ -94,7 +95,7 @@ public class PatientFullPaymentAdapter extends RecyclerView.Adapter {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                        Query deleteQuery = ref.child("Payments").child(patientKey).child("FULL PAYMENT").orderByChild("key").equalTo(paymentKey);
+                        Query deleteQuery = ref.child("PaymentsNew").child(userID).child("FULL PAYMENT").child(patientKey).orderByChild("key").equalTo(fetchPatientPayment.get(position).getKey());
                         deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {

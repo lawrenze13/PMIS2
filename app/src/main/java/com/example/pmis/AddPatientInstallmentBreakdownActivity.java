@@ -2,6 +2,7 @@ package com.example.pmis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
@@ -30,9 +31,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class AddPatientInstallmentBreakdownActivity extends AppCompatActivity  implements DatePickerDialog.OnDateSetListener{
@@ -44,17 +47,24 @@ public class AddPatientInstallmentBreakdownActivity extends AppCompatActivity  i
     private DatabaseReference paymentRef, saveRef, saveInsRef;
     private LoggedUserData loggedUserData = new LoggedUserData();
     private  final List<String> paymentMethod = new ArrayList<String>();
+    private String userID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient_installment_breakdown);
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar4);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Add Installment");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        LoggedUserData loggedUserData = new LoggedUserData();
+        userID = loggedUserData.userID();
         etPayDate = findViewById(R.id.etPayDate);
         etPayRemarks = findViewById(R.id.etPayRemarks);
         etPayAmount = findViewById(R.id.etPayAmount);
@@ -95,7 +105,8 @@ public class AddPatientInstallmentBreakdownActivity extends AppCompatActivity  i
         @Override
         public void onClick(View v) {
             if(validate()){
-                saveRef = mFirebaseDatabase.getReference("Payments").child(patientKey).child("INSTALLMENT").child(paymentKey).child("payment");
+                btnPaySave.setEnabled(false);
+                saveRef = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey).child(paymentKey).child("payment");
                 String key = saveRef.push().getKey();
                 DateUpdatedHelper dateUpdatedHelper = new DateUpdatedHelper();
                 String currentDate = dateUpdatedHelper.getDateUpdated();
@@ -106,6 +117,14 @@ public class AddPatientInstallmentBreakdownActivity extends AppCompatActivity  i
                 installment.setMethod(spinnerPaymentMethod.getSelectedItem().toString().trim());
                 installment.setDateUpdated(currentDate);
                 installment.setKey(key);
+                SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+                try {
+                    Date parseDate = format.parse(installment.getDate());
+                    long timeStamp = parseDate.getTime();
+                    installment.setTimeStamp(timeStamp);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 saveRef.child(key).setValue(installment).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

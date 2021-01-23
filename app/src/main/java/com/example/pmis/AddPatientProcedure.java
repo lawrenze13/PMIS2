@@ -2,6 +2,7 @@ package com.example.pmis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
@@ -59,8 +60,12 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient_procedure);
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar7);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Add Patient Procedure");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -73,7 +78,7 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
         btnSave.setOnClickListener(saveProcedure);
         etPProcNotes = findViewById(R.id.etPProcNotes);
         etPProcDate = findViewById(R.id.etPProcDate);
-        tvPProcTitle = findViewById(R.id.tvPProcTitle);
+
         etPProcDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

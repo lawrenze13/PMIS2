@@ -40,7 +40,7 @@ public class PatientInstallmentBreakdownAdapter extends RecyclerView.Adapter {
     private FirebaseAuth mAuth;
     private DatabaseReference presRef;
     private StorageReference mStorageRef;
-    private String patientKey, installmentKey, paymentKey;
+    private String patientKey, installmentKey, paymentKey, userID;
     String  docName,  type,  method,  date,  amount,  remarks,dateUpdated;
 
     public PatientInstallmentBreakdownAdapter(Context context, List<Installment> fetchInstallment, String patientKey, String paymentKey){
@@ -61,6 +61,8 @@ public class PatientInstallmentBreakdownAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ViewHolderClass viewHolderClass = (ViewHolderClass)holder;
+        LoggedUserData loggedUserData = new LoggedUserData();
+        userID = loggedUserData.userID();
         Installment installment = fetchInstallment.get(position);
         installmentKey = installment.getKey();
         method = installment.getMethod();
@@ -87,7 +89,8 @@ public class PatientInstallmentBreakdownAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                Query deleteQuery = ref.child("Payments").child(patientKey).child("FULL PAYMENT").child(paymentKey).child("payment").orderByChild("key").equalTo(fetchInstallment.get(position).getKey());;
+                Log.d(TAG, "DELETE WORKING");
+                Query deleteQuery = ref.child("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey).child(paymentKey).child("payment").orderByChild("key").equalTo(fetchInstallment.get(position).getKey());;
                 deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

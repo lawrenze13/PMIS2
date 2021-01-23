@@ -1,5 +1,7 @@
 package com.example.pmis.Model;
 
+import java.util.List;
+
 public class PaymentReportFacade {
     String patientName;
     String planName;
@@ -7,6 +9,43 @@ public class PaymentReportFacade {
     String amount;
     String total;
     String remarks;
+    String patientKey;
+    Installment installment;
+    List<Installment> installmentList;
+String method;
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public List<Installment> getInstallmentList() {
+        return installmentList;
+    }
+
+    public void setInstallmentList(List<Installment> installmentList) {
+        this.installmentList = installmentList;
+    }
+
+    public String getPatientKey() {
+        return patientKey;
+    }
+
+    public void setPatientKey(String patientKey) {
+        this.patientKey = patientKey;
+    }
+
+    public Installment getInstallment() {
+        return installment;
+    }
+
+    public void setInstallment(Installment installment) {
+        this.installment = installment;
+    }
+
     long timeStamp;
 
     public String getPatientName() {

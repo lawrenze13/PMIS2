@@ -283,6 +283,11 @@ public class AddPatientActivity extends AppCompatActivity {
             etPContactNo.requestFocus();
             return false;
         }
+        if(contactNo.length() < 7){
+            etPContactNo.setError("Min. length is 7.");
+            etPContactNo.requestFocus();
+            return false;
+        }
         if(address.equals("")){
             etPAddress.setError("Address is required.");
             etPAddress.requestFocus();
