@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.StrictMode;
 import android.util.Log;
@@ -24,6 +26,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.pmis.Adapter.ReportAppointmentAdapter;
+import com.example.pmis.Adapter.ReportPaymentAdapter;
 import com.example.pmis.Helpers.LoggedUserData;
 import com.example.pmis.Model.AppointmentStatus;
 import com.example.pmis.Model.Clinic;
@@ -68,6 +72,7 @@ public class ReportAppointmentFragment extends Fragment {
     private LoggedUserData loggedUserData = new LoggedUserData();
     String userID, clinicName, clinicAddress, docName, clinicContactNo, license, degree;
     private int cancelledCount, pendingCount, completedCount;
+    private RecyclerView rvReportAppointment;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +86,8 @@ public class ReportAppointmentFragment extends Fragment {
         tvReportPending = view.findViewById(R.id.tvReportPending);
         tvReportCancelled = view.findViewById(R.id.tvReportCancelled);
         tvReportCompleted = view.findViewById(R.id.tvReportCompleted);
+        rvReportAppointment = view.findViewById(R.id.rvReportAppointment);
+        rvReportAppointment.setLayoutManager(new LinearLayoutManager(getContext()));
         btnSearch = view.findViewById(R.id.btnSearch);
         btnPayment = view.findViewById(R.id.btnPayment);
         btnPayment.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +112,9 @@ public class ReportAppointmentFragment extends Fragment {
                 cancelledCount = 0;
                 completedCount = 0;
                 pdfAppointmentList.clear();
+                tvReportCompleted.setText("0");
+                tvReportCancelled.setText("0");
+                tvReportPending.setText("0");
                 if(spinnerFilterPayment.getSelectedItemPosition() == 0){
                     for(ReportAppointment reportAppointment : reportAppointmentList){
                         if(reportAppointment.getStatus().equals("Pending")){
@@ -193,6 +203,8 @@ public class ReportAppointmentFragment extends Fragment {
                     Log.d(TAG, "end: " + end);
                     buildReport(start, end);
                 }
+                ReportAppointmentAdapter reportPaymentAdapter = new ReportAppointmentAdapter(getContext(), pdfAppointmentList);
+                rvReportAppointment.setAdapter(reportPaymentAdapter);
             }
         });
     }
@@ -428,6 +440,7 @@ public class ReportAppointmentFragment extends Fragment {
     }
 
     private void setAppointmentStatus() {
+        appointmentStatusList.clear();
         Query query = mFirebaseDatabase.getReference("AppointmentStatus").child(userID);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
