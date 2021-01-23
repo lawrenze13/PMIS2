@@ -46,7 +46,7 @@
     <fragment
         android:id="@+id/reportBetaFragment"
         android:name="com.example.pmis.ReportBetaFragment"
-        android:label="Report Beta"
+        android:label="Report"
         tools:layout="@layout/fragment_report_beta" />
 
 

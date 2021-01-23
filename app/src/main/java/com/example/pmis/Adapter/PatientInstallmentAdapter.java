@@ -119,7 +119,7 @@ public class PatientInstallmentAdapter extends  RecyclerView.Adapter{
             @Override
             public void onClick(View v) {
                 mFirebaseDatabase = FirebaseDatabase.getInstance();
-                Query query = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey).orderByChild("key").equalTo(paymentKey);
+                Query query = mFirebaseDatabase.getReference("PaymentsNew").child(userID).child("INSTALLMENT").child(patientKey).orderByChild("key").equalTo( fetchPatientPayment.get(position).getKey());
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

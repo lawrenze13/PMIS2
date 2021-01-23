@@ -2,6 +2,7 @@ package com.example.pmis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.AlertDialog;
@@ -54,8 +55,12 @@ public class AddScheduleActivity extends AppCompatActivity  implements DatePicke
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_schedule);
         findView();
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar9);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Add Schedule");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

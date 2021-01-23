@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -74,8 +75,12 @@ public class AddMedicalHistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medical_history);
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar10);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Add Medical History");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

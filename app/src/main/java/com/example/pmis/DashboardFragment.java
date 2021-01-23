@@ -122,13 +122,14 @@ public class DashboardFragment extends Fragment {
                 balanceTotal = 0;
                 revenueTotal = 0;
                 fullPaymentTotal = 0;
-                double dbAmount = 0;
+
                 for (DataSnapshot installment : snapshot.child("INSTALLMENT").getChildren()) {
                     for(DataSnapshot patientInsSnapshot: installment.getChildren()) {
+                        double dbAmount = 0;
                         Log.d(TAG, "installment: " + patientInsSnapshot.getValue(PatientPayment.class).getKey());
                         for (DataSnapshot payment : patientInsSnapshot.child("payment").getChildren()) {
                             String amount = payment.getValue(Installment.class).getAmount();
-                            dbAmount =  Double.parseDouble(amount);
+                            dbAmount = dbAmount +  Double.parseDouble(amount);
                             Log.d(TAG, "amount:" + amount);
                             addRevenue(Double.parseDouble(amount));
                         }

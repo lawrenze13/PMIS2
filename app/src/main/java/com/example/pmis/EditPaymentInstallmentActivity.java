@@ -2,6 +2,7 @@ package com.example.pmis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
@@ -60,8 +61,12 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_payment_installment);
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar13);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Edit Payment");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -249,8 +254,8 @@ public class EditPaymentInstallmentActivity extends AppCompatActivity implements
         spinnerProcedure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String price = priceList.get(position);
-                etPayAmount.setText(price);
+                //String price = priceList.get(position);
+              //  etPayAmount.setText(price);
             }
 
             @Override

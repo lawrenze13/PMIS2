@@ -3,6 +3,7 @@ package com.example.pmis;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -69,8 +70,12 @@ public class AddPatientPhotoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient_photo);
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar6);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Add Patient Photo");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

@@ -2,6 +2,7 @@ package com.example.pmis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
@@ -51,15 +52,19 @@ public class AddPatientInstallmentBreakdownActivity extends AppCompatActivity  i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_patient_installment_breakdown);
-        LoggedUserData loggedUserData = new LoggedUserData();
-        userID = loggedUserData.userID();
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar4);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Add Installment");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        LoggedUserData loggedUserData = new LoggedUserData();
+        userID = loggedUserData.userID();
         etPayDate = findViewById(R.id.etPayDate);
         etPayRemarks = findViewById(R.id.etPayRemarks);
         etPayAmount = findViewById(R.id.etPayAmount);

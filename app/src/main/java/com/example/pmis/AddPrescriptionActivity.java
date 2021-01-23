@@ -3,6 +3,7 @@ package com.example.pmis;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,8 +66,12 @@ public class AddPrescriptionActivity extends AppCompatActivity  implements DateP
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_prescription);
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar8);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Add Patient Prescription");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -80,7 +85,6 @@ public class AddPrescriptionActivity extends AppCompatActivity  implements DateP
         userID = user.getUid();
         drugsList = new ArrayList<>();
 
-        tvTitle = findViewById(R.id.tvTitle);
         rvDrugPrescription = findViewById(R.id.rvDrugPrescription);
         rvDrugPrescription.setLayoutManager(new LinearLayoutManager(this));
         drugPrescriptionList = new ArrayList<>();
