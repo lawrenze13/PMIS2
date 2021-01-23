@@ -33,9 +33,9 @@ public class IntroPageAdapter  extends FragmentStateAdapter {
                 return new Intro3Fragment();
                 case 3:
                 return new Intro4Fragment();
-
-            default:
-                return new Intro5Fragment();
+                default:
+                  //  return new Intro1Fragment();
+               return new Intro5Fragment();
 
         }
     }

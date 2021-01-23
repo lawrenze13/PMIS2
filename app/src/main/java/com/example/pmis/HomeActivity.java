@@ -154,16 +154,24 @@ public class HomeActivity extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                editor.putString(KEY_NAME, snapshot.getValue(Clinic.class).getClinicName());
-                editor.putString(KEY_CONTACT_NO, snapshot.getValue(Clinic.class).getContactNo());
-                editor.putString(KEY_ADDRESS, snapshot.getValue(Clinic.class).getAddress());
-                editor.putString(KEY_DEGREE, snapshot.getValue(Clinic.class).getDegree());
-                editor.putString(KEY_LICENSE, snapshot.getValue(Clinic.class).getLicense());
-                editor.putString("photoURL", snapshot.getValue(Clinic.class).getPhotoUrl());
-                editor.apply();
-                if(!snapshot.exists()){
-                    Intent intent = new Intent(HomeActivity.this, NewUserActivity.class);
-                    startActivity(intent);
+                if(snapshot.hasChildren()) {
+                    String name = snapshot.getValue(Clinic.class).getClinicName();
+                    String contactNo = snapshot.getValue(Clinic.class).getContactNo();
+                    String address = snapshot.getValue(Clinic.class).getAddress();
+                    String degree = snapshot.getValue(Clinic.class).getDegree();
+                    String license = snapshot.getValue(Clinic.class).getLicense();
+                    String photourl = snapshot.getValue(Clinic.class).getPhotoUrl();
+                    editor.putString(KEY_NAME, name );
+                    editor.putString(KEY_CONTACT_NO, contactNo );
+                    editor.putString(KEY_ADDRESS,address);
+                    editor.putString(KEY_DEGREE,degree);
+                    editor.putString(KEY_LICENSE, license);
+                    editor.putString("photoURL", photourl);
+                    editor.apply();
+//                    if (!snapshot.exists()) {
+//                        Intent intent = new Intent(HomeActivity.this, NewUserActivity.class);
+//                        startActivity(intent);
+//                    }
                 }
             }
 

@@ -95,11 +95,11 @@ public class MainActivity extends AppCompatActivity {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if(user.isEmailVerified()){
                         loadingDialog.dismissDialog();
-                        if(isNew){
-                            startActivity(new Intent(MainActivity.this, NewUserActivity.class));
-                        }else {
+//                        if(isNew){
+//                            startActivity(new Intent(MainActivity.this, NewUserActivity.class));
+//                        }else {
                             startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                        }
+                     //   }
                     }else{
                         user.sendEmailVerification();
                         loadingDialog.dismissDialog();
