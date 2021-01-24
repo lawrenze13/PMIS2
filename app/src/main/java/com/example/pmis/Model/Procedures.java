@@ -4,6 +4,15 @@ public class Procedures {
     String name;
     String description;
     String key;
+    String equipments;
+
+    public String getEquipments() {
+        return equipments;
+    }
+
+    public void setEquipments(String equipments) {
+        this.equipments = equipments;
+    }
 
     public String getSorter() {
         return sorter;

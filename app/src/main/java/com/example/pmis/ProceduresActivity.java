@@ -116,6 +116,7 @@ public class ProceduresActivity extends AppCompatActivity {
             final TextView etPName = mView.findViewById(R.id.etPName);
             final TextView etPDescription = mView.findViewById(R.id.etPDescription);
             final TextView etPPrice = mView.findViewById(R.id.etPPrice);
+            final TextView etEquipments = mView.findViewById(R.id.etEquipments);
             ImageButton btnPSubmit = (ImageButton) mView.findViewById(R.id.btnPSubmit);
             ImageButton btnPCancel = (ImageButton)mView.findViewById(R.id.btnPCancel);
             alert.setView(mView);
@@ -143,6 +144,7 @@ public class ProceduresActivity extends AppCompatActivity {
                         procedures.setName(etPName.getText().toString().trim());
                         procedures.setDescription(etPDescription.getText().toString().trim());
                         procedures.setSorter(etPName.getText().toString().trim().toLowerCase());
+                        procedures.setEquipments(etEquipments.getText().toString().trim());
                         procedures.setPrice(fprice);
                         procedures.setKey(key);
                         myRef.child(key).setValue(procedures).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -165,6 +167,12 @@ public class ProceduresActivity extends AppCompatActivity {
                     String procedureName = etPName.getText().toString().trim();
                     String procedureDescription = etPDescription.getText().toString().trim();
                     String procedurePrice = etPPrice.getText().toString().trim();
+                    String procedureEquip = etEquipments.getText().toString().trim();
+                    if(procedureEquip.isEmpty()){
+                        etEquipments.setError("Equipments is required");
+                        etEquipments.requestFocus();
+                        return false;
+                    }
                     if(procedureName.isEmpty()){
                         etPName.setError("Procedure Name is required");
                         etPName.requestFocus();

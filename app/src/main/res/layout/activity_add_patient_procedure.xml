@@ -99,6 +99,84 @@ tools:context=".AddPatientProcedure">
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tvDate" />
 
+                    <TextView
+                        android:id="@+id/tvProcedure"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="Procedure"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/etPProcDate" />
+
+                    <EditText
+                        android:id="@+id/etPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_baseline_monetization_on_24"
+                        android:drawablePadding="16dp"
+                        android:drawableTint="#DA4C4A4A"
+                        android:enabled="false"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="datetime|text"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvProcedure3" />
+
+                    <EditText
+                        android:id="@+id/etEquipment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_baseline_settings_24"
+                        android:drawablePadding="16dp"
+                        android:drawableTint="#DA4C4A4A"
+                        android:enabled="false"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="datetime|text"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvProcedure4" />
+
+                    <TextView
+                        android:id="@+id/tvProcedure3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="Price"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/spinnerProcedure" />
+
+                    <TextView
+                        android:id="@+id/tvProcedure4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="Equipments Needed"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/etPrice" />
+
+                    <TextView
+                        android:id="@+id/tvProcedure2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="Notes"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/etEquipment" />
+
                     <EditText
                         android:id="@+id/etPProcNotes"
                         android:layout_width="match_parent"
@@ -111,30 +189,6 @@ tools:context=".AddPatientProcedure">
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tvProcedure2" />
-
-                    <TextView
-                        android:id="@+id/tvProcedure"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="20dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="Procedure"
-                        android:textSize="12sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/etPProcDate" />
-
-                    <TextView
-                        android:id="@+id/tvProcedure2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="20dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="Notes"
-                        android:textSize="12sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/spinnerProcedure" />
 
                     <Spinner
                         android:id="@+id/spinnerProcedure"

@@ -48,9 +48,9 @@ public class Intro5Fragment extends Fragment {
     public static final int CAMERA_PERM_CODE = 101;
     private static final String TAG = "EDIT_CLINIC";
     private EditText etClinicName, etContactNo, etAddress, etLicense, etDegree;
-    private TextView txtClinicName;
-    private Button btnUpload2, btnSave;
     private ImageView ivProfilePic;
+    private TextView txtClinicName;
+    private Button btnUpload3, btnSave;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -69,10 +69,17 @@ public class Intro5Fragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         loggedUserData = new LoggedUserData();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-        txtClinicName = (TextView) view.findViewById(R.id.txtClinicName);
+
+        ivProfilePic = (ImageView) view.findViewById(R.id.ivProfilePic);
         etLicense = (EditText) view.findViewById(R.id.etLicense);
         etDegree = (EditText) view.findViewById(R.id.etDegree);
         etClinicName = (EditText) view.findViewById(R.id.etClinicName);
@@ -80,8 +87,8 @@ public class Intro5Fragment extends Fragment {
         etContactNo = (EditText) view.findViewById(R.id.etContactNo);
         ivProfilePic = (ImageView) view.findViewById(R.id.ivProfilePic);
         btnSave = (Button) view.findViewById(R.id.btnSave);
-        btnUpload2 = (Button) view.findViewById(R.id.btnUpload2);
-        btnUpload2.setOnClickListener(uploadPhoto);
+        btnUpload3 = (Button) view.findViewById(R.id.btnUpload3);
+        btnUpload3.setOnClickListener(uploadPhoto);
         btnSave.setOnClickListener(saveInfo);
     }
 

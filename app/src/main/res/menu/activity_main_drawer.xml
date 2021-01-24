@@ -31,7 +31,7 @@
             android:title="@string/menu_report" />
         <item
             android:id="@+id/statisticsFragment"
-            android:icon="@drawable/ic_baseline_picture_as_pdf_24"
+            android:icon="@drawable/ic_baseline_bar_chart_24"
             android:title="Statistics" />
     
     </group>

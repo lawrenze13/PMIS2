@@ -177,14 +177,7 @@ public class StatisticsFragment extends Fragment {
                  chartAllAppointments.setDescription(description);
                  BarData barData = new BarData(barDataSet);
                  chartAllAppointments.setData(barData);
-                 chartAllAppointments.getAxisLeft().setValueFormatter(new ValueFormatter() {
-                     @Override
-                     public String getFormattedValue(float value) {
-                         return String.valueOf((int) Math.floor(value));
-                     }
-                 });
-                 int max = Collections.max(countList);
-                 chartAllAppointments.getAxisLeft().setLabelCount(max);
+
                  XAxis xAxis = chartAllAppointments.getXAxis();
                  xAxis.setValueFormatter(new IndexAxisValueFormatter(statusList));
                  xAxis.setLabelRotationAngle(270);
@@ -192,9 +185,10 @@ public class StatisticsFragment extends Fragment {
                  xAxis.setDrawAxisLine(false);
                  xAxis.setGranularity(1f);
                  xAxis.setLabelCount(statusList.size());
+
                  chartAllAppointments.animateY(2000);
                  chartAllAppointments.invalidate();
-                 tvTotalAppointments.setText(String.valueOf(appointmentCounter - 1));
+                 tvTotalAppointments.setText(String.valueOf(appointmentCounter));
              }
 
             }
@@ -309,14 +303,7 @@ public class StatisticsFragment extends Fragment {
         });
         int max = Collections.max(countList);
         chartAllBarangay.getAxisLeft().setLabelCount(max);
-        chartAllAppointments.getAxisLeft().setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return String.valueOf((int) Math.floor(value));
-            }
-        });
 
-        chartAllAppointments.getAxisLeft().setLabelCount(max);
 //        xAxis.setLabelRotationAngle(270);
         chartAllBarangay.animateY(2000);
         chartAllBarangay.invalidate();
@@ -325,7 +312,7 @@ public class StatisticsFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 Log.d(TAG, "Entry : " + e.getData());
-                Log.d(TAG, "Entry : " + e.getY());
+                Log.d(TAG, "Entry : " + e.getX());
 
             }
 

@@ -67,6 +67,27 @@ public class PatientProceduresAdapter extends RecyclerView.Adapter {
         procedureKey = patientProcedures.getProcedureKey();
         Log.d(TAG,procedureKey);
         Log.d(TAG,mainKey);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Procedures").child(userID);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds: snapshot.getChildren()){
+                    if(fetchPatientProceduresList.get(position).getProcedureKey().equals(ds.getValue(Procedures.class).getKey())){
+                        viewHolderClass.tvPProcEquip.setText(ds.getValue(Procedures.class).getEquipments());
+                        viewHolderClass.tvPProcPrice.setText(String.valueOf(ds.getValue(Procedures.class).getPrice()));
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         viewHolderClass.tvPProcDateUpdated.setText(patientProcedures.getDateUpdated());
         viewHolderClass.tvPProcDate.setText(patientProcedures.getDate());
         viewHolderClass.tvPProcProcedure.setText(patientProcedures.getProcedure());
@@ -134,13 +155,15 @@ public class PatientProceduresAdapter extends RecyclerView.Adapter {
         return fetchPatientProceduresList.size();
     }
     public class ViewHolderClass extends RecyclerView.ViewHolder {
-        TextView tvPProcProcedure, tvPProcDateUpdated, tvPProcDate;
+        TextView tvPProcProcedure, tvPProcDateUpdated, tvPProcDate, tvPProcPrice, tvPProcEquip;
         ImageButton  ibPProcEdit, ibPProcDelete;
         public ViewHolderClass(@NonNull View itemView) {
             super(itemView);
             tvPProcProcedure = itemView.findViewById(R.id.tvPProcProcedure);
             tvPProcDateUpdated = itemView.findViewById(R.id.tvPProcDateUpdated);
             tvPProcDate = itemView.findViewById(R.id.tvPProcDate);
+            tvPProcPrice = itemView.findViewById(R.id.tvPProcPrice);
+            tvPProcEquip = itemView.findViewById(R.id.tvPProcEquip);
 
             ibPProcEdit = itemView.findViewById( R.id.ibPProcEdit);
             ibPProcDelete = itemView.findViewById( R.id.ibPProcDelete);

@@ -219,7 +219,7 @@ public class AddPrescriptionActivity extends AppCompatActivity  implements DateP
 
         if(action.equals("edit")){
             editDrugPrescriptionList = new ArrayList<>();
-            tvTitle.setText("Edit Prescription");
+            getSupportActionBar().setTitle("Edit Patient Prescription");
             prescriptionKey = patientIntent.getStringExtra("prescriptionKey");
 
             mFirebaseDatabase = FirebaseDatabase.getInstance();

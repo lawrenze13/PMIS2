@@ -57,7 +57,24 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null && user.isEmailVerified()){
-            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+          DatabaseReference dRef = FirebaseDatabase.getInstance().getReference("Clinic").child(user.getUid());
+          dRef.addValueEventListener(new ValueEventListener() {
+              @Override
+              public void onDataChange(@NonNull DataSnapshot snapshot) {
+                  if(!snapshot.exists()){
+                      startActivity(new Intent(MainActivity.this, NewUserActivity.class));
+                  }else{
+
+                          startActivity(new Intent(MainActivity.this, HomeActivity.class));
+
+                  }
+              }
+
+              @Override
+              public void onCancelled(@NonNull DatabaseError error) {
+
+              }
+          });
         }
 
     }

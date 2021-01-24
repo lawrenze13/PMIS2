@@ -74,7 +74,8 @@ public class ReportPaymentFragment extends Fragment {
     private List<PaymentReportFacade> paymentReportFacadeList;
     private List<String> installmentPatientNameList;
     private RecyclerView rvReportPayment;
-    private double revenueTotal, fullPaymentTotal, balanceTotal;
+    private double  fullPaymentTotal, balanceTotal;
+    private int revenueTotal;
     String userID, clinicName, clinicAddress, docName, clinicContactNo, license, degree;
     private int count;
 
@@ -451,13 +452,16 @@ public class ReportPaymentFragment extends Fragment {
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(8.5f);
         canvas.drawText("Patient Name", (float) (canvas.getWidth() * .1), 90, paint);
-        paint.setTextAlign(Paint.Align.RIGHT);
+        paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(8.5f);
         canvas.drawText("Plan Name", (float) (canvas.getWidth() * .35), 90, paint);
-        paint.setTextAlign(Paint.Align.RIGHT);
+        paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(8.5f);
-        canvas.drawText("Date",  (float) (canvas.getWidth() * .60), 90, paint);
-        paint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText("Date",  (float) (canvas.getWidth() * .50), 90, paint);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(8.5f);
+        canvas.drawText("Method",  (float) (canvas.getWidth() * .70), 90, paint);
+        paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(8.5f);
         canvas.drawText("Amount",  (float) (canvas.getWidth() - 50 ), 90, paint);
 
@@ -479,9 +483,11 @@ public class ReportPaymentFragment extends Fragment {
             canvas.drawText(report.getPlanName(), (float) (canvas.getWidth() * .35), currentY, paint);
             paint.setTextSize(7f);
             for(Installment installment: report.getInstallmentList()) {
-                currentY = currentY + 10;
-                canvas.drawText(installment.getDate(), (float) (canvas.getWidth() * .60), currentY, paint);
+                paint.setTextAlign(Paint.Align.CENTER);
+                canvas.drawText(installment.getDate(), (float) (canvas.getWidth() * .50), currentY, paint);
+                canvas.drawText(installment.getMethod(), (float) (canvas.getWidth() * .70), currentY, paint);
                 canvas.drawText(installment.getAmount(), (float) (canvas.getWidth() -50), currentY, paint);
+                currentY = currentY + 10;
             }
             currentY = currentY + 10;
             solidLinePaint.setStyle(Paint.Style.STROKE);
@@ -559,15 +565,18 @@ public class ReportPaymentFragment extends Fragment {
         solidLinePaint.setStyle(Paint.Style.STROKE);
         solidLinePaint.setStrokeWidth(1);
         canvas.drawLine(20, 80, 20, 100, solidLinePaint);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(8.5f);
+        canvas.drawText("Date", (float) (canvas.getWidth() * .1), 90, paint);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(8.5f);
-        canvas.drawText("Date", 150, 90, paint);
+        canvas.drawText("Patient Name", (float) (canvas.getWidth() * .35), 90, paint);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(8.5f);
-        canvas.drawText("Patient Name", canvas.getWidth() / 2, 90, paint);
+        canvas.drawText("Method",  (float) (canvas.getWidth() * .60), 90, paint);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(8.5f);
-        canvas.drawText("Amount", 450, 90, paint);
+        canvas.drawText("Amount",  (float) (canvas.getWidth() - 50 ), 90, paint);
 
         solidLinePaint.setStyle(Paint.Style.STROKE);
         solidLinePaint.setStrokeWidth(1);
@@ -580,12 +589,17 @@ public class ReportPaymentFragment extends Fragment {
         for (PaymentReportFacade report : pdfFullpaymentList) {
             currentY = currentY + 10;
             paint.setTextAlign(Paint.Align.LEFT);
-            paint.setTextSize(7f);
-            canvas.drawText(report.getDate(), 120, currentY, paint);
-            paint.setTextSize(7f);
-            canvas.drawText(report.getPatientName(), 230, currentY, paint);
-            paint.setTextSize(7f);
-            canvas.drawText(report.getTotal(), 450, currentY, paint);
+            paint.setTextSize(8.5f);
+            canvas.drawText(report.getDate(), (float) (canvas.getWidth() * .1), currentY, paint);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTextSize(8.5f);
+            canvas.drawText(report.getPatientName(), (float) (canvas.getWidth() * .35), currentY, paint);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTextSize(8.5f);
+            canvas.drawText(report.getMethod(),  (float) (canvas.getWidth() * .60), currentY, paint);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTextSize(8.5f);
+            canvas.drawText(report.getTotal(),  (float) (canvas.getWidth() - 50 ), currentY, paint);
             currentY = currentY + 10;
             solidLinePaint.setStyle(Paint.Style.STROKE);
             solidLinePaint.setStrokeWidth(1);
@@ -820,7 +834,7 @@ public class ReportPaymentFragment extends Fragment {
     }
 
     private void addRevenue(double parseDouble) {
-        revenueTotal = revenueTotal + parseDouble;
+        revenueTotal = (int) (revenueTotal + parseDouble);
         Log.d(TAG, "revenueTotal:"  + revenueTotal);
         tvReportRevenue.setText("P"+String.valueOf(revenueTotal));
     }

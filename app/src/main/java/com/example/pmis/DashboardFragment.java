@@ -56,9 +56,9 @@ public class DashboardFragment extends Fragment {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef, keyRef;
     private ImageButton ibAppointmentsToday, ivSendAppointment, ibViewPatients,ibAddPatient, ibAddAppointment;
-    private Button btnViewCalendar, btnExample;
-    private int counter, upcomingCounter, patientCounter, recallCounter;
-    private double revenueTotal, fullPaymentTotal, balanceTotal;
+    private Button btnViewCalendar, btnExample, btnPat, btnStat, btnApp, btnCli;
+    private int counter, upcomingCounter, patientCounter, recallCounter,revenueTotal;
+    private double  fullPaymentTotal, balanceTotal;
     private int loadingCounter;
     private LoadingDialog loadingDialog;
     public DashboardFragment() {
@@ -104,6 +104,34 @@ public class DashboardFragment extends Fragment {
         tvTotalBalance = view.findViewById(R.id.tvTotalBalance);
 //        ibAddAppointment = view.findViewById(R.id.ibAddAppointment);
 //        ibAddAppointment.setOnClickListener(addAppointment);
+        btnApp = view.findViewById(R.id.btnApp);
+        btnApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.appointmentFragment);
+            }
+        });
+        btnCli = view.findViewById(R.id.btnCli);
+        btnCli.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.clinicFragment);
+            }
+        });
+        btnPat = view.findViewById(R.id.btnPat);
+        btnPat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.patientFragment);
+            }
+        });
+        btnStat = view.findViewById(R.id.btnStat);
+        btnStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.statisticsFragment);
+            }
+        });
         ibViewPatients = view.findViewById(R.id.ibViewPatients);
         ibViewPatients.setOnClickListener(viewPatients);
         ibAppointmentsToday = view.findViewById(R.id.ibAppointmentsToday);
@@ -293,7 +321,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void addRevenue(double parseDouble) {
-        revenueTotal = revenueTotal + parseDouble;
+        revenueTotal = (int) (revenueTotal + parseDouble);
         Log.d(TAG, "revenueTotal:"  + revenueTotal);
         tvTotalRevenue.setText("P"+String.valueOf(revenueTotal));
     }

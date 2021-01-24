@@ -68,6 +68,7 @@ public class ProcedureListAdapter extends RecyclerView.Adapter {
         viewHolderClass.tvCName.setText(name);
         viewHolderClass.tvCDescription.setText(description);
         viewHolderClass.tvCPrice.setText(sprice);
+        viewHolderClass.tvCEquipments.setText(procedures.getEquipments());
         viewHolderClass.btnCDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,9 +127,11 @@ public class ProcedureListAdapter extends RecyclerView.Adapter {
                 final TextView etPName = mView.findViewById(R.id.etPName);
                 final TextView etPDescription = mView.findViewById(R.id.etPDescription);
                 final TextView etPPrice = mView.findViewById(R.id.etPPrice);
+                final TextView etPEquip = mView.findViewById(R.id.etEquipments);
                 etPName.setText(procedures.getName());
                 etPDescription.setText(procedures.getDescription());
                 etPPrice.setText(String.valueOf(procedures.getPrice()));
+                etPEquip.setText(String.valueOf(procedures.getEquipments()));
                 ImageButton btnPSubmit = (ImageButton) mView.findViewById(R.id.btnPSubmit);
                 ImageButton btnPCancel = (ImageButton)mView.findViewById(R.id.btnPCancel);
                 alert.setView(mView);
@@ -156,6 +159,7 @@ public class ProcedureListAdapter extends RecyclerView.Adapter {
                             procedures.setName(etPName.getText().toString().trim());
                             procedures.setSorter(etPName.getText().toString().trim().toLowerCase());
                             procedures.setDescription(etPDescription.getText().toString().trim());
+                            procedures.setEquipments(etPEquip.getText().toString().trim());
                             procedures.setPrice(fprice);
                             procedures.setKey(fetchProcedureList.get(position).getKey());
                             Log.d(TAG, "procedures.getKey(): " + fetchProcedureList.get(position).getKey());
@@ -179,6 +183,12 @@ public class ProcedureListAdapter extends RecyclerView.Adapter {
                         String procedureName = etPName.getText().toString().trim();
                         String procedureDescription = etPDescription.getText().toString().trim();
                         String procedurePrice = etPPrice.getText().toString().trim();
+                        String procedureEquip = etPEquip.getText().toString().trim();
+                        if(procedureEquip.isEmpty()){
+                            etPEquip.setError("Equipments is required");
+                            etPEquip.requestFocus();
+                            return false;
+                        }
                         if(procedureName.isEmpty()){
                             etPName.setError("Procedure Name is required");
                             etPName.requestFocus();
@@ -208,7 +218,7 @@ public class ProcedureListAdapter extends RecyclerView.Adapter {
         return fetchProcedureList.size();
     }
     public class ViewHolderClass extends RecyclerView.ViewHolder {
-        TextView tvCName, tvCDescription, tvCPrice;
+        TextView tvCName, tvCDescription, tvCPrice, tvCEquipments;
         ImageButton btnCEdit, btnCDelete;
         public ViewHolderClass(@NonNull View itemView) {
             super(itemView);
@@ -217,6 +227,7 @@ public class ProcedureListAdapter extends RecyclerView.Adapter {
             tvCPrice = itemView.findViewById(R.id.tvCPrice);
             btnCEdit = itemView.findViewById(R.id.btnCEdit);
             btnCDelete = itemView.findViewById( R.id.btnCDelete);
+            tvCEquipments = itemView.findViewById( R.id.tvCEquipments);
 
         }
     }

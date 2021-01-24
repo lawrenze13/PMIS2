@@ -2,6 +2,7 @@ package com.example.pmis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -48,7 +49,17 @@ public class ProfileInformationActivity extends AppCompatActivity {
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         editFirstName = (TextView) findViewById(R.id.editFirstName);
         editLastName = (TextView) findViewById(R.id.editLastName);
-
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar2);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Profile Information");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         editEmail = (TextView) findViewById(R.id.editEmail);
         editSex = (TextView) findViewById(R.id.editSex);
         editAge = (TextView) findViewById(R.id.editAge);

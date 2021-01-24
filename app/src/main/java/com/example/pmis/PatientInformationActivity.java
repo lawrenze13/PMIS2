@@ -2,6 +2,7 @@ package com.example.pmis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.pmis.Model.Clinic;
 import com.example.pmis.Model.DrugPrescription;
 import com.example.pmis.Model.MedicalHistory;
@@ -72,13 +74,6 @@ public class PatientInformationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_information);
-        ImageButton btnCancel2 = findViewById(R.id.btnCancel2);
-        btnCancel2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         cvPPrescription = findViewById(R.id.cvPPrescription);
         ivPatientPic = findViewById(R.id.ivPatientPic);
@@ -144,8 +139,9 @@ public class PatientInformationActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         Glide
                                 .with(PatientInformationActivity.this)
-                                .asBitmap()
                                 .load(uri)
+                                .thumbnail(0.5f)
+                                .diskCacheStrategy(DiskCacheStrategy.DATA)
                                 .centerCrop()
                                 .into(ivPatientPic);
                     }
@@ -173,12 +169,30 @@ public class PatientInformationActivity extends AppCompatActivity {
                 generatePDF();
             }
         });
+        ImageButton ibCall  = findViewById(R.id.ibCall);
+        ibCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + contactNo));
+                startActivity(callIntent);
+            }
+        });
         clCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_DIAL);
                 callIntent.setData(Uri.parse("tel:" + contactNo));
                 startActivity(callIntent);
+            }
+        });
+        ImageButton ibMessage = findViewById(R.id.ibMessage);
+        ibMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("smsto:" + contactNo));
+                startActivity(intent);
             }
         });
         clMessage.setOnClickListener(new View.OnClickListener() {
@@ -215,6 +229,7 @@ public class PatientInformationActivity extends AppCompatActivity {
                 startActivity(schedIntent);
             }
         });
+
         DatabaseReference patientRef = mFirebaseDatabase.getReference("Patient").child(userID);
         patientRef.addValueEventListener(new ValueEventListener() {
             @Override
