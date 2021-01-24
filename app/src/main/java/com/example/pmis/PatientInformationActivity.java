@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.pmis.Model.Clinic;
 import com.example.pmis.Model.DrugPrescription;
 import com.example.pmis.Model.MedicalHistory;
@@ -144,8 +145,9 @@ public class PatientInformationActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         Glide
                                 .with(PatientInformationActivity.this)
-                                .asBitmap()
                                 .load(uri)
+                                .thumbnail(0.5f)
+                                .diskCacheStrategy(DiskCacheStrategy.DATA)
                                 .centerCrop()
                                 .into(ivPatientPic);
                     }

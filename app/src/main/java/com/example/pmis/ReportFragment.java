@@ -70,7 +70,8 @@ public class ReportFragment extends Fragment {
     private DatabaseReference myRef, paymentRef, fullPaymentRef, appointmentRef,patientRef, procedureRef;
     private List<String> filterList = new ArrayList<>();
     private LoggedUserData loggedUserData = new LoggedUserData();
-    private double revenueTotal, fullPaymentTotal, balanceTotal;
+    private int revenueTotal;
+    private double  fullPaymentTotal, balanceTotal;
     private int pastAppointmentTotal, appointmentTotal, upcomingAppointmentTotal, totalProcedure;
     private static final String TAG = "REPORT_FRAGMENT";
     private int installmentCounter, fullpaymentCounter,counter;
@@ -1176,7 +1177,7 @@ public class ReportFragment extends Fragment {
     }
 
     private void addRevenue(double parseDouble) {
-        revenueTotal = revenueTotal + parseDouble;
+        revenueTotal = (int) (revenueTotal + parseDouble);
         Log.d(TAG, "revenueTotal:"  + revenueTotal);
         tvReportRevenue.setText("P"+String.valueOf(revenueTotal));
     }

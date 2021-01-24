@@ -151,14 +151,14 @@ public class ReportClinicFragment extends Fragment {
         solidLinePaint.setStrokeWidth(1);
         canvas.drawLine(20, 80, 20, 100, solidLinePaint);
         paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(9f);
+        canvas.drawText("Procedure", 40, 90, paint);
+        paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(8.5f);
-        canvas.drawText("Procedure", (float) (canvas.getWidth() * .25), 90, paint);
+        canvas.drawText("Description", (float) (canvas.getWidth() * .40), 90, paint);
         paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(8.5f);
-        canvas.drawText("Description", (float) (canvas.getWidth() * .50), 90, paint);
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(8.5f);
-        canvas.drawText("Price",  (float) (canvas.getWidth() * .75), 90, paint);
+        paint.setTextSize(9f);
+        canvas.drawText("Price",  (float) (canvas.getWidth() * .85), 90, paint);
 
 
         solidLinePaint.setStyle(Paint.Style.STROKE);
@@ -174,12 +174,12 @@ public class ReportClinicFragment extends Fragment {
             currentY = currentY + 10;
             paint.setTextAlign(Paint.Align.LEFT);
             paint.setTextSize(7f);
-            canvas.drawText(report.getName(), (float) (canvas.getWidth() * .25), currentY, paint);
+            canvas.drawText(report.getName(), 40, currentY, paint);
             paint.setTextSize(7f);
-            paint.setTextAlign(Paint.Align.CENTER);
-            canvas.drawText(report.getDescription(), (float) (canvas.getWidth() * .50), currentY, paint);
+            paint.setTextAlign(Paint.Align.LEFT);
+            canvas.drawText(report.getDescription(), (float) (canvas.getWidth() * .40), currentY, paint);
             paint.setTextSize(7f);
-            canvas.drawText(String.valueOf(report.getPrice()), (float) (canvas.getWidth() * .75), currentY, paint);
+            canvas.drawText(String.valueOf(report.getPrice()), (float) (canvas.getWidth() * .85), currentY, paint);
             currentY = currentY + 10;
             solidLinePaint.setStyle(Paint.Style.STROKE);
             solidLinePaint.setStrokeWidth(1);
@@ -252,7 +252,7 @@ public class ReportClinicFragment extends Fragment {
         canvas.drawLine(20, 80, 20, 100, solidLinePaint);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(8.5f);
-        canvas.drawText("Brand", (float) (canvas.getWidth() * .25), 90, paint);
+        canvas.drawText("Brand", (float) (canvas.getWidth() * 2), 90, paint);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(8.5f);
         canvas.drawText("Drug Name", (float) (canvas.getWidth() * .50), 90, paint);
@@ -345,6 +345,7 @@ public class ReportClinicFragment extends Fragment {
                     procedures.setDescription(ds.getValue(Procedures.class).getDescription());
                     procedures.setName(ds.getValue(Procedures.class).getName());
                     procedures.setKey(ds.getValue(Procedures.class).getKey());
+                    procedures.setEquipments(ds.getValue(Procedures.class).getEquipments());
                     proceduresList.add(procedures);
                 }
             }

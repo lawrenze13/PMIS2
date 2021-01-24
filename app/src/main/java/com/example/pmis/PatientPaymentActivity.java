@@ -7,18 +7,23 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.pmis.Adapter.PaymentPageAdapter;
 import com.example.pmis.Helpers.LoggedUserData;
 import com.example.pmis.Model.Installment;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.PatientPayment;
 import com.example.pmis.Model.Procedures;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
@@ -30,6 +35,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class PatientPaymentActivity extends AppCompatActivity {
     private static final String TAG = "PATIENT_PAYMENT";
@@ -42,6 +49,7 @@ public class PatientPaymentActivity extends AppCompatActivity {
     public PaymentPageAdapter paymentPageAdapter;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference fullRef,insRef;
+    private ImageView ivProfile;
     private  double grandTotal = 0;
     private  double revenue = 0;
     private double installmentTotal = 0;
@@ -64,6 +72,7 @@ public class PatientPaymentActivity extends AppCompatActivity {
                 finish();
             }
         });
+        ivProfile = findViewById(R.id.ivProfile);
         fabAddPayment = findViewById(R.id.fabAddPayment);
         fabAddPayment.setOnClickListener(addPayment);
         tabLayout = findViewById(R.id.tabLayout);
@@ -169,6 +178,19 @@ public class PatientPaymentActivity extends AppCompatActivity {
             String lastName = snapshot.getValue(Patient.class).getLastName();
             String fullName = firstName + ' ' + middleName + ' ' + lastName;
             tvPatientFullName.setText(fullName);
+            StorageReference viewPhotoRef = FirebaseStorage.getInstance().getReference().child("images/patientPic/" + snapshot.getValue(Patient.class).getKey());
+            viewPhotoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide
+                            .with(PatientPaymentActivity.this)
+                            .load(uri)
+                            .thumbnail(0.5f)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .centerCrop()
+                            .into(ivProfile);
+                }
+            });
         }
 
         @Override

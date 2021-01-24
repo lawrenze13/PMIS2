@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.pmis.Adapter.PatientListAdapter;
 import com.example.pmis.Adapter.ScheduleListAdapter;
 import com.example.pmis.Helpers.LoggedUserData;
+import com.example.pmis.Model.AppointmentStatus;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.PatientScheduleFacade;
 import com.example.pmis.Model.Schedule;
@@ -74,44 +75,62 @@ public class UpcomingAppointmentActivity extends AppCompatActivity {
                      String patientKey = patientSnapshot.getValue(Patient.class).getKey();
                     Log.d(TAG, "patientName: " + patientKey + " " + patientKey);
                     contactNo = patientSnapshot.getValue(Patient.class).getContactNo();
-                   DatabaseReference keyRef = mFirebaseDatabase.getReference("Schedules").child(patientKey);
+                   Query keyRef = mFirebaseDatabase.getReference("Schedules").child(userID).orderByChild("timeStamp");
                     keyRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot schedule : snapshot.getChildren()) {
+                                    if (schedule.getValue(Schedule.class).getPatientKey() != null) {
+                                        if (schedule.getValue(Schedule.class).getPatientKey().equals(patientKey)) {
+                                            Date c = Calendar.getInstance().getTime();
+                                            SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+                                            String currentDate = df.format(c);
+                                            String dbDate = schedule.getValue(Schedule.class).getDate();
+                                            try {
+                                                Date date1 = df.parse(dbDate);
+                                                Date date2 = df.parse(currentDate);
+                                                Log.d(TAG, "DATES  : " + date1 + " " + date2);
+                                                if (date1.compareTo(date2) > 0) {
+                                                    schedDate = schedule.getValue(Schedule.class).getDate();
+                                                    startTime =  schedule.getValue(Schedule.class).getStartTime();
+                                                    endTime =  schedule.getValue(Schedule.class).getEndTime();
+                                                    note =  schedule.getValue(Schedule.class).getRemarks();
+                                                    scheduleKey = schedule.getValue(Schedule.class).getKey();
+                                                    PatientScheduleFacade patientScheduleFacade = new PatientScheduleFacade();
+                                                    patientScheduleFacade.setPatientName(patientName);
+                                                    patientScheduleFacade.setContactNo(contactNo);
+                                                    patientScheduleFacade.setDate(schedDate);
+                                                    patientScheduleFacade.setEndTime(endTime);
+                                                    patientScheduleFacade.setStartTime(startTime);
+                                                    patientScheduleFacade.setNote(note);
+                                                    patientScheduleFacade.setPatientKey(patientKey);
+                                                    patientScheduleFacade.setScheduleKey(scheduleKey);
+                                                    DatabaseReference statusRef = mFirebaseDatabase.getReference("AppointmentStatus").child(userID).child(scheduleKey);
+                                                    statusRef.addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if(snapshot.hasChildren()) {
+                                                                String status = snapshot.getValue(AppointmentStatus.class).getStatus();
+                                                                patientScheduleFacade.setStatus(status);
+                                                                scheduleList.add(patientScheduleFacade);
 
-                            Date c = Calendar.getInstance().getTime();
-                            SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-                            String currentDate = df.format(c);
-                            Log.d(TAG, currentDate);
-                            for(DataSnapshot schedule: snapshot.getChildren()) {
-                                String dbDate = schedule.getValue(Schedule.class).getDate();
-                                try {
-                                    Date date1 = df.parse(dbDate);
-                                    Date date2 = df.parse(currentDate);
-                                    if(date1.compareTo(date2) > 0){
-                                        schedDate = schedule.getValue(Schedule.class).getDate();
-                                        startTime =  schedule.getValue(Schedule.class).getStartTime();
-                                        endTime =  schedule.getValue(Schedule.class).getEndTime();
-                                        note =  schedule.getValue(Schedule.class).getRemarks();
-                                        scheduleKey = schedule.getKey();
-                                        PatientScheduleFacade patientScheduleFacade = new PatientScheduleFacade();
-                                        patientScheduleFacade.setPatientName(patientName);
-                                        patientScheduleFacade.setContactNo(contactNo);
-                                        patientScheduleFacade.setDate(schedDate);
-                                        patientScheduleFacade.setEndTime(endTime);
-                                        patientScheduleFacade.setStartTime(startTime);
-                                        patientScheduleFacade.setNote(note);
-                                        patientScheduleFacade.setPatientKey(patientKey);
-                                        patientScheduleFacade.setScheduleKey(scheduleKey);
-                                        scheduleList.add(patientScheduleFacade);
+                                                            }
+                                                        }
 
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                                }
+
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
                                     }
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
                                 }
-
-
-
                             }
                             scheduleListAdapter = new ScheduleListAdapter(UpcomingAppointmentActivity.this,scheduleList);
                             rvUpcoming.setAdapter(scheduleListAdapter);

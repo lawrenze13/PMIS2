@@ -6,16 +6,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.pmis.Adapter.PatientMedicalHistoryAdapter;
 import com.example.pmis.Adapter.PatientPhotoAdapter;
 import com.example.pmis.Model.MedicalHistory;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.PatientPhotos;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -37,6 +43,7 @@ public class PatientPhotoActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private RecyclerView rvMedicalHistory;
     private TextView tvNoInfo, tvPatientFullName;
+    private ImageView ivProfile;
     private List<PatientPhotos> patientPhotosList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,7 @@ public class PatientPhotoActivity extends AppCompatActivity {
             }
         });
         tvNoInfo = findViewById(R.id.tvNoInfo);
+        ivProfile = findViewById(R.id.ivProfile);
         rvMedicalHistory = findViewById(R.id.rvMedicalHistory);
         rvMedicalHistory.setLayoutManager(new LinearLayoutManager(this));
         FloatingActionButton fabAddPatientPhoto = findViewById(R.id.fabAddPatientPhoto);
@@ -105,6 +113,19 @@ public class PatientPhotoActivity extends AppCompatActivity {
             String lastName = snapshot.getValue(Patient.class).getLastName();
             String fullName = firstName + ' ' + middleName + ' ' + lastName;
             tvPatientFullName.setText(fullName);
+            StorageReference viewPhotoRef = FirebaseStorage.getInstance().getReference().child("images/patientPic/" + snapshot.getValue(Patient.class).getKey());
+            viewPhotoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide
+                            .with(PatientPhotoActivity.this)
+                            .load(uri)
+                            .thumbnail(0.5f)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .centerCrop()
+                            .into(ivProfile);
+                }
+            });
         }
 
         @Override

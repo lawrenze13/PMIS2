@@ -46,7 +46,33 @@
             android:textColor="#494747"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPresUpdate5" />
+
+        <TextView
+            android:id="@+id/tvPresUpdate4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Price:"
+            android:textColor="#494747"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPresUpdate" />
+
+        <TextView
+            android:id="@+id/tvPresUpdate5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Equipments:"
+            android:textColor="#494747"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPresUpdate4" />
 
         <TextView
             android:id="@+id/tvPProcDateUpdated"
@@ -58,6 +84,28 @@
             app:layout_constraintBottom_toBottomOf="@+id/tvPresUpdate2"
             app:layout_constraintStart_toEndOf="@+id/tvPresUpdate2"
             app:layout_constraintTop_toTopOf="@+id/tvPresUpdate2" />
+
+        <TextView
+            android:id="@+id/tvPProcPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="text"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPresUpdate4"
+            app:layout_constraintStart_toEndOf="@+id/tvPresUpdate4"
+            app:layout_constraintTop_toTopOf="@+id/tvPresUpdate4" />
+
+        <TextView
+            android:id="@+id/tvPProcEquip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="text"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPresUpdate5"
+            app:layout_constraintStart_toEndOf="@+id/tvPresUpdate5"
+            app:layout_constraintTop_toTopOf="@+id/tvPresUpdate5" />
 
         <TextView
             android:id="@+id/tvPresUpdate3"

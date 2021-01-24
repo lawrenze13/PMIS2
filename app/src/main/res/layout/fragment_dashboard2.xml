@@ -226,6 +226,7 @@
                             android:layout_marginEnd="15dp"
                             android:background="@android:color/transparent"
                             android:src="@drawable/ic_baseline_send_24"
+                            android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="@+id/tvlabelpatients2"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/tvlabelpatients2" />
@@ -283,7 +284,9 @@
 
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout14"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
@@ -308,7 +311,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                    app:layout_constraintTop_toTopOf="@+id/tvPatientTitle" />
+                app:layout_constraintTop_toTopOf="@+id/tvPatientTitle" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -335,7 +338,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
 
-                            app:layout_constraintTop_toBottomOf="@+id/ibViewPayments" />
+                        app:layout_constraintTop_toBottomOf="@+id/ibViewPayments" />
 
                         <TextView
                             android:id="@+id/tvTotalRevenue"
@@ -387,6 +390,115 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:paddingBottom="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout14">
+
+                <TextView
+                    android:id="@+id/TvLabelShortcut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:drawableStart="@drawable/ic_baseline_history_24"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@color/bgPrimary"
+                    android:fontFamily="@font/montserrat"
+                    android:text="Shortcuts"
+                    android:textColor="@color/bgPrimary"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/linearLayout10"
+                    tools:layout_editor_absoluteX="5dp">
+
+                    <Button
+                        android:id="@+id/btnPat"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:backgroundTint="@android:color/holo_green_light"
+                        android:drawableTop="@drawable/ic_baseline_person_24"
+                        android:drawableTint="#403F3F"
+                        android:text="Patients"
+                        android:textSize="12sp" />
+
+                    <Button
+                        android:id="@+id/btnCli"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:backgroundTint="@android:color/holo_green_light"
+                        android:drawableTop="@drawable/ic_baseline_medical_services_24"
+                        android:drawableTint="#403F3F"
+                        android:text="Clinic"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout10"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    app:layout_constraintTop_toBottomOf="@+id/TvLabelShortcut">
+
+                    <Button
+                        android:id="@+id/btnStat"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:backgroundTint="@android:color/holo_green_light"
+                        android:drawableTop="@drawable/ic_baseline_bar_chart_24"
+                        android:drawableTint="#403F3F"
+                        android:text="Statistics"
+                        android:textSize="12sp" />
+
+                    <Button
+                        android:id="@+id/btnApp"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:backgroundTint="@android:color/holo_green_light"
+                        android:drawableTop="@drawable/ic_baseline_calendar_today_24"
+                        android:drawableTint="#403F3F"
+                        android:text="Appointments"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+                <![CDATA[
+
+                app:layout_constraintTop_toTopOf="@+id/tvPatientTitle" />
+
+                ]]>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

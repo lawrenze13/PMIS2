@@ -119,6 +119,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Dosage" />
 
+        <EditText
+            android:id="@+id/etEquipments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_baseline_medical_services_24"
+            android:drawablePadding="16dp"
+            android:inputType="text"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dosage" />
+
         <TextView
             android:id="@+id/Dosage"
             android:layout_width="wrap_content"
@@ -128,6 +141,16 @@
             android:text="Price"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPDescription" />
+
+        <TextView
+            android:id="@+id/dosage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Equipments Needed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etPPrice" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

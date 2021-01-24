@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -45,7 +46,7 @@ import java.util.Locale;
 public class AddPatientProcedure extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "PROCEDURE_ADAPTER";
     String patientKey, userID;
-    private EditText etPProcDate, etPProcNotes;
+    private EditText etPProcDate, etPProcNotes,etPrice, etEquipment;
     private TextView tvPProcTitle;
     private Button btnSave;
     private Spinner spinnerProcedure;
@@ -54,6 +55,7 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
     private FirebaseAuth mAuth;
     private String action, patientProcedureKey;
     final List<String> keyList = new ArrayList<>();
+    final List<Procedures> proceduresMasterList = new ArrayList<>();
     final List<String> procedureList = new ArrayList<String>();
     private ArrayAdapter<String> arrayAdapter;
     @Override
@@ -74,10 +76,12 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
         Intent getProcedureIntent = getIntent();
         patientKey = getProcedureIntent.getStringExtra("patientKey");
         action = getProcedureIntent.getStringExtra("action");
+        etEquipment = findViewById(R.id.etEquipment);
         btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(saveProcedure);
         etPProcNotes = findViewById(R.id.etPProcNotes);
         etPProcDate = findViewById(R.id.etPProcDate);
+        etPrice = findViewById(R.id.etPrice);
 
         etPProcDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -111,6 +115,12 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
                     int tempPrice = procedures.getPrice();
                     String price = String.valueOf(tempPrice);
                     keyList.add(key);
+                    Procedures prod = new Procedures();
+                    prod.setEquipments(ds.getValue(Procedures.class).getEquipments());
+                    prod.setKey(ds.getValue(Procedures.class).getKey());
+                    prod.setPrice(ds.getValue(Procedures.class).getPrice());
+                    prod.setDescription(ds.getValue(Procedures.class).getDescription());
+                    proceduresMasterList.add(prod);
                     procedureList.add(name);
 
                 }
@@ -118,9 +128,9 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
                 spinnerProcedure.setAdapter(arrayAdapter);
                 if(action.equals("edit")){
                     patientProcedureKey = getProcedureIntent.getStringExtra("patientProcedureKey");
-
+                    getSupportActionBar().setTitle("Edit Patient Procedure");
                     Log.d(TAG, "procedureKey: " + patientProcedureKey);
-                    tvPProcTitle.setText("Edit Procedure");
+
                     mFirebaseDatabase = FirebaseDatabase.getInstance();
                     editRef = mFirebaseDatabase.getReference("PatientProcedure").child(patientKey).child(patientProcedureKey);
                     editRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -148,7 +158,18 @@ public class AddPatientProcedure extends AppCompatActivity implements DatePicker
         });
 
 
+        spinnerProcedure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                etPrice.setText(String.valueOf(proceduresMasterList.get(position).getPrice()));
+                etEquipment.setText(String.valueOf(proceduresMasterList.get(position).getEquipments()));
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
     private final View.OnClickListener saveProcedure = new View.OnClickListener() {
         @Override

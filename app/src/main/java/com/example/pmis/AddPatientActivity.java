@@ -27,6 +27,8 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.example.pmis.Helpers.LoadingDialog;
+import com.example.pmis.Helpers.PatientEmails;
 import com.example.pmis.Model.Patient;
 import com.example.pmis.Model.UserInfo;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,8 +48,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class AddPatientActivity extends AppCompatActivity {
@@ -57,6 +61,7 @@ public class AddPatientActivity extends AppCompatActivity {
     public static final int CAMERA_PERM_CODE = 101;
     private EditText etPatientBirthdate ,etPFirstName, etPMiddleName, etPLastName, etPEmail, etPContactNo, etPAddress, etPNotes, etPProvince, etPCity, etPBarangay;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+    private List<String> emailList = new ArrayList<>();
     private Button btnUpload;
     private RadioGroup rgPSex;
     private RadioButton rSex;
@@ -84,6 +89,7 @@ public class AddPatientActivity extends AppCompatActivity {
                 finish();
             }
         });
+        FirebaseStorage.getInstance().setMaxUploadRetryTimeMillis(20000);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         etPFirstName = findViewById(R.id.etPFirstName);
@@ -107,6 +113,7 @@ public class AddPatientActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
+        getEmailList();
 //        if(action.equals("edit")) {
 //            Log.d(TAG, "action: " + action);
 //            patientKey = intent.getStringExtra("patientKey");
@@ -200,7 +207,8 @@ public class AddPatientActivity extends AppCompatActivity {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(AddPatientActivity.this, "Failed to upload. Please try again", Toast.LENGTH_LONG).show();
+                                    progressDialog.dismiss();
+                                    Toast.makeText(AddPatientActivity.this, "Failed to upload. Check your internet connection First.", Toast.LENGTH_LONG).show();
                                 }
                             });
                         } else {
@@ -245,6 +253,25 @@ public class AddPatientActivity extends AppCompatActivity {
             }
         };
     }
+
+    private void getEmailList() {
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference mRef = mFirebaseDatabase.getReference("Patient").child(userID);
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds: snapshot.getChildren()){
+                    emailList.add(ds.getValue(Patient.class).getEmail());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private boolean validate(){
         String firstName = etPFirstName.getText().toString().trim();
         String middleName = etPMiddleName.getText().toString().trim();
@@ -257,6 +284,11 @@ public class AddPatientActivity extends AppCompatActivity {
         String barangay = etPBarangay.getText().toString().trim();
         String notes = etPNotes.getText().toString().trim();
         String birthDate = etPatientBirthdate.getText().toString().trim();
+        if(emailList.contains(email)){
+            etPEmail.setError("Email is already taken. Please input another email");
+            etPEmail.requestFocus();
+            return false;
+        }
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             etPEmail.setError("Please Provide a valid Email");
             etPEmail.requestFocus();
