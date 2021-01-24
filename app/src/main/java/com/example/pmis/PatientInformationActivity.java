@@ -175,12 +175,30 @@ public class PatientInformationActivity extends AppCompatActivity {
                 generatePDF();
             }
         });
+        ImageButton ibCall  = findViewById(R.id.ibCall);
+        ibCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + contactNo));
+                startActivity(callIntent);
+            }
+        });
         clCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_DIAL);
                 callIntent.setData(Uri.parse("tel:" + contactNo));
                 startActivity(callIntent);
+            }
+        });
+        ImageButton ibMessage = findViewById(R.id.ibMessage);
+        ibMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("smsto:" + contactNo));
+                startActivity(intent);
             }
         });
         clMessage.setOnClickListener(new View.OnClickListener() {
@@ -217,6 +235,7 @@ public class PatientInformationActivity extends AppCompatActivity {
                 startActivity(schedIntent);
             }
         });
+
         DatabaseReference patientRef = mFirebaseDatabase.getReference("Patient").child(userID);
         patientRef.addValueEventListener(new ValueEventListener() {
             @Override
