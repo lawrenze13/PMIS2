@@ -74,7 +74,17 @@ public class PatientInformationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_information);
-
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.myToolbar15);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Patient Information");
+        myToolbar.setTitleTextColor(getColor(R.color.white));
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         cvPPrescription = findViewById(R.id.cvPPrescription);
         ivPatientPic = findViewById(R.id.ivPatientPic);
 
