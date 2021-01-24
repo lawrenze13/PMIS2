@@ -144,7 +144,7 @@ tools:context=".AddPatientPaymentActivity">
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/montserrat"
-                        android:text="Dentist"
+                        android:text="Procedures"
                         android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/etPayDentist" />
@@ -153,6 +153,8 @@ tools:context=".AddPatientPaymentActivity">
                         android:id="@+id/spinnerProcedure"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tvDentist3" />
 
                     <TextView
